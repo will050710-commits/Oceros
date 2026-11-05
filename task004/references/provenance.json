@@ -1,0 +1,60 @@
+{
+  "scope": "Input byte integrity only; source claims retain original evidence labels",
+  "sources": [
+    {
+      "file": "TASK-002_v2.3_MODEL_MATRIX_RUNTIME_ResearchCard.md",
+      "bytes": 98339,
+      "sha256": "0e61286612322912ec2a3611f650985b3edfd05a3d5349f487e52fdeb8bdf343"
+    },
+    {
+      "file": "HANDOFF_REPORT_TASK-004.md",
+      "bytes": 15226,
+      "sha256": "126e4b9860ae04fee0b59a2b95c5e0b6c6caf910a0e1e2e86521b319f257e486"
+    },
+    {
+      "file": "BENCHMARK_SPEC_v0.md",
+      "bytes": 94029,
+      "sha256": "a02e3e391b49e3ede390fa4904ccbc550c748ab0652da90483788454b7ed614b"
+    },
+    {
+      "file": "ERRATA_TASK003_v0.3.1.md",
+      "bytes": 9831,
+      "sha256": "1eb9315960ee8386075f8b1581e70e0f14a2bf97ef073a84b5a6eab815a38086"
+    },
+    {
+      "file": "GB0_INTERNAL_NOTICE_v1.txt",
+      "bytes": 1349,
+      "sha256": "39510d0f581c3db835465afd95e3a0d0a799cb657d2189c7fd3ff1ca4013eb9e"
+    },
+    {
+      "file": "HANDOFF_REPORT_TASK-003-DESIGN.md",
+      "bytes": 5068,
+      "sha256": "defdf7bca0761e7a98671e5e22f80edde2d57a0282f6cba6ad0555c9b3280147"
+    },
+    {
+      "file": "RESPONSE_TO_CLAUDE_REVIEW_v03.md",
+      "bytes": 11689,
+      "sha256": "3a2c600e098d09825e21a98628464af27aab17a3df4932903ac831e48db525a1"
+    },
+    {
+      "file": "TASK-003-CVC-001.md",
+      "bytes": 18604,
+      "sha256": "6a89687992dd3f79405dbce7c2c6de94e04a3c5b234d527f70ecbde5bdb7bac2"
+    },
+    {
+      "file": "TASK003_NUMERICAL_AUDIT_v03.json",
+      "bytes": 7026,
+      "sha256": "6fc5a8db73e0afb85624fb4f91a783e65b70288a2a78e730c85369fc73c92417"
+    },
+    {
+      "file": "TASK003_NUMERICAL_AUDIT_v031.json",
+      "bytes": 35432,
+      "sha256": "ec3e91e03ccddf1a5c567dd37f4c20c554e2667eec0e3e34c7980c9526716503"
+    },
+    {
+      "file": "TASK003_v032_Q1-Q5_Closure.md",
+      "bytes": 4372,
+      "sha256": "6bdd6b189e2b7bce7a82db3198ebb9b02b1fda5c8ed0194ff19afb57e36c3b66"
+    }
+  ]
+}

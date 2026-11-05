@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TASK-004 run v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "task_id": {
+      "const": "TASK-004"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "[0-9a-f]{32}"
+    },
+    "evidence_label": {
+      "const": "SYNTHETIC"
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "TIMEOUT",
+        "CANCELLED",
+        "PREFLIGHT_FAILED"
+      ]
+    },
+    "reason_code": {
+      "type": "string"
+    },
+    "started_at_utc": {
+      "type": "string"
+    },
+    "finished_at_utc": {
+      "type": "string"
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "run_elapsed_s": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "request_latency_s": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "ttft_s": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "prefill_tokens_s": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "decode_tokens_s": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "synthetic_output_tokens": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "run_elapsed_s",
+        "request_latency_s",
+        "ttft_s",
+        "prefill_tokens_s",
+        "decode_tokens_s",
+        "synthetic_output_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "resources": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "rss_peak_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "commit_peak_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "rss_source": {
+          "type": "string"
+        },
+        "commit_source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "commit_unavailable_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sample_interval_s": {
+          "type": "number",
+          "minimum": 0
+        },
+        "samples": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "incomplete_samples": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "measurement_scope": {
+          "type": "string"
+        },
+        "sampling_limitation": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "rss_peak_bytes",
+        "commit_peak_bytes",
+        "rss_source",
+        "commit_source",
+        "commit_unavailable_reason",
+        "sample_interval_s",
+        "samples",
+        "incomplete_samples",
+        "measurement_scope",
+        "sampling_limitation"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "task_id",
+    "run_id",
+    "evidence_label",
+    "status",
+    "reason_code",
+    "started_at_utc",
+    "finished_at_utc",
+    "metrics",
+    "resources"
+  ],
+  "additionalProperties": false
+}

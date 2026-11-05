@@ -1,0 +1,24 @@
+LicenseRef-GB0-Internal-v0
+Notice revision: 1
+Prepared: 2026-11-03
+
+This notice is a proposed internal permission record for newly contributed,
+original benchmark material. It does not assert ownership of existing user
+documents, public datasets, model outputs, fonts, or other third-party work.
+
+For original material they control, each contributor must explicitly agree
+to permit the project owner and project-authorized collaborators to copy,
+modify, and use that material internally to develop and evaluate the General
+LLM + VLM Research Platform. No public redistribution permission is granted
+by this notice. Third-party rights and licenses remain unchanged.
+
+A corpus may use this license identifier only after a contributor permission
+record is present. Each item must identify that record, the contributor,
+the source of any third-party component, and its separate license when needed.
+LLM-assisted content must record the tool, date, assistance role, human editor,
+and the applicable use terms as reviewed by the project owner. Generated text
+is not presumed to be original or free of third-party restrictions.
+
+This notice does not authorize publication, payment, API calls, transfer of
+private evaluation data to external services, or changes to BingMath/DUOMATH.
+The benchmark manifest must include this file's exact bytes and SHA-256.

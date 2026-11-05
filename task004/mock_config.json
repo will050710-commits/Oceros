@@ -1,0 +1,13 @@
+{
+  "runtime": "mock",
+  "n_ctx": 4096,
+  "thinking": false,
+  "max_new_tokens": 96,
+  "timeout_s": 5,
+  "startup_timeout_s": 5,
+  "sample_interval_s": 0.1,
+  "min_available_ram_bytes": 67108864,
+  "min_free_disk_bytes": 10485760,
+  "mock_scenario": "success",
+  "mock_delay_s": 0
+}

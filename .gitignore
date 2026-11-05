@@ -1,0 +1,4 @@
+__pycache__/
+*.py[cod]
+task004/.venv/
+task004/runs/
