@@ -1,0 +1,32 @@
+test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) ... 
+  test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='OSError') ... FAIL
+  test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='KeyboardInterrupt') ... ERROR
+
+======================================================================
+ERROR: test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='KeyboardInterrupt')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/task004-regression-b34zxa5y/baseline/task004/tests/test_hardening_record.py", line 47, in test_second_write_failure_cleans_staging_for_baseexceptions
+    self.write()
+  File "/tmp/task004-regression-b34zxa5y/baseline/task004/tests/test_hardening_record.py", line 36, in write
+    return write_artifacts(self.root, self.config, self.record, self.manifest["preflight"])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/task004-regression-b34zxa5y/baseline/task004/record.py", line 91, in write_artifacts
+    run_dir.mkdir(parents=True, exist_ok=False)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1311, in mkdir
+    os.mkdir(self, mode)
+FileExistsError: [Errno 17] File exists: '/tmp/tmpub1_6nqe/out/e1979d42784948cfbeb13b44cbc6044a'
+
+======================================================================
+FAIL: test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='OSError')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/task004-regression-b34zxa5y/baseline/task004/tests/test_hardening_record.py", line 46, in test_second_write_failure_cleans_staging_for_baseexceptions
+    with patch.object(Path, "open", faulty), self.assertRaises(type(exception)):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: OSError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+FAILED (failures=1, errors=1)

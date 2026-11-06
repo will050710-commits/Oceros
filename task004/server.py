@@ -23,6 +23,12 @@ class ServerTimeout(ServerError):
         super().__init__("STARTUP_TIMEOUT")
 
 
+def _child_env():
+    """The fixed mock needs locale/temp/platform paths, never harness secrets."""
+    return {key: os.environ[key] for key in
+            ("PATH", "SYSTEMROOT", "TEMP", "TMP", "LANG", "LC_ALL") if key in os.environ}
+
+
 def _active(process):
     try:
         return process.is_running() and process.status() != psutil.STATUS_ZOMBIE
@@ -81,11 +87,12 @@ def stop_owned_process(process, *, owned_pgid=None):
                         raise ServerError("CLEANUP_FAILED")
                 except ProcessLookupError:
                     pass
-            _signal_group(owned_pgid, signal.SIGTERM)
-            if not _wait_group(owned_pgid, 1):
-                _signal_group(owned_pgid, signal.SIGKILL)
+            if _active_group_members(owned_pgid):
+                _signal_group(owned_pgid, signal.SIGTERM)
                 if not _wait_group(owned_pgid, 1):
-                    raise ServerError("CLEANUP_FAILED")
+                    _signal_group(owned_pgid, signal.SIGKILL)
+                    if not _wait_group(owned_pgid, 1):
+                        raise ServerError("CLEANUP_FAILED")
         else:
             targets = []
             if process.poll() is None:
@@ -144,9 +151,11 @@ class ManagedMockServer:
             self.process = subprocess.Popen([
                 sys.executable, "-m", "task004.mock_server", "--port-file", str(port_file),
                 "--scenario", self.config.mock_scenario, "--delay", str(self.config.mock_delay_s),
+                "--parent-pid", str(os.getpid()),
+                "--max-lifetime-s", str(self.config.startup_timeout_s + self.config.timeout_s + 30),
             ], cwd=Path(__file__).resolve().parent.parent, stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                start_new_session=os.name == "posix")
+                start_new_session=os.name == "posix", env=_child_env())
             if os.name == "posix":
                 self._owned_pgid = self.process.pid
             deadline = time.monotonic() + self.config.startup_timeout_s

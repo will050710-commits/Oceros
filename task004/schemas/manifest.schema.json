@@ -11,7 +11,7 @@
     },
     "run_id": {
       "type": "string",
-      "pattern": "[0-9a-f]{32}"
+      "pattern": "^[0-9a-f]{32}$"
     },
     "evidence_label": {
       "const": "SYNTHETIC"
@@ -30,7 +30,7 @@
       "properties": {
         "n_ctx": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 1
         },
         "runtime": {
           "const": "mock"
@@ -40,19 +40,23 @@
         },
         "max_new_tokens": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 1,
+          "maximum": 96
         },
         "timeout_s": {
           "type": "number",
-          "minimum": 0
+          "exclusiveMinimum": 0,
+          "maximum": 3600
         },
         "startup_timeout_s": {
           "type": "number",
-          "minimum": 0
+          "exclusiveMinimum": 0,
+          "maximum": 3600
         },
         "sample_interval_s": {
           "type": "number",
-          "minimum": 0
+          "minimum": 0.01,
+          "maximum": 60
         },
         "min_available_ram_bytes": {
           "type": "integer",
@@ -67,14 +71,15 @@
             "integer",
             "null"
           ],
-          "minimum": 0
+          "minimum": 1,
+          "maximum": 768
         },
         "max_image_tokens": {
           "type": [
             "integer",
             "null"
           ],
-          "minimum": 0
+          "minimum": 1
         },
         "mock_scenario": {
           "enum": [
@@ -88,7 +93,8 @@
         },
         "mock_delay_s": {
           "type": "number",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 3600
         }
       },
       "required": [
@@ -110,7 +116,7 @@
     },
     "config_sha256": {
       "type": "string",
-      "pattern": "[0-9a-f]{64}"
+      "pattern": "^[0-9a-f]{64}$"
     },
     "runtime": {
       "type": "object",
@@ -318,14 +324,14 @@
               },
               "expected_sha256": {
                 "type": "string",
-                "pattern": "[0-9a-f]{64}"
+                "pattern": "^[0-9a-f]{64}$"
               },
               "actual_sha256": {
                 "type": [
                   "string",
                   "null"
                 ],
-                "pattern": "[0-9a-f]{64}"
+                "pattern": "^[0-9a-f]{64}$"
               },
               "integrity": {
                 "enum": [
@@ -390,7 +396,7 @@
         },
         "sha256": {
           "type": "string",
-          "pattern": "[0-9a-f]{64}"
+          "pattern": "^[0-9a-f]{64}$"
         },
         "records": {
           "const": 1

@@ -1,0 +1,159 @@
+{
+  "benchmark_status": "NOT_RUN",
+  "config": {
+    "image_long_edge_px": null,
+    "max_image_tokens": null,
+    "max_new_tokens": 96,
+    "min_available_ram_bytes": 67108864,
+    "min_free_disk_bytes": 10485760,
+    "mock_delay_s": 0,
+    "mock_scenario": "success",
+    "n_ctx": 4096,
+    "runtime": "mock",
+    "sample_interval_s": 0.1,
+    "startup_timeout_s": 5,
+    "thinking": false,
+    "timeout_s": 5
+  },
+  "config_sha256": "e4890e4d55c7f73949c431e620c94ae4a509dbed834ac3265974e824d215591c",
+  "dataset_manifest_hash": null,
+  "decoding": {
+    "n": 1,
+    "seed": 1729,
+    "temperature": 0,
+    "thinking": false
+  },
+  "evidence_label": "SYNTHETIC",
+  "external_model_api_calls": 0,
+  "hardware_reference": null,
+  "input_provenance": {
+    "sources": [
+      {
+        "actual_sha256": "0e61286612322912ec2a3611f650985b3edfd05a3d5349f487e52fdeb8bdf343",
+        "expected_sha256": "0e61286612322912ec2a3611f650985b3edfd05a3d5349f487e52fdeb8bdf343",
+        "file": "TASK-002_v2.3_MODEL_MATRIX_RUNTIME_ResearchCard.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "126e4b9860ae04fee0b59a2b95c5e0b6c6caf910a0e1e2e86521b319f257e486",
+        "expected_sha256": "126e4b9860ae04fee0b59a2b95c5e0b6c6caf910a0e1e2e86521b319f257e486",
+        "file": "HANDOFF_REPORT_TASK-004.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "a02e3e391b49e3ede390fa4904ccbc550c748ab0652da90483788454b7ed614b",
+        "expected_sha256": "a02e3e391b49e3ede390fa4904ccbc550c748ab0652da90483788454b7ed614b",
+        "file": "BENCHMARK_SPEC_v0.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "1eb9315960ee8386075f8b1581e70e0f14a2bf97ef073a84b5a6eab815a38086",
+        "expected_sha256": "1eb9315960ee8386075f8b1581e70e0f14a2bf97ef073a84b5a6eab815a38086",
+        "file": "ERRATA_TASK003_v0.3.1.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "39510d0f581c3db835465afd95e3a0d0a799cb657d2189c7fd3ff1ca4013eb9e",
+        "expected_sha256": "39510d0f581c3db835465afd95e3a0d0a799cb657d2189c7fd3ff1ca4013eb9e",
+        "file": "GB0_INTERNAL_NOTICE_v1.txt",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "defdf7bca0761e7a98671e5e22f80edde2d57a0282f6cba6ad0555c9b3280147",
+        "expected_sha256": "defdf7bca0761e7a98671e5e22f80edde2d57a0282f6cba6ad0555c9b3280147",
+        "file": "HANDOFF_REPORT_TASK-003-DESIGN.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "3a2c600e098d09825e21a98628464af27aab17a3df4932903ac831e48db525a1",
+        "expected_sha256": "3a2c600e098d09825e21a98628464af27aab17a3df4932903ac831e48db525a1",
+        "file": "RESPONSE_TO_CLAUDE_REVIEW_v03.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "6a89687992dd3f79405dbce7c2c6de94e04a3c5b234d527f70ecbde5bdb7bac2",
+        "expected_sha256": "6a89687992dd3f79405dbce7c2c6de94e04a3c5b234d527f70ecbde5bdb7bac2",
+        "file": "TASK-003-CVC-001.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "6fc5a8db73e0afb85624fb4f91a783e65b70288a2a78e730c85369fc73c92417",
+        "expected_sha256": "6fc5a8db73e0afb85624fb4f91a783e65b70288a2a78e730c85369fc73c92417",
+        "file": "TASK003_NUMERICAL_AUDIT_v03.json",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "ec3e91e03ccddf1a5c567dd37f4c20c554e2667eec0e3e34c7980c9526716503",
+        "expected_sha256": "ec3e91e03ccddf1a5c567dd37f4c20c554e2667eec0e3e34c7980c9526716503",
+        "file": "TASK003_NUMERICAL_AUDIT_v031.json",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "6bdd6b189e2b7bce7a82db3198ebb9b02b1fda5c8ed0194ff19afb57e36c3b66",
+        "expected_sha256": "6bdd6b189e2b7bce7a82db3198ebb9b02b1fda5c8ed0194ff19afb57e36c3b66",
+        "file": "TASK003_v032_Q1-Q5_Closure.md",
+        "integrity": "MATCH"
+      }
+    ],
+    "status": "MATCH"
+  },
+  "metric_unavailability": {
+    "decode_tokens_s": "No real decode phase; one synthetic output token",
+    "prefill_tokens_s": "No model or runtime prefill phase timer",
+    "ttft_s": "Non-streaming synthetic fixture; no content-token event"
+  },
+  "preflight": {
+    "available_ram_bytes": 34956238848,
+    "checks": [
+      {
+        "measured_bytes": 34956238848,
+        "name": "available_ram",
+        "passed": true,
+        "required_bytes": 67108864,
+        "source": "psutil.virtual_memory.available",
+        "unavailable_reason": null
+      },
+      {
+        "name": "output_path",
+        "passed": true
+      },
+      {
+        "measured_bytes": 64115687424,
+        "name": "free_disk",
+        "passed": true,
+        "required_bytes": 10485760,
+        "source": "shutil.disk_usage.free",
+        "unavailable_reason": null
+      }
+    ],
+    "free_disk_bytes": 64115687424,
+    "measurement_scope": "CURRENT_HOST",
+    "observed_at_utc": "2026-11-06T11:30:46.940992+00:00",
+    "platform": "Linux",
+    "ready": true,
+    "system_commit": {
+      "available_bytes": null,
+      "limit_bytes": null,
+      "source": null,
+      "total_bytes": null,
+      "unavailable_reason": "WINDOWS_ONLY"
+    }
+  },
+  "results": {
+    "file": "runs.jsonl",
+    "records": 1,
+    "sha256": "995b31afc8d9e8c3ca1031e40de2bed9ace6a50a2fa7955e10e729cea2705bcf"
+  },
+  "run_id": "c728f4bfa7ee4ac9b85067c8f8c222ea",
+  "runtime": {
+    "kind": "mock",
+    "os": "Linux",
+    "phase_timers_supported": false,
+    "psutil_version": "7.2.2",
+    "python_version": "3.12.14",
+    "streaming_supported": false
+  },
+  "schema_version": 1,
+  "status": "PASS",
+  "task_id": "TASK-004"
+}

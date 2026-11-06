@@ -3,6 +3,7 @@ import argparse
 import json
 from pathlib import Path
 import signal
+import threading
 import time
 import uuid
 
@@ -80,24 +81,33 @@ def main(argv=None):
         print(json.dumps({"status": "CONFIG_ERROR", "reason_code": "INVALID_CONFIG"}))
         return 2
     if args.command == "validate-config":
-        print(json.dumps({"status": "PASS", "runtime": "mock"}))
+        print(json.dumps({"status": "PASS", "runtime": "mock", "scope": "CONFIG_ONLY"}))
         return 0
     if args.command == "preflight":
         result = check_preflight(config, Path(args.output_dir))
         print(json.dumps(result, sort_keys=True))
         return 0 if result["ready"] else 3
-    # SIGTERM follows the same cleanup path as cancellation; restore the caller's handler.
-    previous = signal.getsignal(signal.SIGTERM)
-    signal.signal(signal.SIGTERM, lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
+    # Signals request cancellation; repeated signals must not interrupt cleanup or writes.
+    cancel = threading.Event()
+    previous = {}
     try:
-        record, _ = run_dry_run(config, Path(args.output_dir))
+        for name in ("SIGINT", "SIGTERM", "SIGHUP", "SIGBREAK"):
+            number = getattr(signal, name, None)
+            if number is not None:
+                previous[number] = signal.signal(number, lambda *_: cancel.set())
+        record, _ = run_dry_run(config, Path(args.output_dir), cancel)
         print(json.dumps({key: record[key] for key in ("run_id", "status", "reason_code", "evidence_label")}))
         return {"PASS": 0, "PREFLIGHT_FAILED": 3, "CANCELLED": 130, "TIMEOUT": 124}.get(record["status"], 1)
     except OSError:
         print(json.dumps({"status": "FAIL", "reason_code": "ARTIFACT_WRITE_FAILED"}))
         return 1
+    except ValueError:
+        print(json.dumps({"status": "FAIL", "reason_code": "INTERNAL_ERROR"}))
+        return 1
     finally:
-        signal.signal(signal.SIGTERM, previous)
+        for number, handler in previous.items():
+            if handler is not None:
+                signal.signal(number, handler)
 
 
 if __name__ == "__main__":

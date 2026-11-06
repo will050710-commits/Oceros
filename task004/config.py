@@ -6,6 +6,10 @@ import math
 from pathlib import Path
 
 
+MAX_TIMEOUT_S = 3600
+MAX_SAMPLE_INTERVAL_S = 60
+
+
 class ConfigError(ValueError):
     """Configuration is invalid; messages never include supplied values."""
 
@@ -17,7 +21,7 @@ def _integer(name, value, minimum, maximum=None):
         raise ConfigError(f"{name} must be <= {maximum}")
 
 
-def _number(name, value, minimum, inclusive=False):
+def _number(name, value, minimum, inclusive=False, maximum=None):
     if type(value) not in (int, float):
         raise ConfigError(f"{name} must be a finite number")
     try:
@@ -27,6 +31,8 @@ def _number(name, value, minimum, inclusive=False):
     if not valid or (value < minimum if inclusive else value <= minimum):
         relation = ">=" if inclusive else ">"
         raise ConfigError(f"{name} must be finite and {relation} {minimum}")
+    if maximum is not None and value > maximum:
+        raise ConfigError(f"{name} must be <= {maximum}")
 
 
 @dataclass(frozen=True)
@@ -52,12 +58,13 @@ class Config:
             raise ConfigError("thinking must be false")
         _integer("n_ctx", self.n_ctx, 1)
         _integer("max_new_tokens", self.max_new_tokens, 1, 96)
-        _number("timeout_s", self.timeout_s, 0)
-        _number("startup_timeout_s", self.startup_timeout_s, 0)
-        _number("sample_interval_s", self.sample_interval_s, 0.01, inclusive=True)
+        _number("timeout_s", self.timeout_s, 0, maximum=MAX_TIMEOUT_S)
+        _number("startup_timeout_s", self.startup_timeout_s, 0, maximum=MAX_TIMEOUT_S)
+        _number("sample_interval_s", self.sample_interval_s, 0.01, inclusive=True,
+                maximum=MAX_SAMPLE_INTERVAL_S)
         _integer("min_available_ram_bytes", self.min_available_ram_bytes, 0)
         _integer("min_free_disk_bytes", self.min_free_disk_bytes, 0)
-        _number("mock_delay_s", self.mock_delay_s, 0, inclusive=True)
+        _number("mock_delay_s", self.mock_delay_s, 0, inclusive=True, maximum=MAX_TIMEOUT_S)
         if (self.image_long_edge_px is None) != (self.max_image_tokens is None):
             raise ConfigError("image_long_edge_px and max_image_tokens must be set together")
         if self.image_long_edge_px is not None:

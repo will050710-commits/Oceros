@@ -75,6 +75,7 @@ def request_synthetic(url, config, cancel_event=None):
     start = time.monotonic()
     worker = threading.Thread(target=perform, daemon=True, name="task004-http")
     worker.start()
+    primary = None
     try:
         while True:
             if cancel_event is not None and cancel_event.is_set():
@@ -89,6 +90,9 @@ def request_synthetic(url, config, cancel_event=None):
             if error is not None:
                 raise error
             return {"request_latency_s": time.monotonic() - start, "synthetic_output_tokens": 1}
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
         closing.set()
         sock = connected_socket[0]
@@ -98,5 +102,5 @@ def request_synthetic(url, config, cancel_event=None):
             except OSError:
                 pass
         worker.join(timeout=.5)
-        if worker.is_alive():
+        if worker.is_alive() and primary is None:
             raise ClientError("CLIENT_CLEANUP_FAILED")

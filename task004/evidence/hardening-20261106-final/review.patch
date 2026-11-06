@@ -1,0 +1,1569 @@
+diff --git a/task004/HANDOFF_REPORT_TASK-004.md b/task004/HANDOFF_REPORT_TASK-004.md
+index 70e4848..45ac51f 100644
+--- a/task004/HANDOFF_REPORT_TASK-004.md
++++ b/task004/HANDOFF_REPORT_TASK-004.md
+@@ -1,6 +1,6 @@
+-# TASK-004 — Bàn giao launcher/client/mock
++# TASK-004 — Handoff hardening A1–A5 / B1–B4
+ 
+-Ngày 05/11/2026 (Asia/Bangkok). Thời gian máy và artifact dùng UTC.
++Ngày 06/11/2026 (Asia/Bangkok). Artifact/log dùng UTC. Báo cáo này thay báo cáo implementation ban đầu; nguồn handoff lịch sử trong references/ và evidence đã commit giữ nguyên byte.
+ 
+ ## TASK_ID
+ 
+@@ -8,100 +8,93 @@ TASK-004.
+ 
+ ## OWNER
+ 
+-Codex trong phiên hiện tại; có các agent hỗ trợ đọc nguồn, triển khai config/preflight và rà soát code. Đây không phải review bên ngoài của Claude C.
++Codex; các agent hỗ trợ triển khai và rà soát. Không giả nhận review chấp thuận của Claude C. Brief sửa và số 75 test dựng thử do người dùng cung cấp là REPORTED, không phải evidence của lượt này.
+ 
+ ## STATUS
+ 
+-**IMPLEMENTED — phạm vi launcher/client/mock đã được người dùng chọn; Linux mock validation PASS.** Sẵn sàng review mã. Windows/model thật/benchmark chưa thực thi. Không tuyên bố đạt mọi AC của prompt gốc chưa được cung cấp hoặc phiếu ticket/ledger cũ.
++**IMPLEMENTED / READY_FOR_REVIEW — Linux-verified, chỉ launcher/client/mock.** A1–A5 và B1–B4 đã xử lý; toàn bộ suite chạy ba lần liên tiếp PASS. Windows UNVERIFIED, model thật NOT_RUN.
+ 
+ ## BASELINE_REVISION
+ 
+-- Kho `/workspace/Oceros`, HEAD ban đầu `241af99ed0fd0d26f393281c78864c75f90fd192` (Initial commit). Thay đổi mới còn ở working tree; chưa commit/push.
+-- Người dùng đã chọn “launcher/client/mock theo khuyến nghị handoff” trong phiên; điểm BLOCKED về lựa chọn phạm vi trong handoff cũ đã được giải quyết.
+-- Ba hash khóa TASK-002 v2.3/spec v0.3.2/CVC rev1.1 đều MATCH; xem `CONTEXT.md` và `references/provenance.json`.
+-- Prompt gốc 05/11, phiếu gốc 24/10 và hardware JSON không có trong đầu vào. Thiết kế áp dụng theo bản tóm tắt handoff đã được người dùng chọn.
++`2cb916803cef6c2c52f03107fddeb866c407ae27`, đã commit/push lên GitHub ở đợt trước. Bản sửa hiện hành được đóng gói cùng code, tests, báo cáo và evidence để review. Nguồn yêu cầu là brief A1–A5/B1–B4 người dùng gửi trong phiên 06/11. Giữ quyết định scope launcher/mock; không gộp ticket/ledger/CVC.
+ 
+ ## FILES_READ
+ 
+-Đọc card TASK-002 v2.3, toàn bộ handoff TASK-004 được gửi, spec TASK-003 v0.3.2, CVC rev1.1, handoff/closure thiết kế, errata/review lịch sử và notice. Đọc cấu trúc/metadata hai JSON numerical audit; không tái chạy mô phỏng thiết kế. Đối chiếu SHA-256 và byte của 11 tệp nguồn lưu trong `references/`.
++Đối chiếu baseline, brief review, code/tests hiện hành, README, handoff trước, hai schema và evidence cũ. Context/task nguồn giữ trong CONTEXT.md/references; không nghiên cứu lại model hay xác minh những claim trong nguồn. Hai schema version 1 mới vẫn nhận manifest/record đã commit.
+ 
+ ## FILES_CHANGED
+ 
+-- Thêm `.gitignore`, package `task004/`: config, preflight, server, client, sampler, record, mock_server, cli, schema và interfaces tương lai.
+-- Thêm 4 module unittest, hai JSON schema, config mẫu, `requirements.txt`, `setup.sh`, README, CONTEXT và báo cáo này.
+-- Thêm bản sao nguyên byte các nguồn, chỉ mục provenance, evidence dry-run/validation và `SHA256SUMS`.
+-- README gốc và các tệp tracked trước phiên không thay đổi. Không sửa nguồn đầu vào hay ghi đè handoff lịch sử.
+-- Đã lưu draft môi trường: `install_script`, `start_skill`. Công cụ xác nhận `saved`, `requires_publish=true`; chưa publish, chưa xác minh restore trong task mới.
++Sửa cli/client/config/mock_server/record/sampler/schema/server, hai JSON schema, test loopback cũ. Thêm bốn module test_hardening_*, runner `tools/validate_hardening.py`, log kiểm thử/mutation/baseline, dry-run mới, diff review và cập nhật README/HANDOFF/SHA256SUMS. Các tệp evidence cũ và references không bị sửa. Không thay dependency: chỉ stdlib + psutil==7.2.2.
+ 
+ ## WORK_COMPLETED
+ 
+-1. Tổng hợp context; giải quyết scope qua lựa chọn trực tiếp của người dùng; giữ ranh giới TASK-003 CVC và nhiệm vụ quản lý nghiên cứu cũ.
+-2. Cài venv riêng `/workspace/.venvs/oceros-task004` với psutil 7.2.2, kiểm chạy lại setup idempotent.
+-3. Triển khai cấu hình strict: mock-only, n_ctx bắt buộc, non-thinking, output 1–96, ảnh ≤768 cùng token cap, kiểu số/JSON hợp lệ.
+-4. Preflight RAM available/đĩa hiện tại; Windows commit qua ctypes hoặc null kèm lý do. Ngưỡng mẫu chỉ dành cho mock.
+-5. Launcher mock loopback port động, health readiness, HTTP client bounded, tổng deadline/cancel, xử lý lỗi HTTP/JSON/connection và giới hạn kích thước response.
+-6. POSIX session sở hữu riêng và cleanup kể cả cha đã thoát/con chống TERM; kiểm giữ tiến trình không liên quan. HTTP worker được hủy khi body stall/trickle; không còn worker sau timeout/cancel đã kiểm.
+-7. RSS tổng đồng thời theo cây; commit/phase metric không đo được để null. Ghi manifest/JSONL có schema và checksum, nhãn SYNTHETIC, không raw prompt/response/env/secrets.
+-8. Chạy bộ kiểm thử và CLI thực trong venv; giữ dry-run riêng làm bằng chứng; lưu cấu hình tái sử dụng.
++- A1: mock nhận parent PID và lifetime=startup_timeout+timeout+30; watchdog daemon giữ psutil Process identity, thoát khi cha mất/zombie hoặc hết hạn; xóa scratch riêng khi cha mất. Không tạo được parent Process thì thoát ngay.
++- A2: các signal có hỗ trợ SIGINT/SIGTERM/SIGHUP/SIGBREAK chỉ đặt cancel Event, hấp thụ lặp; khôi phục handlers. Giữ KeyboardInterrupt cho library. Artifact được validate/encode trước; ghi/fsync JSONL rồi manifest trong staging; một rename công bố thư mục. Mọi BaseException trong ghi/rename dọn staging; không ghi đè run có sẵn.
++- A3: timeout/startup/delay tối đa 3600 giây; sample interval 0.01–60. Cấu hình 1e10/1e300 bị chặn trước runtime.
++- A4: schema có cận số, anchored patterns, reason enum, timestamp shape, integer/null token. check_schema đệ quy fail-closed với keyword hoặc cấu trúc không hỗ trợ. Version giữ 1. Quan hệ status↔reason ở validate_record; pairing ảnh ở Config.
++- A5: test endpoint chặn đúng NON_LOOPBACK_ENDPOINT và không tạo HTTPConnection; bằng chứng mutation cũ/mới được lưu.
++- B1: cleanup không đè primary cancellation/KeyboardInterrupt. B2: không signal process group rỗng. B3: env allowlist PATH/SYSTEMROOT/TEMP/TMP/LANG/LC_ALL. B4: CONFIG_ONLY, phân biệt commit unavailable do thiếu sample/platform, ValueError artifact ra JSON INTERNAL_ERROR thay traceback.
+ 
+ ## EVIDENCE
+ 
+-- Test run hiện hành: **59 tests, 0 failures, 0 errors, 0 skipped**, hoàn thành 5.729 giây, Python 3.12.14/Linux, psutil 7.2.2. Kết quả tóm tắt trong `evidence/validation.json` là bản ghi từ kết quả runner, không giả là log stdout nguyên bản.
+-- Dry-run CLI: `evidence/dry-run/e1979d42784948cfbeb13b44cbc6044a/manifest.json` và `runs.jsonl`, PASS/OK/SYNTHETIC. Manifest ghi hash JSONL và cấu hình, provenance 11 nguồn MATCH.
+-- RSS mock quan sát: 14,528,512 byte; tổng thời gian lượt 0.055799752 giây; request 0.000623560 giây. Đây là một fixture tổng hợp, không phải hiệu năng model/laptop hoặc baseline. Có 2 mẫu RSS; không đo startup và có thể bỏ lỡ đỉnh giữa các mẫu.
+-- Kiểm GitHub read-only bằng proxy/xác thực sẵn có thành công, remote HEAD khớp HEAD ban đầu. Lỗi kết nối trước đó ở sandbox mặc định không phải bằng chứng thiếu token.
+-- `git diff --exit-code` và `git diff --check` đều thành công cho các tệp tracked cũ; sản phẩm mới vẫn untracked để người dùng review.
++Evidence hiện hành: `evidence/hardening-20261106-final/validation.json`; sinh tự động bằng runner, cùng raw logs từng subprocess. Bắt đầu `2026-11-06T11:30:09.259824+00:00`, kết thúc `2026-11-06T11:30:46.999551+00:00`. Python 3.12.14, psutil 7.2.2. File này chứa command, exit codes, số test và SHA-256 của source/test/schema/runner lúc chạy; xác nhận source không đổi trong suốt lượt kiểm.
++
++- `baseline-A1.log` … `baseline-A4.log`: assertions thất bại trên production baseline; `fixed-A1.log` … `fixed-A4.log`: cùng test qua code mới. Không dùng import error làm bằng chứng hồi quy.
++- A5 là sửa độ mạnh của test, không sửa guard production vốn đã tồn tại. Vì vậy functional test A5 vẫn PASS trên baseline. `baseline-mutant-A5-undetected.log` cho thấy test cũ PASS dù bỏ guard; `mutation-A5.log` cho thấy test mới FAIL với cùng mutation. `mutation-A5-removed-guard.txt` ghi block đã xóa. Không tuyên bố A5 functional test fail trên baseline nguyên bản.
++- Dry-run mới ID `c728f4bfa7ee4ac9b85067c8f8c222ea`, exit 0, PASS/OK/SYNTHETIC; manifest/JSONL trong `dry-run/c728f4bfa7ee4ac9b85067c8f8c222ea/`.
++- `review.patch` là diff source/tests/tools/docs so với baseline; không chứa evidence/checksum để tránh vòng tự tham chiếu. SHA256SUMS bao toàn bộ bộ bàn giao, gồm logs và diff.
++- Giữ cả lượt kiểm ban đầu `evidence/hardening-20261106/`: ba suite đã PASS, nhưng runner đánh dấu FAIL vì cơ chế injection A2 không bắt cách Path.open dùng keyword ở baseline và vì mong nhầm functional A5 phải fail. Sau sửa test/runner, lượt final ở trên xác minh lại toàn bộ. Không chỉnh tay hoặc thay thế log của lượt đó.
+ 
+ ## TESTS_EXECUTED
+ 
+-Từ `/workspace/Oceros`:
++Lệnh tái tạo từ repo root (output cần mới):
+ 
+ ```bash
+-/workspace/.venvs/oceros-task004/bin/python -W error::ResourceWarning -m unittest discover -s task004/tests -v
+-bash task004/setup.sh
+-/workspace/.venvs/oceros-task004/bin/python -m task004.cli preflight
+-/workspace/.venvs/oceros-task004/bin/python -m task004.cli dry-run --output-dir task004/evidence/dry-run
++/workspace/.venvs/oceros-task004/bin/python task004/tools/validate_hardening.py --output task004/evidence/hardening-new-run
+ ```
+ 
+-Các lệnh có socket chạy qua `require_escalated` được chấp thuận cho loopback. Sandbox mặc định đã được chẩn đoán là chặn socket. Không tắt TLS, sửa checksum package hay bypass chính sách mạng.
++Runner thực thi `python -W error::ResourceWarning -m unittest discover -s task004/tests -v` ba lần liên tiếp. Baseline lấy bằng git archive vào thư mục tạm; mutation chạy trên bản sao; không sửa working source hoặc tạo worktree. Dùng require_escalated cho socket loopback/tín hiệu test do sandbox mặc định chặn socket.
+ 
+ ## TEST_RESULTS
+ 
+-PASS: 25 config/preflight, 13 server/lifecycle, 3 HTTP body/deadline, 18 workflow/artifact/CLI = 59. Bao gồm test biên số/cap/RAM/đĩa, malformed config, health failure, mock faults, cancellation trước/trong startup/request, tree cleanup, parent-exit, SIGTERM-resistant child, safe errors, schema nested, checksum, log không chứa secret marker, repeated runs, adapter thật disabled.
++| Lượt | Tests | Failures | Errors | Skipped | Wall seconds |
++| --- | ---: | ---: | ---: | ---: | ---: |
++| suite-1 | 87 | 0 | 0 | 0 | 10.300 |
++| suite-2 | 87 | 0 | 0 | 0 | 10.375 |
++| suite-3 | 87 | 0 | 0 | 0 | 10.386 |
+ 
+-Setup chạy lại giữ psutil đúng phiên bản; validate-config PASS; preflight ready; dry-run exit 0. Rà soát đã phát hiện và sửa lỗi cleanup sau cha thoát, socket HTTP/1.0 đang đọc body và JSON integer vượt giới hạn parser; các regression tương ứng đều PASS. Không có test đang fail hoặc bị bỏ qua trong lượt Linux này.
++Số test thực tế ba lượt: 87, 87, 87; khác số 75 trong bản dựng thử của reviewer vì bộ test ở đây chia thành các method khác. Không có lỗi/skip ở suite hiện hành. Cả SIGINT/SIGTERM/SIGHUP đơn lẻ, burst SIGINT/SIGTERM khoảng cách 0/1/3 ms, SIGKILL watchdog, staging OSError/KeyboardInterrupt, bounds/schema và real Linux blocked-connect đã thực thi. Không coi expected baseline/mutant failure là lỗi suite mới.
+ 
+ ## BENCHMARK_RESULTS
+ 
+-**NOT_RUN.** Không có model inference, TTFT thật, prefill/decode tok/s, baseline, P-60, corpus/scorer/CVC execution hoặc dataset freeze. Metric phase và dataset hash giữ null; không có PROMOTE.
++**NOT_RUN.** Dry-run chỉ SYNTHETIC. Không model inference, TTFT thật, prefill/decode, corpus/scorer/CVC hoặc baseline campaign. Metric phase giữ null; dataset chưa freeze; không PROMOTE.
+ 
+ ## COST_OR_RESOURCE_USAGE
+ 
+-Không gọi API model trả phí độc lập, tải weights, training, Colab/GPU hoặc mua dịch vụ. Dependency psutil được tải qua package registry. Chi phí/token toàn phiên ChatGPT không được công cụ cung cấp nên UNKNOWN. Không đo tổng CPU/RAM toàn phiên. Số mock trong EVIDENCE chỉ mô tả lượt đã lưu.
++Không gọi API model trả phí, tải model, training, Colab/GPU hay mua dịch vụ. Runtime psutil đã có. Thời gian test trong bảng lấy từ runner thật; không đo tổng CPU/RAM hoặc chi phí/token phiên ChatGPT. Resource samples trong dry-run chỉ thuộc mock trên máy cloud.
+ 
+ ## KNOWN_LIMITATIONS
+ 
+-- Chưa chạy Windows 11/Python 3.14; ctypes system commit/private bytes và cleanup Windows UNVERIFIED. Windows live-tree fallback chưa bảo đảm giữ được con sau khi cha chết; chưa có Job Object. Fixed mock không sinh con.
+-- POSIX đã kiểm process group sở hữu; không hỗ trợ tiến trình cố ý daemonize/tách session. Không dùng adapter này cho binary tùy ý.
+-- Sampling từ sau health readiness, không bao startup/harness; không khẳng định bắt mọi đỉnh RAM. Ngưỡng mock 64 MiB/10 MiB không thay yêu cầu hardware/model.
+-- Image config chỉ kiểm khai báo; chưa đọc/tokenize ảnh. P-60/top-K chỉ interface. Không sinh llama.cpp flags chưa kiểm chứng.
+-- Source hash xác minh byte, không xác minh model/license/review/hardware claims. Prompt/ticket/hardware gốc còn thiếu.
+-- Code chưa commit/push; draft chưa publish/restore-test. Cấu hình saved không tự đưa source lên GitHub.
++- **Windows UNVERIFIED**: chưa có Job Object; chưa kiểm socket.shutdown đánh thức recv từ thread khác, Ctrl+C phát toàn console, SIGBREAK, os.rename thư mục, SYSTEMROOT allowlist, GetPerformanceInfo/private bytes, wheel psutil==7.2.2 cho CPython 3.14. Chỉ ghi POSIX changes là Linux-verified.
++- B1 giữ primary cancellation nhưng connect worker daemon có thể còn tới socket timeout (cận 3600 giây). Chưa chuyển connect sang nonblocking; không khẳng định mọi cancel dừng mọi worker ngay.
++- Signal handler chỉ yêu cầu hủy; tín hiệu đến sau khi chương trình đã kết thúc nằm ngoài hợp đồng. SIGKILL không thể ghi artifact hoặc chạy finally; watchdog ngăn mock tiếp tục sống. SIGKILL giữa các lần ghi có thể để lại staging chưa công bố.
++- Atomic rename là công bố cả thư mục cùng lúc, không chứng minh crash/power-loss durability; không fsync thư mục. Output directories giả định nằm trong workspace tin cậy, không chống đối thủ đồng thời thay path.
++- Fixed mock không daemonize hoặc spawn model; process group không bắt tiến trình cố ý tách session. Watchdog có độ trễ polling và lifetime dự phòng.
++- Sampling không bao startup/harness và có thể bỏ lỡ peak ngắn. Pixel/token config chưa tokenize ảnh thật. Schema chỉ hỗ trợ tập keyword công bố, không phải engine JSON Schema đầy đủ.
++- Model/runtime flags/hardware laptop và quyền corpus vẫn chưa xác minh. Không publish môi trường trong lượt sửa này.
+ 
+ ## RISKS
+ 
+-Nhầm PASS mock thành model/benchmark PASS; nhầm RAM cloud với laptop; dùng cap generic 768 thay cap benchmark 512/192; coi schema hash là dataset freeze; triển khai runtime thật từ cờ chưa kiểm chứng. Những phần này được tách rõ và model adapter vẫn bị khóa.
++Nhầm SYNTHETIC thành benchmark; nhầm Linux-verified thành Windows-verified; dùng config guard mock làm ngân sách model; coi hash input là bằng chứng runtime/license. Các cổng model thật giữ khóa. Expected-failure logs phải được đọc cùng validation.json, không đánh đồng với suite mới fail.
+ 
+ ## RECOMMENDATION
+ 
+-Review package launcher/mock hiện tại. Đọc `CONTEXT.md` trước khi nối runtime thật hoặc nhận CVC. Giữ trạng thái thiết kế/corpus/model theo nguồn; không nâng bằng chứng vì mock chạy được.
++Review diff, log final và nguồn tests để quyết định chấp nhận bản hardening. Tách Windows/model thật/CVC thành đợt có điều kiện riêng. Review nội bộ của agent không thay review chấp thuận độc lập của Claude C.
+ 
+ ## NEXT_ACTION
+ 
+-1. Người dùng/reviewer kiểm code, báo cáo và checksum; chưa có review chấp nhận từ Claude C trong phiên này.
+-2. Để tái sử dụng snapshot cloud: xem và lưu thay đổi trong Environment Settings, rồi Publish khi muốn kích hoạt cấu hình. Đây là thao tác còn lại do giao diện môi trường quản lý, chưa được thực hiện trong phiên.
+-3. Windows và adapter/model thật là đợt xác minh riêng: cần nguồn hardware, binary/version/flags và các điều kiện/quyền của đợt đó. CVC/corpus vẫn là công việc riêng, không tự tiếp tục từ mock PASS.
++Chuyển commit/diff và thư mục evidence final cho reviewer; dùng các link GitHub của bản cập nhật để đọc trực tiếp. Sau chấp nhận, kiểm Windows với các giới hạn nêu trên trước khi nối runtime thật. Không tự mở calibration/model/corpus từ mock PASS.
+ 
+ ## UNVERIFIED_CLAIMS
+ 
+-Windows, hardware laptop, Qwen/mmproj/runtime hỗ trợ, ngưỡng/token ảnh thật, model performance, license/corpus/gold, tokenizer/DEV/bridge/CVC, independent review mới, dataset freeze, publish/restore của môi trường. Các nguồn TASK-002/003 giữ nguyên nhãn REPORTED/ESTIMATE/ASSUMPTION/UNKNOWN; những nội dung được thuật lại không được nâng thành VERIFIED trong báo cáo này.
++Windows, model thật, hardware laptop, model/mmproj/flags/license, corpus/gold/tokenizer/DEV/bridge/CVC, freeze, review độc lập mới và restore/publish môi trường. Kết quả 75/75 của bản dựng thử là USER-REPORTED; số trong báo cáo hiện hành lấy từ runner thực thi mới.
+diff --git a/task004/README.md b/task004/README.md
+index c1338cd..615816e 100644
+--- a/task004/README.md
++++ b/task004/README.md
+@@ -16,23 +16,23 @@ bash task004/setup.sh
+ 
+ Trong phiên Codex cloud này, sandbox mặc định chặn socket. Các lệnh dry-run/test cần cơ chế `require_escalated` của executor cho HTTP loopback đã được cho phép; không tắt proxy/TLS hoặc đổi chính sách mạng. Trình quản lý gói sử dụng HTTPS/proxy của môi trường. Không cần token hay credential ứng dụng. Mỗi task cloud đã cô lập; dùng checkout hiện có, không tạo worktree trừ khi người dùng yêu cầu.
+ 
+-`setup.sh` có thể chạy lại và không thay dependency declarations/lockfiles. Venv ở ngoài checkout. Để chạy trên máy khác: tạo venv bằng Python sẵn có, cài `-r task004/requirements.txt`, rồi chạy các lệnh `python -m task004.cli` từ thư mục gốc repo. Đường dẫn cloud trong `setup.sh` chỉ dành cho môi trường này. Windows 11/Python 3.14 chưa được kiểm thử.
++`setup.sh` có thể chạy lại và không thay dependency declarations/lockfiles. Venv ở ngoài checkout. Để chạy trên máy khác: tạo venv bằng Python sẵn có, cài `-r task004/requirements.txt`, rồi chạy các lệnh `python -m task004.cli` từ thư mục gốc repo. Đường dẫn cloud trong `setup.sh` chỉ dành cho môi trường này. Windows 11/Python 3.14 vẫn UNVERIFIED; các thay đổi POSIX chỉ được ghi Linux-verified.
+ 
+ ## CLI và cấu hình
+ 
+-Ba lệnh `validate-config`, `preflight`, `dry-run` nhận `--config` (mặc định `task004/mock_config.json`) và `--output-dir` (mặc định `task004/runs`). Mỗi dry-run tạo thư mục run ID mới chứa `manifest.json` và một dòng `runs.jsonl`; không ghi đè lượt trước. Exit code: PASS=0, lỗi lượt chạy=1, cấu hình sai=2, preflight fail=3, timeout=124, hủy=130. Ctrl+C/SIGTERM đi qua đường dọn tiến trình.
++Ba lệnh `validate-config`, `preflight`, `dry-run` nhận `--config` (mặc định `task004/mock_config.json`) và `--output-dir` (mặc định `task004/runs`). Mỗi dry-run tạo thư mục run ID mới chứa `manifest.json` và một dòng `runs.jsonl`; không ghi đè lượt trước. Exit code: PASS=0, lỗi lượt chạy=1, cấu hình sai=2, preflight fail=3, timeout=124, hủy=130. SIGINT/SIGTERM/SIGHUP/SIGBREAK (nếu có) chỉ đặt yêu cầu hủy qua Event; tín hiệu lặp bị hấp thụ trong lúc cleanup/ghi artifact. CLI trả CANCELLED/130 khi xử lý hủy. SIGKILL không thể ghi artifact; watchdog của mock xử lý tiến trình còn lại.
+ 
+ - `n_ctx` phải khai báo tường minh và là số nguyên dương; 4096 trong ví dụ chỉ là cấu hình mock.
+ - `runtime` chỉ nhận `mock`, `thinking` chỉ nhận `false`, `max_new_tokens` nằm trong 1–96.
+ - Điểm cắm ảnh: `image_long_edge_px` trong 1–768 và `max_image_tokens` nguyên dương phải được khai báo cùng nhau. Chưa đọc ảnh, tokenize ảnh hay chứng minh cap thực tế. Benchmark TASK-003 có giới hạn riêng ≤512 px/192 visual tokens.
+-- Timeout dương hữu hạn; sampling tối thiểu 0,01 giây, cấu hình mẫu dùng 0,1 giây.
++- Timeout/startup timeout trong (0, 3600] giây; mock_delay_s trong [0, 3600]; sampling trong [0,01, 60] giây, cấu hình mẫu dùng 0,1 giây. Các cận này được kiểm ngay ở validate-config (scope=CONFIG_ONLY).
+ - Mặc định RAM khả dụng ≥64 MiB, đĩa trống ≥10 MiB là guard cho mock. Đây không phải ngưỡng cho model thật hay chứng cứ laptop đạt yêu cầu.
+ - `mock_scenario`: `success`, `malformed_json`, `http_error`, `disconnect`, `slow`, `health_failure`. Có `mock_delay_s` để thử delay. Mock slow chờ ít nhất 2 giây; đặt `timeout_s` thấp hơn để kiểm timeout.
+ - Từ chối khóa lạ, duplicate key, boolean giả số nguyên, NaN/Infinity, đường dẫn model, URL/API tùy ý và lệnh subprocess tùy ý.
+ 
+ ## Hợp đồng kết quả
+ 
+-Mọi artifact mang `evidence_label=SYNTHETIC`, `benchmark_status=NOT_RUN`, dataset/hardware reference chưa có là `null`. `PASS` chỉ chứng minh một request mock hợp lệ; không có quyết định PROMOTE hay baseline. Schema đầy đủ trong `schemas/`; bộ kiểm tra stdlib chỉ hỗ trợ các keyword thực sự dùng tại đây, không phải JSON Schema engine tổng quát.
++Mọi artifact mang `evidence_label=SYNTHETIC`, `benchmark_status=NOT_RUN`, dataset/hardware reference chưa có là `null`. `PASS` chỉ chứng minh một request mock hợp lệ; không có quyết định PROMOTE hay baseline. Schema trong `schemas/` vẫn version 1 và nhận evidence đã commit. Validator fail-closed với keyword lạ ở mọi tầng, hỗ trợ minimum/maximum/exclusiveMinimum. Quan hệ status↔reason_code nằm ở `validate_record`; schema chỉ ép enum reason chung. Ghép cặp hai trường ảnh là quy tắc Config; schema ép kiểu và biên số. Đây không phải JSON Schema engine tổng quát.
+ 
+ `request_latency_s` là thời gian request/response tổng bằng monotonic clock. `ttft_s`, prefill và decode tok/s đều `null` vì mock không streaming và không có phase timer. Không thay TTFT bằng latency tổng. RSS là peak của tổng đồng thời cây tiến trình mock từ sau health readiness đến trước cleanup; không gồm startup hay harness. Sampling có thể bỏ lỡ đỉnh ngắn. Linux commit=`null` với lý do; không dùng VMS thay commit. Windows có điểm đo `GetPerformanceInfo` và private bytes nhưng chưa xác minh thực thi.
+ 
+@@ -45,3 +45,21 @@ POSIX dùng session/process group sở hữu riêng: TERM, chờ tối đa 1 gi
+ `interfaces.py` chỉ định nghĩa điểm cắm P-60/top-K và adapter thật bị khóa. Chưa triển khai tokenizer, llama.cpp flags, model/mmproj, KL, corpus, scorer/CVC, ticket/ledger/costlog. Không tải model, gọi API model trả phí, training, sửa BingMath/DUOMATH hay publish. Lượt kiểm thử Linux không cấp quyền chạy những phần này.
+ 
+ Tài liệu gốc được giữ nguyên byte trong `references/`, gồm handoff cũ; báo cáo mới ở thư mục `task004/` để phân biệt. `references/provenance.json` và `SHA256SUMS` kiểm toàn vẹn tệp; hash khớp không nâng các nhận định REPORTED/ESTIMATE/ASSUMPTION thành bằng chứng thực nghiệm.
++
++## Hardening sau review A1–A5/B1–B4
++
++- Mock nhận PID cha và lifetime = startup_timeout_s + timeout_s + 30 giây. Watchdog daemon kiểm mỗi 0,25 giây; cha mất/zombie thì xóa scratch riêng và thoát; hết lifetime cũng thoát. Không tạo được psutil Process cho cha lúc khởi động thì thoát ngay.
++- Mock chỉ nhận environment allowlist `PATH, SYSTEMROOT, TEMP, TMP, LANG, LC_ALL`. Các credential của harness không được truyền qua environment. Process group đã trống không nhận signal.
++- Artifact được tính/validate trước, ghi và fsync cả hai file trong `<output>/.<run_id>.tmp`, rồi một `os.rename` sang run dir. Lỗi OSError hoặc BaseException xóa staging; đích có sẵn bị từ chối. Đây là tính nguyên tử khi công bố thư mục, không phải bảo đảm phục hồi sau mất điện; SIGKILL trong lúc ghi có thể để lại staging vì không chạy được cleanup.
++- Khi connect bị chặn, cleanup không được đè CANCELLED/KeyboardInterrupt bằng CLIENT_CLEANUP_FAILED. Worker daemon có thể còn tới socket timeout (tối đa 3600 giây); chưa triển khai connect nonblocking. Không khẳng định mọi hủy đều kết thúc worker ngay.
++- Windows UNVERIFIED: chưa có Job Object; chưa kiểm socket.shutdown đánh thức recv từ thread khác, Ctrl+C phát toàn console, SIGBREAK, os.rename thư mục, SYSTEMROOT allowlist, GetPerformanceInfo/private bytes hay wheel psutil 7.2.2 trên CPython 3.14. Model thật vẫn NOT_RUN.
++
++Tạo bộ chứng cứ bằng lệnh sau (đường dẫn output phải mới):
++
++```bash
++/workspace/.venvs/oceros-task004/bin/python task004/tools/validate_hardening.py --output task004/evidence/hardening-new-run
++```
++
++Runner lấy baseline từ Git archive vào thư mục tạm, chạy hồi quy A1–A4 trên cũ/mới, kiểm A5 bằng mutation trên test cũ/mới, chạy toàn bộ suite ba lần liên tiếp rồi dry-run thật. Không sửa working source, không tạo worktree, không sửa evidence cũ. Các số đếm và log được lấy trực tiếp từ subprocess. A5 functional test có thể qua baseline vì guard vốn tồn tại; bằng chứng là test cũ không bắt được mutation còn test mới bắt được.
++
++Lượt bàn giao hiện hành: **87/87 test, ba lần liên tiếp, không failure/error/skip** trên Linux/Python 3.12.14. Xem [validation.json](evidence/hardening-20261106-final/validation.json), các `suite-*.log`, [mutation A5](evidence/hardening-20261106-final/mutation-A5.log) và [handoff](HANDOFF_REPORT_TASK-004.md). Số liệu được lấy từ runner, không từ số dựng thử trong brief.
+diff --git a/task004/cli.py b/task004/cli.py
+index b3e2236..3d0191a 100644
+--- a/task004/cli.py
++++ b/task004/cli.py
+@@ -3,6 +3,7 @@ import argparse
+ import json
+ from pathlib import Path
+ import signal
++import threading
+ import time
+ import uuid
+ 
+@@ -80,24 +81,33 @@ def main(argv=None):
+         print(json.dumps({"status": "CONFIG_ERROR", "reason_code": "INVALID_CONFIG"}))
+         return 2
+     if args.command == "validate-config":
+-        print(json.dumps({"status": "PASS", "runtime": "mock"}))
++        print(json.dumps({"status": "PASS", "runtime": "mock", "scope": "CONFIG_ONLY"}))
+         return 0
+     if args.command == "preflight":
+         result = check_preflight(config, Path(args.output_dir))
+         print(json.dumps(result, sort_keys=True))
+         return 0 if result["ready"] else 3
+-    # SIGTERM follows the same cleanup path as cancellation; restore the caller's handler.
+-    previous = signal.getsignal(signal.SIGTERM)
+-    signal.signal(signal.SIGTERM, lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
++    # Signals request cancellation; repeated signals must not interrupt cleanup or writes.
++    cancel = threading.Event()
++    previous = {}
+     try:
+-        record, _ = run_dry_run(config, Path(args.output_dir))
++        for name in ("SIGINT", "SIGTERM", "SIGHUP", "SIGBREAK"):
++            number = getattr(signal, name, None)
++            if number is not None:
++                previous[number] = signal.signal(number, lambda *_: cancel.set())
++        record, _ = run_dry_run(config, Path(args.output_dir), cancel)
+         print(json.dumps({key: record[key] for key in ("run_id", "status", "reason_code", "evidence_label")}))
+         return {"PASS": 0, "PREFLIGHT_FAILED": 3, "CANCELLED": 130, "TIMEOUT": 124}.get(record["status"], 1)
+     except OSError:
+         print(json.dumps({"status": "FAIL", "reason_code": "ARTIFACT_WRITE_FAILED"}))
+         return 1
++    except ValueError:
++        print(json.dumps({"status": "FAIL", "reason_code": "INTERNAL_ERROR"}))
++        return 1
+     finally:
+-        signal.signal(signal.SIGTERM, previous)
++        for number, handler in previous.items():
++            if handler is not None:
++                signal.signal(number, handler)
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/task004/client.py b/task004/client.py
+index 8b2bc09..9d89c1c 100644
+--- a/task004/client.py
++++ b/task004/client.py
+@@ -75,6 +75,7 @@ def request_synthetic(url, config, cancel_event=None):
+     start = time.monotonic()
+     worker = threading.Thread(target=perform, daemon=True, name="task004-http")
+     worker.start()
++    primary = None
+     try:
+         while True:
+             if cancel_event is not None and cancel_event.is_set():
+@@ -89,6 +90,9 @@ def request_synthetic(url, config, cancel_event=None):
+             if error is not None:
+                 raise error
+             return {"request_latency_s": time.monotonic() - start, "synthetic_output_tokens": 1}
++    except BaseException as exc:
++        primary = exc
++        raise
+     finally:
+         closing.set()
+         sock = connected_socket[0]
+@@ -98,5 +102,5 @@ def request_synthetic(url, config, cancel_event=None):
+             except OSError:
+                 pass
+         worker.join(timeout=.5)
+-        if worker.is_alive():
++        if worker.is_alive() and primary is None:
+             raise ClientError("CLIENT_CLEANUP_FAILED")
+diff --git a/task004/config.py b/task004/config.py
+index e3d1860..c962a92 100644
+--- a/task004/config.py
++++ b/task004/config.py
+@@ -6,6 +6,10 @@ import math
+ from pathlib import Path
+ 
+ 
++MAX_TIMEOUT_S = 3600
++MAX_SAMPLE_INTERVAL_S = 60
++
++
+ class ConfigError(ValueError):
+     """Configuration is invalid; messages never include supplied values."""
+ 
+@@ -17,7 +21,7 @@ def _integer(name, value, minimum, maximum=None):
+         raise ConfigError(f"{name} must be <= {maximum}")
+ 
+ 
+-def _number(name, value, minimum, inclusive=False):
++def _number(name, value, minimum, inclusive=False, maximum=None):
+     if type(value) not in (int, float):
+         raise ConfigError(f"{name} must be a finite number")
+     try:
+@@ -27,6 +31,8 @@ def _number(name, value, minimum, inclusive=False):
+     if not valid or (value < minimum if inclusive else value <= minimum):
+         relation = ">=" if inclusive else ">"
+         raise ConfigError(f"{name} must be finite and {relation} {minimum}")
++    if maximum is not None and value > maximum:
++        raise ConfigError(f"{name} must be <= {maximum}")
+ 
+ 
+ @dataclass(frozen=True)
+@@ -52,12 +58,13 @@ class Config:
+             raise ConfigError("thinking must be false")
+         _integer("n_ctx", self.n_ctx, 1)
+         _integer("max_new_tokens", self.max_new_tokens, 1, 96)
+-        _number("timeout_s", self.timeout_s, 0)
+-        _number("startup_timeout_s", self.startup_timeout_s, 0)
+-        _number("sample_interval_s", self.sample_interval_s, 0.01, inclusive=True)
++        _number("timeout_s", self.timeout_s, 0, maximum=MAX_TIMEOUT_S)
++        _number("startup_timeout_s", self.startup_timeout_s, 0, maximum=MAX_TIMEOUT_S)
++        _number("sample_interval_s", self.sample_interval_s, 0.01, inclusive=True,
++                maximum=MAX_SAMPLE_INTERVAL_S)
+         _integer("min_available_ram_bytes", self.min_available_ram_bytes, 0)
+         _integer("min_free_disk_bytes", self.min_free_disk_bytes, 0)
+-        _number("mock_delay_s", self.mock_delay_s, 0, inclusive=True)
++        _number("mock_delay_s", self.mock_delay_s, 0, inclusive=True, maximum=MAX_TIMEOUT_S)
+         if (self.image_long_edge_px is None) != (self.max_image_tokens is None):
+             raise ConfigError("image_long_edge_px and max_image_tokens must be set together")
+         if self.image_long_edge_px is not None:
+diff --git a/task004/mock_server.py b/task004/mock_server.py
+index 2f279b6..f8b3ec2 100644
+--- a/task004/mock_server.py
++++ b/task004/mock_server.py
+@@ -1,11 +1,41 @@
+ """Loopback-only, synthetic HTTP fixture; invoked by ManagedMockServer."""
+ import argparse
+ import json
++import math
++import os
++import shutil
+ import socket
++import threading
+ import time
+ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+ from pathlib import Path
+ 
++import psutil
++
++
++def _remove_scratch(scratch_dir):
++    # Only the private directory convention created by ManagedMockServer is eligible.
++    # Never follow a replacement directory symlink or delete an arbitrary port parent.
++    scratch_dir = Path(scratch_dir)
++    if scratch_dir.name.startswith("task004-mock-") and not scratch_dir.is_symlink():
++        shutil.rmtree(scratch_dir, ignore_errors=True)
++
++
++def _exit_with_parent(parent, max_lifetime_s, scratch_dir):
++    deadline = time.monotonic() + max_lifetime_s
++    while True:
++        time.sleep(.25)
++        try:
++            gone = not parent.is_running() or parent.status() == psutil.STATUS_ZOMBIE
++        except psutil.NoSuchProcess:
++            gone = True
++        except psutil.Error:
++            gone = False
++        if gone or time.monotonic() >= deadline:
++            if gone:
++                _remove_scratch(scratch_dir)
++            os._exit(3)
++
+ 
+ class Handler(BaseHTTPRequestHandler):
+     def log_message(self, *args):
+@@ -68,7 +98,19 @@ def main():
+     parser.add_argument("--port-file", required=True)
+     parser.add_argument("--scenario", choices=("success", "malformed_json", "http_error", "disconnect", "slow", "health_failure"), default="success")
+     parser.add_argument("--delay", type=float, default=0)
++    parser.add_argument("--parent-pid", required=True, type=int)
++    parser.add_argument("--max-lifetime-s", type=float, default=3600.0)
+     args = parser.parse_args()
++    if not math.isfinite(args.max_lifetime_s) or args.max_lifetime_s <= 0:
++        parser.error("max lifetime must be positive and finite")
++    scratch_dir = Path(args.port_file).parent
++    try:
++        parent = psutil.Process(args.parent_pid)
++    except psutil.Error:
++        _remove_scratch(scratch_dir)
++        os._exit(3)
++    threading.Thread(target=_exit_with_parent, daemon=True,
++                     args=(parent, args.max_lifetime_s, scratch_dir)).start()
+     with ThreadingHTTPServer(("127.0.0.1", 0), Handler) as server:
+         server.daemon_threads = True
+         server.scenario = args.scenario
+diff --git a/task004/record.py b/task004/record.py
+index 6826141..a1e5e9b 100644
+--- a/task004/record.py
++++ b/task004/record.py
+@@ -3,8 +3,10 @@ from datetime import datetime, timezone
+ import hashlib
+ import json
+ import math
++import os
+ from pathlib import Path
+ import platform
++import shutil
+ import uuid
+ 
+ import psutil
+@@ -84,11 +86,16 @@ def source_provenance():
+             "sources": result}
+ 
+ 
++def _write_synced(path, data):
++    with path.open("wb") as stream:
++        stream.write(data)
++        stream.flush()
++        os.fsync(stream.fileno())
++
++
+ def write_artifacts(output_dir, config, record, preflight):
+     validate_record(record)
+     safe_config = parse_config(config.to_dict()).to_dict()
+-    run_dir = Path(output_dir) / record["run_id"]
+-    run_dir.mkdir(parents=True, exist_ok=False)
+     jsonl = (json.dumps(record, ensure_ascii=False, sort_keys=True, allow_nan=False) + "\n").encode()
+     manifest = {
+         "schema_version": 1, "task_id": "TASK-004", "run_id": record["run_id"],
+@@ -109,6 +116,19 @@ def write_artifacts(output_dir, config, record, preflight):
+         "results": {"file": "runs.jsonl", "sha256": sha256(jsonl), "records": 1},
+     }
+     validate_artifact(manifest, "manifest")
+-    (run_dir / "runs.jsonl").write_bytes(jsonl)
+-    (run_dir / "manifest.json").write_bytes(encoded(manifest))
++    manifest_bytes = encoded(manifest)
++    root = Path(output_dir)
++    run_dir = root / record["run_id"]
++    staging = root / f".{record['run_id']}.tmp"
++    root.mkdir(parents=True, exist_ok=True)
++    if run_dir.exists() or run_dir.is_symlink():
++        raise FileExistsError(record["run_id"])
++    staging.mkdir()
++    try:
++        _write_synced(staging / "runs.jsonl", jsonl)
++        _write_synced(staging / "manifest.json", manifest_bytes)
++        os.rename(staging, run_dir)
++    except BaseException:
++        shutil.rmtree(staging, ignore_errors=True)
++        raise
+     return run_dir
+diff --git a/task004/sampler.py b/task004/sampler.py
+index a6215fe..5625024 100644
+--- a/task004/sampler.py
++++ b/task004/sampler.py
+@@ -46,12 +46,18 @@ class ResourceSampler:
+         self.sample()
+ 
+     def metrics(self):
++        if self.commit_peak_bytes is not None:
++            commit_unavailable_reason = None
++        elif self.samples == 0:
++            commit_unavailable_reason = "No valid process memory samples"
++        else:
++            commit_unavailable_reason = "Windows private bytes unavailable on this platform"
+         return {
+             "rss_peak_bytes": self.rss_peak_bytes,
+             "commit_peak_bytes": self.commit_peak_bytes,
+             "rss_source": "psutil simultaneous process-tree RSS samples",
+             "commit_source": "psutil Windows private bytes" if self.commit_peak_bytes is not None else None,
+-            "commit_unavailable_reason": None if self.commit_peak_bytes is not None else "Windows private bytes unavailable on this platform",
++            "commit_unavailable_reason": commit_unavailable_reason,
+             "sample_interval_s": self.interval_s, "samples": self.samples,
+             "incomplete_samples": self.incomplete_samples,
+             "measurement_scope": "mock server and descendants after health readiness; excludes harness and startup",
+diff --git a/task004/schema.py b/task004/schema.py
+index 37be8d9..1d6a17f 100644
+--- a/task004/schema.py
++++ b/task004/schema.py
+@@ -8,6 +8,51 @@ from pathlib import Path
+ import re
+ 
+ 
++ANNOTATIONS = {"$schema", "title", "description"}
++KEYWORDS = {"const", "enum", "type", "required", "properties", "additionalProperties",
++            "items", "pattern", "minimum", "maximum", "exclusiveMinimum"}
++TYPES = {"null", "object", "array", "string", "boolean", "integer", "number"}
++
++
++def check_schema(schema):
++    """Reject unsupported or malformed contracts instead of silently ignoring them."""
++    if type(schema) is not dict:
++        raise ValueError("SCHEMA_DEFINITION_INVALID")
++    if set(schema) - KEYWORDS - ANNOTATIONS:
++        raise ValueError("SCHEMA_UNSUPPORTED_KEYWORD")
++    kinds = schema.get("type", [])
++    kinds = [kinds] if isinstance(kinds, str) else kinds
++    if (type(kinds) is not list or any(type(kind) is not str or kind not in TYPES for kind in kinds)
++            or ("type" in schema and not kinds)):
++        raise ValueError("SCHEMA_DEFINITION_INVALID")
++    if "enum" in schema and (type(schema["enum"]) is not list or not schema["enum"]):
++        raise ValueError("SCHEMA_DEFINITION_INVALID")
++    required = schema.get("required", [])
++    if type(required) is not list or any(type(key) is not str for key in required):
++        raise ValueError("SCHEMA_DEFINITION_INVALID")
++    if "additionalProperties" in schema and type(schema["additionalProperties"]) is not bool:
++        raise ValueError("SCHEMA_DEFINITION_INVALID")
++    for bound in ("minimum", "maximum", "exclusiveMinimum"):
++        if bound in schema:
++            value = schema[bound]
++            if not (type(value) is int or (type(value) is float and math.isfinite(value))):
++                raise ValueError("SCHEMA_DEFINITION_INVALID")
++    if "pattern" in schema:
++        try:
++            if type(schema["pattern"]) is not str:
++                raise ValueError("SCHEMA_DEFINITION_INVALID")
++            re.compile(schema["pattern"])
++        except re.error:
++            raise ValueError("SCHEMA_DEFINITION_INVALID") from None
++    properties = schema.get("properties", {})
++    if type(properties) is not dict or any(type(key) is not str for key in properties):
++        raise ValueError("SCHEMA_DEFINITION_INVALID")
++    for child in properties.values():
++        check_schema(child)
++    if "items" in schema:
++        check_schema(schema["items"])
++
++
+ def validate(value, schema):
+     if "const" in schema and (type(value) is not type(schema["const"]) or value != schema["const"]):
+         raise ValueError("SCHEMA_CONST")
+@@ -38,10 +83,15 @@ def validate(value, schema):
+     if type(value) in (int, float):
+         if "minimum" in schema and value < schema["minimum"]:
+             raise ValueError("SCHEMA_MINIMUM")
++        if "maximum" in schema and value > schema["maximum"]:
++            raise ValueError("SCHEMA_MAXIMUM")
++        if "exclusiveMinimum" in schema and value <= schema["exclusiveMinimum"]:
++            raise ValueError("SCHEMA_EXCLUSIVE_MINIMUM")
+ 
+ 
+ def validate_artifact(value, name):
+     if name not in ("run", "manifest"):
+         raise ValueError("SCHEMA_NAME")
+     schema = json.loads((Path(__file__).parent / "schemas" / f"{name}.schema.json").read_text(encoding="utf-8"))
++    check_schema(schema)
+     validate(value, schema)
+diff --git a/task004/schemas/manifest.schema.json b/task004/schemas/manifest.schema.json
+index fe382ce..203f0fd 100644
+--- a/task004/schemas/manifest.schema.json
++++ b/task004/schemas/manifest.schema.json
+@@ -11,7 +11,7 @@
+     },
+     "run_id": {
+       "type": "string",
+-      "pattern": "[0-9a-f]{32}"
++      "pattern": "^[0-9a-f]{32}$"
+     },
+     "evidence_label": {
+       "const": "SYNTHETIC"
+@@ -30,7 +30,7 @@
+       "properties": {
+         "n_ctx": {
+           "type": "integer",
+-          "minimum": 0
++          "minimum": 1
+         },
+         "runtime": {
+           "const": "mock"
+@@ -40,19 +40,23 @@
+         },
+         "max_new_tokens": {
+           "type": "integer",
+-          "minimum": 0
++          "minimum": 1,
++          "maximum": 96
+         },
+         "timeout_s": {
+           "type": "number",
+-          "minimum": 0
++          "exclusiveMinimum": 0,
++          "maximum": 3600
+         },
+         "startup_timeout_s": {
+           "type": "number",
+-          "minimum": 0
++          "exclusiveMinimum": 0,
++          "maximum": 3600
+         },
+         "sample_interval_s": {
+           "type": "number",
+-          "minimum": 0
++          "minimum": 0.01,
++          "maximum": 60
+         },
+         "min_available_ram_bytes": {
+           "type": "integer",
+@@ -67,14 +71,15 @@
+             "integer",
+             "null"
+           ],
+-          "minimum": 0
++          "minimum": 1,
++          "maximum": 768
+         },
+         "max_image_tokens": {
+           "type": [
+             "integer",
+             "null"
+           ],
+-          "minimum": 0
++          "minimum": 1
+         },
+         "mock_scenario": {
+           "enum": [
+@@ -88,7 +93,8 @@
+         },
+         "mock_delay_s": {
+           "type": "number",
+-          "minimum": 0
++          "minimum": 0,
++          "maximum": 3600
+         }
+       },
+       "required": [
+@@ -110,7 +116,7 @@
+     },
+     "config_sha256": {
+       "type": "string",
+-      "pattern": "[0-9a-f]{64}"
++      "pattern": "^[0-9a-f]{64}$"
+     },
+     "runtime": {
+       "type": "object",
+@@ -318,14 +324,14 @@
+               },
+               "expected_sha256": {
+                 "type": "string",
+-                "pattern": "[0-9a-f]{64}"
++                "pattern": "^[0-9a-f]{64}$"
+               },
+               "actual_sha256": {
+                 "type": [
+                   "string",
+                   "null"
+                 ],
+-                "pattern": "[0-9a-f]{64}"
++                "pattern": "^[0-9a-f]{64}$"
+               },
+               "integrity": {
+                 "enum": [
+@@ -390,7 +396,7 @@
+         },
+         "sha256": {
+           "type": "string",
+-          "pattern": "[0-9a-f]{64}"
++          "pattern": "^[0-9a-f]{64}$"
+         },
+         "records": {
+           "const": 1
+diff --git a/task004/schemas/run.schema.json b/task004/schemas/run.schema.json
+index d2326e3..fd5dd17 100644
+--- a/task004/schemas/run.schema.json
++++ b/task004/schemas/run.schema.json
+@@ -11,7 +11,7 @@
+     },
+     "run_id": {
+       "type": "string",
+-      "pattern": "[0-9a-f]{32}"
++      "pattern": "^[0-9a-f]{32}$"
+     },
+     "evidence_label": {
+       "const": "SYNTHETIC"
+@@ -26,13 +26,34 @@
+       ]
+     },
+     "reason_code": {
+-      "type": "string"
++      "type": "string",
++      "enum": [
++        "CANCELLED",
++        "CLEANUP_FAILED",
++        "CLIENT_CLEANUP_FAILED",
++        "CLIENT_ERROR",
++        "CONNECTION_ERROR",
++        "HTTP_ERROR",
++        "INTERNAL_ERROR",
++        "INVALID_JSON",
++        "INVALID_RESPONSE",
++        "MEMORY_SAMPLING_FAILED",
++        "OK",
++        "PREFLIGHT_FAILED",
++        "RESPONSE_TOO_LARGE",
++        "SERVER_ERROR",
++        "SERVER_EXITED",
++        "STARTUP_TIMEOUT",
++        "TIMEOUT"
++      ]
+     },
+     "started_at_utc": {
+-      "type": "string"
++      "type": "string",
++      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?\\+00:00$"
+     },
+     "finished_at_utc": {
+-      "type": "string"
++      "type": "string",
++      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?\\+00:00$"
+     },
+     "metrics": {
+       "type": "object",
+@@ -74,7 +95,7 @@
+         },
+         "synthetic_output_tokens": {
+           "type": [
+-            "number",
++            "integer",
+             "null"
+           ],
+           "minimum": 0
+diff --git a/task004/server.py b/task004/server.py
+index ae7dd5d..d4158cc 100644
+--- a/task004/server.py
++++ b/task004/server.py
+@@ -23,6 +23,12 @@ class ServerTimeout(ServerError):
+         super().__init__("STARTUP_TIMEOUT")
+ 
+ 
++def _child_env():
++    """The fixed mock needs locale/temp/platform paths, never harness secrets."""
++    return {key: os.environ[key] for key in
++            ("PATH", "SYSTEMROOT", "TEMP", "TMP", "LANG", "LC_ALL") if key in os.environ}
++
++
+ def _active(process):
+     try:
+         return process.is_running() and process.status() != psutil.STATUS_ZOMBIE
+@@ -81,11 +87,12 @@ def stop_owned_process(process, *, owned_pgid=None):
+                         raise ServerError("CLEANUP_FAILED")
+                 except ProcessLookupError:
+                     pass
+-            _signal_group(owned_pgid, signal.SIGTERM)
+-            if not _wait_group(owned_pgid, 1):
+-                _signal_group(owned_pgid, signal.SIGKILL)
++            if _active_group_members(owned_pgid):
++                _signal_group(owned_pgid, signal.SIGTERM)
+                 if not _wait_group(owned_pgid, 1):
+-                    raise ServerError("CLEANUP_FAILED")
++                    _signal_group(owned_pgid, signal.SIGKILL)
++                    if not _wait_group(owned_pgid, 1):
++                        raise ServerError("CLEANUP_FAILED")
+         else:
+             targets = []
+             if process.poll() is None:
+@@ -144,9 +151,11 @@ class ManagedMockServer:
+             self.process = subprocess.Popen([
+                 sys.executable, "-m", "task004.mock_server", "--port-file", str(port_file),
+                 "--scenario", self.config.mock_scenario, "--delay", str(self.config.mock_delay_s),
++                "--parent-pid", str(os.getpid()),
++                "--max-lifetime-s", str(self.config.startup_timeout_s + self.config.timeout_s + 30),
+             ], cwd=Path(__file__).resolve().parent.parent, stdin=subprocess.DEVNULL,
+                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+-                start_new_session=os.name == "posix")
++                start_new_session=os.name == "posix", env=_child_env())
+             if os.name == "posix":
+                 self._owned_pgid = self.process.pid
+             deadline = time.monotonic() + self.config.startup_timeout_s
+diff --git a/task004/tests/test_hardening_client.py b/task004/tests/test_hardening_client.py
+new file mode 100644
+index 0000000..d80765a
+--- /dev/null
++++ b/task004/tests/test_hardening_client.py
+@@ -0,0 +1,124 @@
++"""B1 primary error retention, A5 guard is in test_workflow, B4 metric reasons."""
++import errno
++import os
++import select
++import socket
++import sys
++import threading
++import time
++import unittest
++from unittest.mock import patch
++
++from task004.client import ClientError, request_synthetic
++from task004.config import Config
++from task004.sampler import ResourceSampler
++
++
++class ClientHardeningTests(unittest.TestCase):
++    def assert_http_workers_stopped(self):
++        deadline = time.monotonic() + 2
++        while any(thread.name == "task004-http" for thread in threading.enumerate()):
++            if time.monotonic() >= deadline:
++                self.fail("request worker did not stop after fixture cleanup")
++            time.sleep(.01)
++
++    def blocked_connection(self):
++        release = threading.Event()
++        entered = threading.Event()
++
++        class Connection:
++            sock = None
++
++            def __init__(self, *args, **kwargs):
++                pass
++
++            def connect(self):
++                entered.set()
++                release.wait(timeout=3)
++
++            def close(self):
++                pass
++
++        return Connection, release, entered
++
++    def test_cancel_keeps_primary_when_connect_cleanup_stalls(self):
++        connection, release, entered = self.blocked_connection()
++        cancel = threading.Event()
++        def trigger():
++            entered.wait(timeout=1)
++            cancel.set()
++        trigger_thread = threading.Thread(target=trigger)
++        trigger_thread.start()
++        try:
++            with patch("task004.client.http.client.HTTPConnection", connection):
++                with self.assertRaises(ClientError) as caught:
++                    request_synthetic("http://127.0.0.1:1234", Config(n_ctx=1), cancel)
++                self.assertEqual(caught.exception.code, "CANCELLED")
++        finally:
++            release.set()
++            trigger_thread.join(timeout=2)
++            self.assert_http_workers_stopped()
++
++    def test_keyboard_interrupt_keeps_primary_when_cleanup_stalls(self):
++        connection, release, _ = self.blocked_connection()
++        try:
++            with patch("task004.client.http.client.HTTPConnection", connection), \
++                    patch("task004.client.queue.Queue.get", side_effect=KeyboardInterrupt):
++                with self.assertRaises(KeyboardInterrupt):
++                    request_synthetic("http://127.0.0.1:1234", Config(n_ctx=1))
++        finally:
++            release.set()
++            self.assert_http_workers_stopped()
++
++    @unittest.skipUnless(sys.platform.startswith("linux"), "Linux backlog behavior only")
++    def test_cancel_keeps_primary_for_real_blocked_connect(self):
++        listener = socket.socket()
++        listener.bind(("127.0.0.1", 0))
++        listener.listen(0)
++        fillers = []
++        cancel = threading.Event()
++        timer = None
++        try:
++            for _ in range(6):
++                filler = socket.socket()
++                fillers.append(filler)
++                filler.setblocking(False)
++                result = filler.connect_ex(listener.getsockname())
++                self.assertIn(result, (0, errno.EINPROGRESS, errno.EWOULDBLOCK, errno.EALREADY))
++            # Independently prove this OS blocks a fresh connect before testing cancellation.
++            probe = socket.socket()
++            fillers.append(probe)
++            probe.setblocking(False)
++            result = probe.connect_ex(listener.getsockname())
++            _, writable, _ = select.select([], [probe], [], .05)
++            if result == 0 or writable:
++                self.skipTest("this OS did not block connect after filling listen(0)")
++            timer = threading.Timer(.1, cancel.set)
++            timer.start()
++            start = time.monotonic()
++            with self.assertRaises(ClientError) as caught:
++                request_synthetic(f"http://127.0.0.1:{listener.getsockname()[1]}", Config(n_ctx=1, timeout_s=1), cancel)
++            self.assertEqual(caught.exception.code, "CANCELLED")
++            self.assertLess(time.monotonic() - start, 1)
++        finally:
++            if timer is not None:
++                timer.cancel()
++                timer.join(timeout=1)
++            for filler in fillers:
++                filler.close()
++            listener.close()
++            self.assert_http_workers_stopped()
++
++    def test_no_valid_samples_is_distinct_from_unsupported_platform(self):
++        sampler = ResourceSampler(os.getpid())
++        self.assertEqual(sampler.metrics()["commit_unavailable_reason"], "No valid process memory samples")
++        with patch.object(sampler.process, "children", return_value=[]):
++            sampler.sample()
++        if sampler.commit_peak_bytes is None:
++            self.assertEqual(sampler.metrics()["commit_unavailable_reason"], "Windows private bytes unavailable on this platform")
++        else:
++            self.assertIsNone(sampler.metrics()["commit_unavailable_reason"])
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/task004/tests/test_hardening_record.py b/task004/tests/test_hardening_record.py
+new file mode 100644
+index 0000000..786f74a
+--- /dev/null
++++ b/task004/tests/test_hardening_record.py
+@@ -0,0 +1,181 @@
++"""A2: real signal delivery and transactional artifact regressions."""
++import contextlib
++import io
++import json
++import os
++from pathlib import Path
++import signal
++import subprocess
++import sys
++import tempfile
++import time
++import unittest
++from unittest.mock import patch
++
++import psutil
++
++from task004.cli import main
++from task004.config import parse_config
++from task004.record import validate_record, write_artifacts
++from task004.schema import validate_artifact
++
++ROOT = Path(__file__).resolve().parents[2]
++FIXTURE = ROOT / "task004/evidence/dry-run/e1979d42784948cfbeb13b44cbc6044a"
++
++
++class AtomicArtifactTests(unittest.TestCase):
++    def setUp(self):
++        self.tmp = tempfile.TemporaryDirectory()
++        self.addCleanup(self.tmp.cleanup)
++        self.root = Path(self.tmp.name) / "out"
++        self.manifest = json.loads((FIXTURE / "manifest.json").read_text())
++        self.record = json.loads((FIXTURE / "runs.jsonl").read_text())
++        self.config = parse_config(self.manifest["config"])
++
++    def write(self):
++        return write_artifacts(self.root, self.config, self.record, self.manifest["preflight"])
++
++    def test_second_write_failure_cleans_staging_for_baseexceptions(self):
++        original = Path.open
++        for exception in (OSError("injected"), KeyboardInterrupt()):
++            with self.subTest(exception=type(exception).__name__):
++                # Independent paths even when the baseline leaves a partial run behind.
++                self.root = Path(self.tmp.name) / type(exception).__name__
++                def faulty(path, *args, **kwargs):
++                    mode = args[0] if args else kwargs.get("mode", "r")
++                    if path.name == "manifest.json" and mode == "wb":
++                        raise exception
++                    return original(path, *args, **kwargs)
++                with patch.object(Path, "open", faulty), self.assertRaises(type(exception)):
++                    self.write()
++                self.assertEqual(list(self.root.iterdir()), [])
++
++    def test_final_directory_invisible_until_both_synced_files_ready(self):
++        original = Path.open
++        seen = []
++        def observing(path, *args, **kwargs):
++            if args and args[0] == "wb":
++                seen.append(path.name)
++                self.assertFalse((self.root / self.record["run_id"]).exists())
++                self.assertEqual(path.parent.name, f".{self.record['run_id']}.tmp")
++            return original(path, *args, **kwargs)
++        with patch.object(Path, "open", observing), patch("task004.record.os.fsync", wraps=os.fsync) as sync:
++            folder = self.write()
++        self.assertEqual(sync.call_count, 2)
++        self.assertEqual(seen, ["runs.jsonl", "manifest.json"])
++        self.assertEqual(list(self.root.iterdir()), [folder])
++        validate_record(json.loads((folder / "runs.jsonl").read_text()))
++
++    def test_invalid_manifest_has_no_partial_run(self):
++        self.manifest["preflight"]["unexpected"] = "bad"
++        with self.assertRaises(ValueError):
++            self.write()
++        self.assertFalse(self.root.exists())
++
++    def test_existing_run_not_overwritten(self):
++        folder = self.write()
++        before = {p.name: p.read_bytes() for p in folder.iterdir()}
++        with self.assertRaises(FileExistsError):
++            self.write()
++        self.assertEqual(before, {p.name: p.read_bytes() for p in folder.iterdir()})
++        self.assertEqual(list(self.root.iterdir()), [folder])
++
++    def test_main_valueerror_safe_and_signal_handlers_restored(self):
++        config = Path(self.tmp.name) / "config.json"
++        config.write_text(json.dumps(self.config.to_dict()))
++        old = {getattr(signal, name): signal.getsignal(getattr(signal, name))
++               for name in ("SIGINT", "SIGTERM", "SIGHUP", "SIGBREAK") if hasattr(signal, name)}
++        captured = io.StringIO()
++        with patch("task004.cli.write_artifacts", side_effect=ValueError("PRIVATE_MARKER")), contextlib.redirect_stdout(captured):
++            code = main(["dry-run", "--config", str(config), "--output-dir", str(self.root)])
++        self.assertEqual(code, 1)
++        self.assertEqual(json.loads(captured.getvalue())["reason_code"], "INTERNAL_ERROR")
++        self.assertNotIn("PRIVATE_MARKER", captured.getvalue())
++        self.assertEqual(old, {number: signal.getsignal(number) for number in old})
++
++    def test_validate_config_scope(self):
++        config = Path(self.tmp.name) / "config.json"
++        config.write_text(json.dumps(self.config.to_dict()))
++        captured = io.StringIO()
++        with contextlib.redirect_stdout(captured):
++            self.assertEqual(main(["validate-config", "--config", str(config)]), 0)
++        self.assertEqual(json.loads(captured.getvalue())["scope"], "CONFIG_ONLY")
++
++
++@unittest.skipUnless(os.name == "posix", "POSIX signal integration; Windows UNVERIFIED")
++class SignalArtifactTests(unittest.TestCase):
++    def run_signal_case(self, sig, gap=None):
++        with tempfile.TemporaryDirectory() as tmp:
++            root = Path(tmp)
++            cfg = root / "config.json"
++            cfg.write_text(json.dumps({"n_ctx": 1, "mock_scenario": "slow", "mock_delay_s": 10, "timeout_s": 15}))
++            out = root / "out"
++            process = subprocess.Popen([sys.executable, "-m", "task004.cli", "dry-run", "--config", str(cfg), "--output-dir", str(out)], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
++            children = []
++            cleaned = False
++            def cleanup():
++                nonlocal cleaned
++                if cleaned:
++                    return
++                cleaned = True
++                if process.poll() is None:
++                    try:
++                        children.extend(psutil.Process(process.pid).children(recursive=True))
++                    except psutil.NoSuchProcess:
++                        pass
++                    process.kill()
++                process.wait(timeout=5)
++                for child in children:
++                    try:
++                        child.kill()
++                    except psutil.NoSuchProcess:
++                        pass
++                psutil.wait_procs(children, timeout=1)
++                process.stdout.close()
++                process.stderr.close()
++            self.addCleanup(cleanup)
++            try:
++                deadline = time.monotonic() + 5
++                while time.monotonic() < deadline and process.poll() is None:
++                    children = psutil.Process(process.pid).children(recursive=True)
++                    if children:
++                        break
++                    time.sleep(.01)
++                self.assertTrue(children, "mock child did not start")
++                time.sleep(.1)
++                for index in range(1 if gap is None else 3):
++                    if index and gap:
++                        time.sleep(gap)
++                    if process.poll() is not None:
++                        break
++                    try:
++                        process.send_signal(sig)
++                    except ProcessLookupError:
++                        break
++                stdout, stderr = process.communicate(timeout=8)
++                self.assertEqual(process.returncode, 130, stderr)
++                result = json.loads(stdout)
++                self.assertEqual(result["status"], "CANCELLED")
++                self.assertEqual(result["evidence_label"], "SYNTHETIC")
++                self.assertNotIn("Traceback", stderr)
++                folders = list(out.iterdir())
++                self.assertEqual(len(folders), 1)
++                folder = folders[0]
++                self.assertEqual({p.name for p in folder.iterdir()}, {"manifest.json", "runs.jsonl"})
++                validate_record(json.loads((folder / "runs.jsonl").read_text()))
++                validate_artifact(json.loads((folder / "manifest.json").read_text()), "manifest")
++                for child in children:
++                    self.assertFalse(child.is_running() and child.status() != psutil.STATUS_ZOMBIE)
++            finally:
++                cleanup()
++
++    def test_single_signals_produce_complete_cancelled_artifacts(self):
++        for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
++            with self.subTest(signal=sig):
++                self.run_signal_case(sig)
++
++    def test_burst_signals_do_not_interrupt_cleanup_or_artifacts(self):
++        for sig in (signal.SIGINT, signal.SIGTERM):
++            for gap in (0, .001, .003):
++                with self.subTest(signal=sig, gap=gap):
++                    self.run_signal_case(sig, gap)
+diff --git a/task004/tests/test_hardening_schema.py b/task004/tests/test_hardening_schema.py
+new file mode 100644
+index 0000000..a1f6f10
+--- /dev/null
++++ b/task004/tests/test_hardening_schema.py
+@@ -0,0 +1,164 @@
++"""A3/A4 regressions for bounded config and explicit schema contracts."""
++import contextlib
++from copy import deepcopy
++import io
++import json
++from pathlib import Path
++import tempfile
++import unittest
++from unittest.mock import patch
++
++from task004.cli import main
++from task004.config import Config, ConfigError, parse_config
++from task004.record import STATUS_REASONS
++from task004.schema import validate, validate_artifact
++
++
++ROOT = Path(__file__).resolve().parents[1]
++BASELINE_EVIDENCE = ROOT / "evidence" / "dry-run" / "e1979d42784948cfbeb13b44cbc6044a"
++
++
++def schema(name):
++    return json.loads((ROOT / "schemas" / f"{name}.schema.json").read_text())
++
++
++class ConfigBoundsTests(unittest.TestCase):
++    def test_a3_timeout_and_sampling_upper_bounds(self):
++        for key, upper in (("timeout_s", 3600), ("startup_timeout_s", 3600),
++                           ("mock_delay_s", 3600), ("sample_interval_s", 60)):
++            with self.subTest(key=key, value=upper):
++                self.assertEqual(getattr(parse_config({"n_ctx": 1, key: upper}), key), upper)
++            for value in (upper + .001, 1e10, 1e300):
++                with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
++                    parse_config({"n_ctx": 1, key: value})
++
++    def test_a3_validate_config_rejects_extreme_values(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            config_path = Path(tmp) / "config.json"
++            for key in ("timeout_s", "startup_timeout_s", "mock_delay_s", "sample_interval_s"):
++                for value in (1e10, 1e300):
++                    config_path.write_text(json.dumps({"n_ctx": 1, key: value}))
++                    capture = io.StringIO()
++                    with self.subTest(key=key, value=value), contextlib.redirect_stdout(capture):
++                        result = main(["validate-config", "--config", str(config_path)])
++                        self.assertEqual(result, 2)
++                        self.assertEqual(json.loads(capture.getvalue())["status"], "CONFIG_ERROR")
++
++
++class SchemaContractTests(unittest.TestCase):
++    def test_a4_config_and_manifest_numerical_boundaries_match(self):
++        config_schema = schema("manifest")["properties"]["config"]
++        # Expected outcomes are explicit, so simultaneous weakening is detected.
++        boundaries = {
++            "n_ctx": [(0, False), (1, True), (2, True)],
++            "max_new_tokens": [(0, False), (1, True), (2, True), (95, True), (96, True), (97, False)],
++            "timeout_s": [(-.001, False), (0, False), (.001, True), (3599.999, True), (3600, True), (3600.001, False)],
++            "startup_timeout_s": [(-.001, False), (0, False), (.001, True), (3599.999, True), (3600, True), (3600.001, False)],
++            "sample_interval_s": [(.009, False), (.01, True), (.011, True), (59.999, True), (60, True), (60.001, False)],
++            "mock_delay_s": [(-.001, False), (0, True), (.001, True), (3599.999, True), (3600, True), (3600.001, False)],
++            "min_available_ram_bytes": [(-1, False), (0, True), (1, True)],
++            "min_free_disk_bytes": [(-1, False), (0, True), (1, True)],
++            "image_long_edge_px": [(0, False), (1, True), (2, True), (767, True), (768, True), (769, False)],
++            "max_image_tokens": [(0, False), (1, True), (2, True)],
++        }
++        for key, cases in boundaries.items():
++            for value, expected in cases:
++                with self.subTest(key=key, value=value):
++                    data = Config(n_ctx=1).to_dict()
++                    if key in ("image_long_edge_px", "max_image_tokens"):
++                        data.update(image_long_edge_px=64, max_image_tokens=16)
++                    data[key] = value
++                    try:
++                        parse_config(data)
++                        config_accepts = True
++                    except ConfigError:
++                        config_accepts = False
++                    try:
++                        validate(data, config_schema)
++                        schema_accepts = True
++                    except ValueError:
++                        schema_accepts = False
++                    self.assertEqual(config_accepts, expected)
++                    self.assertEqual(schema_accepts, expected)
++
++    def test_a4_every_pattern_is_anchored(self):
++        def inspect(node):
++            if "pattern" in node:
++                self.assertTrue(node["pattern"].startswith("^"), node["pattern"])
++                self.assertTrue(node["pattern"].endswith("$"), node["pattern"])
++            for child in node.get("properties", {}).values():
++                inspect(child)
++            if "items" in node:
++                inspect(node["items"])
++        inspect(schema("run"))
++        inspect(schema("manifest"))
++
++    def test_a4_reason_enum_matches_status_reasons(self):
++        actual = schema("run")["properties"]["reason_code"].get("enum", [])
++        self.assertEqual(set(actual), set().union(*STATUS_REASONS.values()))
++        self.assertEqual(len(actual), len(set(actual)))
++
++    def test_a4_unsupported_keywords_fail_at_every_depth(self):
++        from task004.schema import check_schema
++        for invalid in (
++            {"format": "date-time"},
++            {"properties": {"child": {"format": "date-time"}}},
++            {"items": {"properties": {"child": {"not": {}}}}},
++            {"properties": {"array": {"items": {"allOf": []}}}},
++        ):
++            with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, "SCHEMA_UNSUPPORTED_KEYWORD"):
++                check_schema(invalid)
++        for name in ("run", "manifest"):
++            check_schema(schema(name))
++
++    def test_a4_validate_artifact_checks_schema_before_value(self):
++        invalid = {"type": "object", "properties": {"ignored": {"format": "anything"}}}
++        with patch("task004.schema.Path.read_text", return_value=json.dumps(invalid)):
++            with self.assertRaisesRegex(ValueError, "SCHEMA_UNSUPPORTED_KEYWORD"):
++                validate_artifact({}, "manifest")
++
++    def test_a4_maximum_and_exclusive_minimum_enforced(self):
++        contract = {"type": "number", "exclusiveMinimum": 0, "maximum": 1}
++        validate(.001, contract)
++        validate(1, contract)
++        for value in (-.001, 0, 1.001):
++            with self.subTest(value=value), self.assertRaises(ValueError):
++                validate(value, contract)
++
++    def test_a4_run_schema_rejects_bad_reason_time_token_and_id(self):
++        baseline = json.loads((BASELINE_EVIDENCE / "runs.jsonl").read_text())
++        invalid_cases = [
++            ("reason_code", "UNREGISTERED"),
++            ("started_at_utc", "not-a-timestamp"),
++            ("finished_at_utc", "2026-11-06T00:00:00+07:00"),
++            ("run_id", "ZZ" + baseline["run_id"] + "ZZ"),
++        ]
++        for key, value in invalid_cases:
++            broken = deepcopy(baseline)
++            broken[key] = value
++            with self.subTest(key=key), self.assertRaises(ValueError):
++                validate_artifact(broken, "run")
++        broken = deepcopy(baseline)
++        broken["metrics"]["synthetic_output_tokens"] = 1.5
++        with self.assertRaises(ValueError):
++            validate_artifact(broken, "run")
++
++    def test_a4_existing_committed_evidence_remains_valid(self):
++        manifest = json.loads((BASELINE_EVIDENCE / "manifest.json").read_text())
++        run = json.loads((BASELINE_EVIDENCE / "runs.jsonl").read_text())
++        self.assertEqual(manifest["schema_version"], 1)
++        self.assertEqual(run["schema_version"], 1)
++        validate_artifact(manifest, "manifest")
++        validate_artifact(run, "run")
++
++    def test_a4_malformed_supported_keyword_forms_fail_closed(self):
++        from task004.schema import check_schema
++        for malformed in ({"type": "bogus"}, {"type": []}, {"properties": []},
++                          {"required": "name"}, {"items": []}, {"maximum": True},
++                          {"additionalProperties": {"type": "string"}}, {"enum": []}):
++            with self.subTest(malformed=malformed), self.assertRaises(ValueError):
++                check_schema(malformed)
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/task004/tests/test_hardening_server.py b/task004/tests/test_hardening_server.py
+new file mode 100644
+index 0000000..373dc7f
+--- /dev/null
++++ b/task004/tests/test_hardening_server.py
+@@ -0,0 +1,130 @@
++"""A1/B2/B3 regressions; process guarantees are Linux-verified only."""
++import json
++import os
++from pathlib import Path
++import signal
++import shutil
++import subprocess
++import sys
++import tempfile
++import time
++import unittest
++from unittest.mock import patch
++
++import psutil
++
++from task004.config import Config
++from task004.server import ManagedMockServer, stop_owned_process
++
++
++def active(process):
++    try:
++        return process.is_running() and process.status() != psutil.STATUS_ZOMBIE
++    except psutil.NoSuchProcess:
++        return False
++
++
++def reap_owned(process, children):
++    # Discover before killing the CLI; preserve identity objects if it already died.
++    try:
++        if process.poll() is None:
++            children.extend(psutil.Process(process.pid).children(recursive=True))
++    except psutil.NoSuchProcess:
++        pass
++    for child in children:
++        try:
++            if active(child):
++                child.kill()
++        except psutil.NoSuchProcess:
++            pass
++    if process.poll() is None:
++        process.kill()
++    process.wait(timeout=5)
++
++
++class ServerHardeningTests(unittest.TestCase):
++    @unittest.skipUnless(os.name == "posix", "POSIX SIGKILL integration; Windows unverified")
++    def test_a1_killed_cli_leaves_no_mock_or_owned_scratch(self):
++        temp = tempfile.TemporaryDirectory()
++        self.addCleanup(temp.cleanup)
++        directory = Path(temp.name)
++        config = directory / "config.json"
++        config.write_text(json.dumps(Config(n_ctx=512, mock_scenario="slow",
++                                           mock_delay_s=30, timeout_s=20).to_dict()))
++        cli = subprocess.Popen([sys.executable, "-m", "task004.cli", "dry-run",
++                                "--config", str(config), "--output-dir", str(directory / "runs")],
++                               stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
++                               stderr=subprocess.DEVNULL)
++        children = []
++        self.addCleanup(reap_owned, cli, children)
++        scratch = None
++        deadline = time.monotonic() + 5
++        while time.monotonic() < deadline and cli.poll() is None:
++            for child in psutil.Process(cli.pid).children():
++                try:
++                    command = child.cmdline()
++                    if "task004.mock_server" in command:
++                        if child not in children:
++                            children.append(child)
++                        port_file = Path(command[command.index("--port-file") + 1])
++                        if port_file.exists():
++                            scratch = port_file.parent
++                            break
++                except psutil.NoSuchProcess:
++                    pass
++            if scratch is not None:
++                break
++            time.sleep(.01)
++        self.assertIsNotNone(scratch, "mock did not initialize before harness kill")
++        self.addCleanup(shutil.rmtree, scratch, ignore_errors=True)
++        self.assertTrue(children)
++        cli.send_signal(signal.SIGKILL)
++        cli.wait(timeout=3)
++        deadline = time.monotonic() + 5
++        while time.monotonic() < deadline:
++            if not any(active(child) for child in children) and not scratch.exists():
++                break
++            time.sleep(.025)
++        self.assertFalse(any(active(child) for child in children), "mock survived harness SIGKILL")
++        self.assertFalse(scratch.exists(), "owned scratch survived harness SIGKILL")
++
++    def test_a1_mock_maximum_lifetime_exits(self):
++        with tempfile.TemporaryDirectory(prefix="task004-mock-") as scratch:
++            child = subprocess.Popen([sys.executable, "-m", "task004.mock_server", "--port-file",
++                                      str(Path(scratch) / "port"), "--parent-pid", str(os.getpid()),
++                                      "--max-lifetime-s", ".1"], stdout=subprocess.DEVNULL,
++                                     stderr=subprocess.DEVNULL)
++            self.addCleanup(reap_owned, child, [])
++            self.assertEqual(child.wait(timeout=5), 3)
++
++    def test_a1_missing_parent_exits_immediately_and_cleans_scratch(self):
++        parent = subprocess.Popen([sys.executable, "-c", "pass"])
++        parent.wait(timeout=5)
++        with tempfile.TemporaryDirectory(prefix="task004-mock-") as scratch:
++            child = subprocess.Popen([sys.executable, "-m", "task004.mock_server", "--port-file",
++                                      str(Path(scratch) / "port"), "--parent-pid", str(parent.pid)],
++                                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
++            self.addCleanup(reap_owned, child, [])
++            self.assertEqual(child.wait(timeout=3), 3)
++            self.assertFalse(Path(scratch).exists())
++
++    @unittest.skipUnless(os.name == "posix", "POSIX owned groups; Windows unverified")
++    def test_b2_empty_owned_group_is_not_signalled(self):
++        root = subprocess.Popen([sys.executable, "-c", "pass"], start_new_session=True)
++        self.addCleanup(reap_owned, root, [])
++        root.wait(timeout=5)
++        with patch("task004.server.os.killpg") as killpg:
++            stop_owned_process(root, owned_pgid=root.pid)
++        killpg.assert_not_called()
++
++    @unittest.skipUnless(sys.platform.startswith("linux"), "child environ read verified on Linux only")
++    def test_b3_mock_does_not_inherit_harness_secret(self):
++        with patch.dict(os.environ, {"TASK004_FAKE_TOKEN": "synthetic-secret-marker"}):
++            with ManagedMockServer(Config(n_ctx=512)) as server:
++                child_environment = psutil.Process(server.pid).environ()
++                self.assertNotIn("TASK004_FAKE_TOKEN", child_environment)
++                self.assertTrue(set(child_environment).issubset({"PATH", "SYSTEMROOT", "TEMP", "TMP", "LANG", "LC_ALL"}))
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/task004/tests/test_workflow.py b/task004/tests/test_workflow.py
+index ecc7746..04ed756 100644
+--- a/task004/tests/test_workflow.py
++++ b/task004/tests/test_workflow.py
+@@ -157,8 +157,11 @@ class WorkflowTests(unittest.TestCase):
+ 
+     def test_nonloopback_endpoint_rejected_before_connection(self):
+         for url in ("https://example.com", "http://localhost:80", "http://127.0.0.1:80/redirect", "http://user:password@127.0.0.1:80"):
+-            with self.subTest(url=url), self.assertRaises(ClientError):
+-                request_synthetic(url, self.config)
++            with self.subTest(url=url), patch("task004.client.http.client.HTTPConnection") as connection:
++                with self.assertRaises(ClientError) as caught:
++                    request_synthetic(url, self.config)
++                self.assertEqual(caught.exception.code, "NON_LOOPBACK_ENDPOINT")
++                connection.assert_not_called()
+ 
+     def test_connection_failure(self):
+         with ManagedMockServer(self.config) as server:
+diff --git a/task004/tools/validate_hardening.py b/task004/tools/validate_hardening.py
+new file mode 100644
+index 0000000..30ef970
+--- /dev/null
++++ b/task004/tools/validate_hardening.py
+@@ -0,0 +1,144 @@
++"""Generate review evidence from actual subprocesses; never edit prior evidence.
++
++Run from repo root: python task004/tools/validate_hardening.py --output <new-directory>
++Requires authorized loopback sockets. Copies baseline/mutant into temporary directories,
++never mutates the working source and never makes Git worktrees.
++"""
++import argparse
++import ast
++from datetime import datetime, timezone
++import hashlib
++import io
++import json
++from pathlib import Path
++import platform
++import re
++import shutil
++import subprocess
++import sys
++import tarfile
++import tempfile
++import time
++
++import psutil
++
++BASELINE = '2cb916803cef6c2c52f03107fddeb866c407ae27'
++ROOT = Path(__file__).resolve().parents[2]
++TARGETS = {
++    'A1': ['task004.tests.test_hardening_server.ServerHardeningTests.test_a1_killed_cli_leaves_no_mock_or_owned_scratch'],
++    'A2': ['task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions'],
++    'A3': ['task004.tests.test_hardening_schema.ConfigBoundsTests'],
++    'A4': ['task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match',
++           'task004.tests.test_hardening_schema.SchemaContractTests.test_a4_reason_enum_matches_status_reasons',
++           'task004.tests.test_hardening_schema.SchemaContractTests.test_a4_validate_artifact_checks_schema_before_value'],
++    'A5': ['task004.tests.test_workflow.WorkflowTests.test_nonloopback_endpoint_rejected_before_connection'],
++}
++
++
++def utc():
++    return datetime.now(timezone.utc).isoformat()
++
++
++def fingerprints():
++    files = list((ROOT/'task004').glob('*.py'))
++    for sub, pattern in [('tests', '*.py'), ('schemas', '*.json'), ('tools', '*.py')]:
++        files.extend((ROOT/'task004'/sub).glob(pattern))
++    return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(files)}
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--output', required=True)
++    args = parser.parse_args()
++    output = Path(args.output).resolve()
++    output.mkdir(parents=True, exist_ok=False)
++    summary = {'baseline_revision': BASELINE, 'started_at_utc': utc(),
++               'python': platform.python_version(), 'psutil': psutil.__version__,
++               'platform': platform.platform(), 'verification_scope': 'Linux-verified mock only',
++               'source_sha256': fingerprints(), 'runs': [], 'windows': 'UNVERIFIED', 'model': 'NOT_RUN'}
++    failures = []
++
++    def run(label, cwd, args, expected_failure=False):
++        command = [sys.executable, '-W', 'error::ResourceWarning', '-m', 'unittest', *args]
++        start = time.monotonic()
++        result = subprocess.run(command, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=180)
++        text = result.stdout.decode('utf-8', errors='replace')
++        (output/f'{label}.log').write_bytes(result.stdout)
++        count = re.search(r'Ran (\d+) tests? in ([0-9.]+)s', text)
++        entry = {'label': label, 'command': command, 'cwd': str(cwd), 'returncode': result.returncode,
++                 'elapsed_s': time.monotonic()-start, 'tests_run': int(count[1]) if count else None,
++                 'failures': int(re.search(r'failures=(\d+)', text)[1]) if re.search(r'failures=(\d+)', text) else 0,
++                 'errors': int(re.search(r'errors=(\d+)', text)[1]) if re.search(r'errors=(\d+)', text) else 0,
++                 'skipped': int(re.search(r'skipped=(\d+)', text)[1]) if re.search(r'skipped=(\d+)', text) else 0,
++                 'expected_failure': expected_failure, 'log': f'{label}.log'}
++        # Baseline/mutation evidence must be assertion failures, not missing imports.
++        ok = (entry['tests_run'] and entry['skipped'] == 0 and entry['errors'] == 0
++              and ((result.returncode != 0 and entry['failures'] > 0) if expected_failure else result.returncode == 0))
++        entry['expectation_met'] = bool(ok)
++        summary['runs'].append(entry)
++        if not ok:
++            failures.append(label)
++        print(label, 'expected result' if ok else 'UNEXPECTED', 'tests=', entry['tests_run'], flush=True)
++
++    try:
++        with tempfile.TemporaryDirectory(prefix='task004-regression-') as tmp:
++            baseline = Path(tmp)/'baseline'
++            baseline.mkdir()
++            archive = subprocess.check_output(['git', 'archive', BASELINE], cwd=ROOT)
++            with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
++                for member in tar.getmembers():
++                    target = (baseline/member.name).resolve()
++                    if not target.is_relative_to(baseline) or member.issym() or member.islnk():
++                        raise ValueError('unexpected baseline archive member')
++                tar.extractall(baseline, filter='data')
++            for name in ['test_hardening_server.py', 'test_hardening_record.py', 'test_hardening_schema.py', 'test_workflow.py']:
++                shutil.copy2(ROOT/'task004/tests'/name, baseline/'task004/tests'/name)
++            for requirement, targets in TARGETS.items():
++                # A5 hardens a TEST; the production guard already exists at baseline.
++                # Its defect is demonstrated by the baseline test accepting a mutant.
++                run(f'baseline-{requirement}', baseline, ['-v', *targets], expected_failure=requirement != 'A5')
++                run(f'fixed-{requirement}', ROOT, ['-v', *targets])
++            mutant = Path(tmp)/'mutant'
++            shutil.copytree(ROOT/'task004', mutant/'task004', ignore=shutil.ignore_patterns('__pycache__', 'runs', 'hardening-*'))
++            path = mutant/'task004/client.py'
++            source = path.read_text()
++            function = next(node for node in ast.parse(source).body if isinstance(node, ast.FunctionDef) and node.name == 'request_synthetic')
++            guard = next(node for node in function.body if isinstance(node, ast.If) and 'parsed.scheme' in ast.get_source_segment(source, node))
++            lines = source.splitlines(keepends=True)
++            removed = ''.join(lines[guard.lineno-1:guard.end_lineno])
++            del lines[guard.lineno-1:guard.end_lineno]
++            path.write_text(''.join(lines))
++            (output/'mutation-A5-removed-guard.txt').write_text(removed)
++            run('mutation-A5', mutant, ['-v', *TARGETS['A5']], expected_failure=True)
++            baseline_client = baseline/'task004/client.py'
++            old_source = baseline_client.read_text()
++            old_function = next(n for n in ast.parse(old_source).body if isinstance(n, ast.FunctionDef) and n.name == 'request_synthetic')
++            old_guard = next(n for n in old_function.body if isinstance(n, ast.If) and 'parsed.scheme' in ast.get_source_segment(old_source, n))
++            old_lines = old_source.splitlines(keepends=True)
++            del old_lines[old_guard.lineno-1:old_guard.end_lineno]
++            baseline_client.write_text(''.join(old_lines))
++            old_test = subprocess.check_output(['git', 'show', BASELINE + ':task004/tests/test_workflow.py'], cwd=ROOT)
++            (baseline/'task004/tests/test_workflow.py').write_bytes(old_test)
++            run('baseline-mutant-A5-undetected', baseline, ['-v', *TARGETS['A5']])
++        # Required consecutive full-suite runs, with no intervening code edits.
++        for index in range(1, 4):
++            run(f'suite-{index}', ROOT, ['discover', '-s', 'task004/tests', '-v'])
++        dry_command = [sys.executable, '-m', 'task004.cli', 'dry-run', '--output-dir', str(output/'dry-run')]
++        dry = subprocess.run(dry_command, cwd=ROOT, capture_output=True, text=True, timeout=30)
++        (output/'dry-run.stdout.log').write_text(dry.stdout)
++        (output/'dry-run.stderr.log').write_text(dry.stderr)
++        summary['dry_run'] = {'command': dry_command, 'returncode': dry.returncode, 'result': json.loads(dry.stdout)}
++        if dry.returncode or summary['dry_run']['result']['status'] != 'PASS':
++            failures.append('dry-run')
++        if fingerprints() != summary['source_sha256']:
++            failures.append('source_changed_during_validation')
++    finally:
++        summary['finished_at_utc'] = utc()
++        summary['failed_expectations'] = failures
++        summary['status'] = 'PASS' if not failures and 'dry_run' in summary else 'FAIL'
++        (output/'validation.json').write_text(json.dumps(summary, indent=2)+'\n')
++    return 0 if summary['status'] == 'PASS' else 1
++
++
++if __name__ == '__main__':
++    raise SystemExit(main())

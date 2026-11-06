@@ -1,0 +1,42 @@
+test_nonloopback_endpoint_rejected_before_connection (task004.tests.test_workflow.WorkflowTests.test_nonloopback_endpoint_rejected_before_connection) ... 
+  test_nonloopback_endpoint_rejected_before_connection (task004.tests.test_workflow.WorkflowTests.test_nonloopback_endpoint_rejected_before_connection) (url='http://localhost:80') ... FAIL
+  test_nonloopback_endpoint_rejected_before_connection (task004.tests.test_workflow.WorkflowTests.test_nonloopback_endpoint_rejected_before_connection) (url='http://127.0.0.1:80/redirect') ... FAIL
+  test_nonloopback_endpoint_rejected_before_connection (task004.tests.test_workflow.WorkflowTests.test_nonloopback_endpoint_rejected_before_connection) (url='http://user:password@127.0.0.1:80') ... FAIL
+
+======================================================================
+FAIL: test_nonloopback_endpoint_rejected_before_connection (task004.tests.test_workflow.WorkflowTests.test_nonloopback_endpoint_rejected_before_connection) (url='http://localhost:80')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/task004-regression-b34zxa5y/mutant/task004/tests/test_workflow.py", line 163, in test_nonloopback_endpoint_rejected_before_connection
+    self.assertEqual(caught.exception.code, "NON_LOOPBACK_ENDPOINT")
+AssertionError: 'HTTP_ERROR' != 'NON_LOOPBACK_ENDPOINT'
+- HTTP_ERROR
++ NON_LOOPBACK_ENDPOINT
+
+
+======================================================================
+FAIL: test_nonloopback_endpoint_rejected_before_connection (task004.tests.test_workflow.WorkflowTests.test_nonloopback_endpoint_rejected_before_connection) (url='http://127.0.0.1:80/redirect')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/task004-regression-b34zxa5y/mutant/task004/tests/test_workflow.py", line 163, in test_nonloopback_endpoint_rejected_before_connection
+    self.assertEqual(caught.exception.code, "NON_LOOPBACK_ENDPOINT")
+AssertionError: 'HTTP_ERROR' != 'NON_LOOPBACK_ENDPOINT'
+- HTTP_ERROR
++ NON_LOOPBACK_ENDPOINT
+
+
+======================================================================
+FAIL: test_nonloopback_endpoint_rejected_before_connection (task004.tests.test_workflow.WorkflowTests.test_nonloopback_endpoint_rejected_before_connection) (url='http://user:password@127.0.0.1:80')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/task004-regression-b34zxa5y/mutant/task004/tests/test_workflow.py", line 163, in test_nonloopback_endpoint_rejected_before_connection
+    self.assertEqual(caught.exception.code, "NON_LOOPBACK_ENDPOINT")
+AssertionError: 'HTTP_ERROR' != 'NON_LOOPBACK_ENDPOINT'
+- HTTP_ERROR
++ NON_LOOPBACK_ENDPOINT
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.005s
+
+FAILED (failures=3)

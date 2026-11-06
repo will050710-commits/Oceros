@@ -157,8 +157,11 @@ class WorkflowTests(unittest.TestCase):
 
     def test_nonloopback_endpoint_rejected_before_connection(self):
         for url in ("https://example.com", "http://localhost:80", "http://127.0.0.1:80/redirect", "http://user:password@127.0.0.1:80"):
-            with self.subTest(url=url), self.assertRaises(ClientError):
-                request_synthetic(url, self.config)
+            with self.subTest(url=url), patch("task004.client.http.client.HTTPConnection") as connection:
+                with self.assertRaises(ClientError) as caught:
+                    request_synthetic(url, self.config)
+                self.assertEqual(caught.exception.code, "NON_LOOPBACK_ENDPOINT")
+                connection.assert_not_called()
 
     def test_connection_failure(self):
         with ManagedMockServer(self.config) as server:

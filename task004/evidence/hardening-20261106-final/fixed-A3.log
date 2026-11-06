@@ -1,0 +1,7 @@
+test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) ... ok
+test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.004s
+
+OK

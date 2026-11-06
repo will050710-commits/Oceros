@@ -46,12 +46,18 @@ class ResourceSampler:
         self.sample()
 
     def metrics(self):
+        if self.commit_peak_bytes is not None:
+            commit_unavailable_reason = None
+        elif self.samples == 0:
+            commit_unavailable_reason = "No valid process memory samples"
+        else:
+            commit_unavailable_reason = "Windows private bytes unavailable on this platform"
         return {
             "rss_peak_bytes": self.rss_peak_bytes,
             "commit_peak_bytes": self.commit_peak_bytes,
             "rss_source": "psutil simultaneous process-tree RSS samples",
             "commit_source": "psutil Windows private bytes" if self.commit_peak_bytes is not None else None,
-            "commit_unavailable_reason": None if self.commit_peak_bytes is not None else "Windows private bytes unavailable on this platform",
+            "commit_unavailable_reason": commit_unavailable_reason,
             "sample_interval_s": self.interval_s, "samples": self.samples,
             "incomplete_samples": self.incomplete_samples,
             "measurement_scope": "mock server and descendants after health readiness; excludes harness and startup",

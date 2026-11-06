@@ -11,7 +11,7 @@
     },
     "run_id": {
       "type": "string",
-      "pattern": "[0-9a-f]{32}"
+      "pattern": "^[0-9a-f]{32}$"
     },
     "evidence_label": {
       "const": "SYNTHETIC"
@@ -26,13 +26,34 @@
       ]
     },
     "reason_code": {
-      "type": "string"
+      "type": "string",
+      "enum": [
+        "CANCELLED",
+        "CLEANUP_FAILED",
+        "CLIENT_CLEANUP_FAILED",
+        "CLIENT_ERROR",
+        "CONNECTION_ERROR",
+        "HTTP_ERROR",
+        "INTERNAL_ERROR",
+        "INVALID_JSON",
+        "INVALID_RESPONSE",
+        "MEMORY_SAMPLING_FAILED",
+        "OK",
+        "PREFLIGHT_FAILED",
+        "RESPONSE_TOO_LARGE",
+        "SERVER_ERROR",
+        "SERVER_EXITED",
+        "STARTUP_TIMEOUT",
+        "TIMEOUT"
+      ]
     },
     "started_at_utc": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?\\+00:00$"
     },
     "finished_at_utc": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?\\+00:00$"
     },
     "metrics": {
       "type": "object",
@@ -74,7 +95,7 @@
         },
         "synthetic_output_tokens": {
           "type": [
-            "number",
+            "integer",
             "null"
           ],
           "minimum": 0

@@ -3,8 +3,10 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import platform
+import shutil
 import uuid
 
 import psutil
@@ -84,11 +86,16 @@ def source_provenance():
             "sources": result}
 
 
+def _write_synced(path, data):
+    with path.open("wb") as stream:
+        stream.write(data)
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
 def write_artifacts(output_dir, config, record, preflight):
     validate_record(record)
     safe_config = parse_config(config.to_dict()).to_dict()
-    run_dir = Path(output_dir) / record["run_id"]
-    run_dir.mkdir(parents=True, exist_ok=False)
     jsonl = (json.dumps(record, ensure_ascii=False, sort_keys=True, allow_nan=False) + "\n").encode()
     manifest = {
         "schema_version": 1, "task_id": "TASK-004", "run_id": record["run_id"],
@@ -109,6 +116,19 @@ def write_artifacts(output_dir, config, record, preflight):
         "results": {"file": "runs.jsonl", "sha256": sha256(jsonl), "records": 1},
     }
     validate_artifact(manifest, "manifest")
-    (run_dir / "runs.jsonl").write_bytes(jsonl)
-    (run_dir / "manifest.json").write_bytes(encoded(manifest))
+    manifest_bytes = encoded(manifest)
+    root = Path(output_dir)
+    run_dir = root / record["run_id"]
+    staging = root / f".{record['run_id']}.tmp"
+    root.mkdir(parents=True, exist_ok=True)
+    if run_dir.exists() or run_dir.is_symlink():
+        raise FileExistsError(record["run_id"])
+    staging.mkdir()
+    try:
+        _write_synced(staging / "runs.jsonl", jsonl)
+        _write_synced(staging / "manifest.json", manifest_bytes)
+        os.rename(staging, run_dir)
+    except BaseException:
+        shutil.rmtree(staging, ignore_errors=True)
+        raise
     return run_dir

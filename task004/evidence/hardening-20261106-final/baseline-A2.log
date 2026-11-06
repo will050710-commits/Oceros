@@ -1,0 +1,38 @@
+test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) ... 
+  test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='OSError') ... FAIL
+  test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='KeyboardInterrupt') ... FAIL
+
+======================================================================
+FAIL: test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='OSError')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/task004-regression-pxwyo1be/baseline/task004/tests/test_hardening_record.py", line 51, in test_second_write_failure_cleans_staging_for_baseexceptions
+    self.assertEqual(list(self.root.iterdir()), [])
+AssertionError: Lists differ: [PosixPath('/tmp/tmp0c001k6a/OSError/e1979d42784948cfbeb13b44cbc6044a')] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+PosixPath('/tmp/tmp0c001k6a/OSError/e1979d42784948cfbeb13b44cbc6044a')
+
+- [PosixPath('/tmp/tmp0c001k6a/OSError/e1979d42784948cfbeb13b44cbc6044a')]
++ []
+
+======================================================================
+FAIL: test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='KeyboardInterrupt')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/task004-regression-pxwyo1be/baseline/task004/tests/test_hardening_record.py", line 51, in test_second_write_failure_cleans_staging_for_baseexceptions
+    self.assertEqual(list(self.root.iterdir()), [])
+AssertionError: Lists differ: [PosixPath('/tmp/tmp0c001k6a/KeyboardInter[35 chars]4a')] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+PosixPath('/tmp/tmp0c001k6a/KeyboardInterrupt/e1979d42784948cfbeb13b44cbc6044a')
+
+- [PosixPath('/tmp/tmp0c001k6a/KeyboardInterrupt/e1979d42784948cfbeb13b44cbc6044a')]
++ []
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+FAILED (failures=2)

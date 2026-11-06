@@ -1,0 +1,14 @@
+test_a1_killed_cli_leaves_no_mock_or_owned_scratch (task004.tests.test_hardening_server.ServerHardeningTests.test_a1_killed_cli_leaves_no_mock_or_owned_scratch) ... FAIL
+
+======================================================================
+FAIL: test_a1_killed_cli_leaves_no_mock_or_owned_scratch (task004.tests.test_hardening_server.ServerHardeningTests.test_a1_killed_cli_leaves_no_mock_or_owned_scratch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/task004-regression-b34zxa5y/baseline/task004/tests/test_hardening_server.py", line 88, in test_a1_killed_cli_leaves_no_mock_or_owned_scratch
+    self.assertFalse(any(active(child) for child in children), "mock survived harness SIGKILL")
+AssertionError: True is not false : mock survived harness SIGKILL
+
+----------------------------------------------------------------------
+Ran 1 test in 5.142s
+
+FAILED (failures=1)
