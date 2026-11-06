@@ -1,0 +1,20 @@
+test_inherited_ignore_is_preserved (task004.tests.test_review_cli.ReviewCliTests.test_inherited_ignore_is_preserved) ... FAIL
+
+======================================================================
+FAIL: test_inherited_ignore_is_preserved (task004.tests.test_review_cli.ReviewCliTests.test_inherited_ignore_is_preserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-baseline>/task004/tests/test_review_cli.py", line 71, in test_inherited_ignore_is_preserved
+    self.assertEqual(cli.main(["dry-run"]), 0)
+                     ^^^^^^^^^^^^^^^^^^^^^
+  File "<review-baseline>/task004/cli.py", line 98, in main
+    record, _ = run_dry_run(config, Path(args.output_dir), cancel)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<review-baseline>/task004/tests/test_review_cli.py", line 67, in fake
+    self.assertFalse(cancel.is_set(), "inherited ignored SIGHUP requested cancellation")
+AssertionError: True is not false : inherited ignored SIGHUP requested cancellation
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)

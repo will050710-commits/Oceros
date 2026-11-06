@@ -20,7 +20,7 @@ Trong phiên Codex cloud này, sandbox mặc định chặn socket. Các lệnh 
 
 ## CLI và cấu hình
 
-Ba lệnh `validate-config`, `preflight`, `dry-run` nhận `--config` (mặc định `task004/mock_config.json`) và `--output-dir` (mặc định `task004/runs`). Mỗi dry-run tạo thư mục run ID mới chứa `manifest.json` và một dòng `runs.jsonl`; không ghi đè lượt trước. Exit code: PASS=0, lỗi lượt chạy=1, cấu hình sai=2, preflight fail=3, timeout=124, hủy=130. SIGINT/SIGTERM/SIGHUP/SIGBREAK (nếu có) chỉ đặt yêu cầu hủy qua Event; tín hiệu lặp bị hấp thụ trong lúc cleanup/ghi artifact. CLI trả CANCELLED/130 khi xử lý hủy. SIGKILL không thể ghi artifact; watchdog của mock xử lý tiến trình còn lại.
+Ba lệnh `validate-config`, `preflight`, `dry-run` nhận `--config` (mặc định `task004/mock_config.json`) và `--output-dir` (mặc định `task004/runs`). Mỗi dry-run tạo thư mục run ID mới chứa `manifest.json` và một dòng `runs.jsonl`; không ghi đè lượt trước. Exit code: PASS=0, lỗi lượt chạy=1, cấu hình sai=2, preflight fail=3, timeout=124, hủy=130. SIGINT/SIGTERM/SIGHUP/SIGBREAK (nếu có) chỉ đặt cờ CancellationFlag không lock (set chỉ gán boolean; wait polling); tín hiệu lặp bị hấp thụ trong lúc cleanup/ghi artifact. CLI trả CANCELLED/130 khi xử lý hủy. SIGKILL không thể ghi artifact; watchdog của mock xử lý tiến trình còn lại.
 
 - `n_ctx` phải khai báo tường minh và là số nguyên dương; 4096 trong ví dụ chỉ là cấu hình mock.
 - `runtime` chỉ nhận `mock`, `thinking` chỉ nhận `false`, `max_new_tokens` nằm trong 1–96.
@@ -62,4 +62,12 @@ Tạo bộ chứng cứ bằng lệnh sau (đường dẫn output phải mới):
 
 Runner lấy baseline từ Git archive vào thư mục tạm, chạy hồi quy A1–A4 trên cũ/mới, kiểm A5 bằng mutation trên test cũ/mới, chạy toàn bộ suite ba lần liên tiếp rồi dry-run thật. Không sửa working source, không tạo worktree, không sửa evidence cũ. Các số đếm và log được lấy trực tiếp từ subprocess. A5 functional test có thể qua baseline vì guard vốn tồn tại; bằng chứng là test cũ không bắt được mutation còn test mới bắt được.
 
-Lượt bàn giao hiện hành: **87/87 test, ba lần liên tiếp, không failure/error/skip** trên Linux/Python 3.12.14. Xem [validation.json](evidence/hardening-20261106-final/validation.json), các `suite-*.log`, [mutation A5](evidence/hardening-20261106-final/mutation-A5.log) và [handoff](HANDOFF_REPORT_TASK-004.md). Số liệu được lấy từ runner, không từ số dựng thử trong brief.
+## Review vòng hai: tín hiệu và độ tin cậy evidence
+
+Inherited SIG_IGN (nohup/SIGHUP) và handler None được giữ nguyên. CLI không gọi Event.set trong signal handler; cờ hủy đơn điệu không hỗ trợ clear/reset. Các handler đã thay đều phục hồi khi ra khỏi main.
+
+Lỗi cleanup sampler/server **ưu tiên hơn** CANCELLED/TIMEOUT: FAIL với mã MEMORY_SAMPLING_FAILED/CLEANUP_FAILED, exit 1. Nếu request đã hoàn tất, tín hiệu trong cleanup/ghi artifact được hấp thụ và lượt được ghi xong theo kết quả đã có. Lỗi bất ngờ ở biên main trả JSON INTERNAL_ERROR; nếu artifact/index hỏng, không bảo đảm có file kết quả. Provenance có kiểm shape; PASS bắt buộc có samples và RSS hợp lệ.
+
+Runner truyền PYTHONWARNINGS cho tests/CLI con, chặn Exception ignored/ResourceWarning/Traceback trong successful logs và kiểm assertion cụ thể của expected baseline failures. Nó không chứng minh không leak ở output không được thu thập. Đường dẫn local đã biết trong log/metadata được chuẩn hóa thành placeholder, nội dung chẩn đoán giữ nguyên. Fingerprint bao cả mock_config.json và references. Nhãn execution lấy từ platform thực; Windows vẫn cần xác minh riêng.
+
+Bộ hiện hành: **106/106 test trong ba lượt liên tiếp**, không error/failure/skip hoặc marker bị chặn; Linux/Python 3.12.14. Xem [review packet](evidence/review2-20261107-release/REVIEW_PACKET.md), [validation.json](evidence/review2-20261107-release/validation.json), [source đầy đủ](evidence/review2-20261107-release/CURRENT_SOURCE.md) và [handoff](HANDOFF_REPORT_TASK-004.md). Evidence cũ không bị chỉnh sửa.

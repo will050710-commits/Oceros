@@ -1,0 +1,6 @@
+test_a1_killed_cli_leaves_no_mock_or_owned_scratch (task004.tests.test_hardening_server.ServerHardeningTests.test_a1_killed_cli_leaves_no_mock_or_owned_scratch) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.329s
+
+OK

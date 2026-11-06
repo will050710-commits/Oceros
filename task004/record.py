@@ -6,6 +6,7 @@ import math
 import os
 from pathlib import Path
 import platform
+import re
 import shutil
 import uuid
 
@@ -19,7 +20,8 @@ STATUS_REASONS = {
     "PASS": {"OK"},
     "FAIL": {"HTTP_ERROR", "INVALID_JSON", "INVALID_RESPONSE", "CONNECTION_ERROR",
              "RESPONSE_TOO_LARGE", "CLIENT_ERROR", "SERVER_ERROR", "SERVER_EXITED",
-             "INTERNAL_ERROR", "CLEANUP_FAILED", "MEMORY_SAMPLING_FAILED", "CLIENT_CLEANUP_FAILED"},
+             "INTERNAL_ERROR", "CLEANUP_FAILED", "MEMORY_SAMPLING_FAILED", "CLIENT_CLEANUP_FAILED",
+             "NON_LOOPBACK_ENDPOINT", "SERVER_NOT_STARTED", "SERVER_ALREADY_STARTED"},
     "TIMEOUT": {"TIMEOUT", "STARTUP_TIMEOUT"},
     "CANCELLED": {"CANCELLED"},
     "PREFLIGHT_FAILED": {"PREFLIGHT_FAILED"},
@@ -65,6 +67,33 @@ def validate_record(record):
         raise ValueError("MOCK_PHASE_METRICS_UNAVAILABLE")
     if record["status"] == "PASS" and (record["metrics"]["request_latency_s"] is None or record["metrics"]["synthetic_output_tokens"] != 1):
         raise ValueError("PASS_REQUIRES_REQUEST_EVIDENCE")
+    if record["status"] == "PASS":
+        resources = record["resources"]
+        if (resources is None or type(resources["samples"]) is not int or resources["samples"] <= 0
+                or type(resources["rss_peak_bytes"]) is not int or resources["rss_peak_bytes"] <= 0):
+            raise ValueError("PASS_REQUIRES_RESOURCE_EVIDENCE")
+
+
+def _validate_provenance_index(index):
+    """Malformed metadata is a safe ValueError, never a KeyError/TypeError leak."""
+    if (type(index) is not dict or set(index) - {"scope", "sources"}
+            or "sources" not in index or type(index["sources"]) is not list
+            or ("scope" in index and type(index["scope"]) is not str)):
+        raise ValueError("INVALID_PROVENANCE_INDEX")
+    names = set()
+    for item in index["sources"]:
+        if type(item) is not dict or set(item) != {"file", "bytes", "sha256"}:
+            raise ValueError("INVALID_PROVENANCE_ENTRY")
+        name = item["file"]
+        if (type(name) is not str or not name or name in (".", "..")
+                or any(char in name for char in ("/", "\\", ":", "\x00"))
+                or Path(name).name != name or name in names):
+            raise ValueError("INVALID_PROVENANCE_PATH")
+        if (type(item["bytes"]) is not int or item["bytes"] < 0
+                or type(item["sha256"]) is not str
+                or re.fullmatch(r"[0-9a-f]{64}", item["sha256"]) is None):
+            raise ValueError("INVALID_PROVENANCE_ENTRY")
+        names.add(name)
 
 
 def source_provenance():
@@ -73,12 +102,13 @@ def source_provenance():
     if not index_path.exists():
         return {"status": "UNVERIFIED", "sources": []}
     index = json.loads(index_path.read_text(encoding="utf-8"))
+    _validate_provenance_index(index)
     result = []
     for item in index["sources"]:
         name = item["file"]
-        if Path(name).name != name:
-            raise ValueError("INVALID_PROVENANCE_PATH")
         path = root / name
+        if path.is_symlink():
+            raise ValueError("INVALID_PROVENANCE_PATH")
         actual = sha256(path.read_bytes()) if path.is_file() else None
         result.append({"file": name, "expected_sha256": item["sha256"], "actual_sha256": actual,
                        "integrity": "MATCH" if actual == item["sha256"] else "UNVERIFIED"})

@@ -1,0 +1,1039 @@
+diff --git a/task004/HANDOFF_REPORT_TASK-004.md b/task004/HANDOFF_REPORT_TASK-004.md
+index 45ac51f..1e43e1b 100644
+--- a/task004/HANDOFF_REPORT_TASK-004.md
++++ b/task004/HANDOFF_REPORT_TASK-004.md
+@@ -1,6 +1,6 @@
+-# TASK-004 — Handoff hardening A1–A5 / B1–B4
++# TASK-004 — Handoff review vòng hai
+ 
+-Ngày 06/11/2026 (Asia/Bangkok). Artifact/log dùng UTC. Báo cáo này thay báo cáo implementation ban đầu; nguồn handoff lịch sử trong references/ và evidence đã commit giữ nguyên byte.
++Ngày 07/11/2026 (Asia/Bangkok); timestamp artifact dùng UTC. Báo cáo này thay handoff 06/11; các nguồn và evidence đã commit được giữ nguyên.
+ 
+ ## TASK_ID
+ 
+@@ -8,93 +8,96 @@ TASK-004.
+ 
+ ## OWNER
+ 
+-Codex; các agent hỗ trợ triển khai và rà soát. Không giả nhận review chấp thuận của Claude C. Brief sửa và số 75 test dựng thử do người dùng cung cấp là REPORTED, không phải evidence của lượt này.
++Codex. Một agent hỗ trợ sửa record/provenance; agent chính hoàn tất code/tests/runner. Không giả nhận review chấp thuận độc lập. Nội dung review người dùng gửi là nguồn yêu cầu, các thí nghiệm reviewer báo được tái kiểm khi nêu dưới đây.
+ 
+ ## STATUS
+ 
+-**IMPLEMENTED / READY_FOR_REVIEW — Linux-verified, chỉ launcher/client/mock.** A1–A5 và B1–B4 đã xử lý; toàn bộ suite chạy ba lần liên tiếp PASS. Windows UNVERIFIED, model thật NOT_RUN.
++**IMPLEMENTED / READY_FOR_REVIEW — Linux-verified trong phạm vi mock.** Đã sửa hoặc xác định chính sách và kiểm thử cả mục 1–8 cùng hai minor. Ba lượt suite release PASS, log gate PASS. Windows UNVERIFIED; model thật NOT_RUN.
+ 
+ ## BASELINE_REVISION
+ 
+-`2cb916803cef6c2c52f03107fddeb866c407ae27`, đã commit/push lên GitHub ở đợt trước. Bản sửa hiện hành được đóng gói cùng code, tests, báo cáo và evidence để review. Nguồn yêu cầu là brief A1–A5/B1–B4 người dùng gửi trong phiên 06/11. Giữ quyết định scope launcher/mock; không gộp ticket/ledger/CVC.
++Review dựa trên `07eb03cd0f01d16feef6f090cd5ed74c4c075eeb`; baseline ban đầu cho A1–A5 là `2cb916803cef6c2c52f03107fddeb866c407ae27`. Đã đối chiếu 4/4 prefix SHA reviewer cung cấp cho cli.py, record.py, test_hardening_record.py và validate_hardening.py: khớp revision 07eb03c. Code ở GitHub trước phiên đúng bản được reviewer đọc.
+ 
+ ## FILES_READ
+ 
+-Đối chiếu baseline, brief review, code/tests hiện hành, README, handoff trước, hai schema và evidence cũ. Context/task nguồn giữ trong CONTEXT.md/references; không nghiên cứu lại model hay xác minh những claim trong nguồn. Hai schema version 1 mới vẫn nhận manifest/record đã commit.
++Đọc toàn bộ review dán, source/tests/runner/schema và evidence của bản 07eb03c; đối chiếu handoff/context. Không tái nghiên cứu model hoặc xác minh lại claims hardware/license trong tài liệu nguồn. References và evidence cũ không sửa.
+ 
+ ## FILES_CHANGED
+ 
+-Sửa cli/client/config/mock_server/record/sampler/schema/server, hai JSON schema, test loopback cũ. Thêm bốn module test_hardening_*, runner `tools/validate_hardening.py`, log kiểm thử/mutation/baseline, dry-run mới, diff review và cập nhật README/HANDOFF/SHA256SUMS. Các tệp evidence cũ và references không bị sửa. Không thay dependency: chỉ stdlib + psutil==7.2.2.
++Thêm cancellation.py, unit fixture builder và tests review CLI/record/runner. Sửa cli.py, record.py, run schema, tests artifact/workflow và runner. Cập nhật README/HANDOFF/SHA256SUMS; thêm evidence review vòng hai, cumulative review.patch, round2.patch và CURRENT_SOURCE.md để reviewer đọc đầy đủ source. Dependency vẫn stdlib + psutil 7.2.2.
+ 
+ ## WORK_COMPLETED
+ 
+-- A1: mock nhận parent PID và lifetime=startup_timeout+timeout+30; watchdog daemon giữ psutil Process identity, thoát khi cha mất/zombie hoặc hết hạn; xóa scratch riêng khi cha mất. Không tạo được parent Process thì thoát ngay.
+-- A2: các signal có hỗ trợ SIGINT/SIGTERM/SIGHUP/SIGBREAK chỉ đặt cancel Event, hấp thụ lặp; khôi phục handlers. Giữ KeyboardInterrupt cho library. Artifact được validate/encode trước; ghi/fsync JSONL rồi manifest trong staging; một rename công bố thư mục. Mọi BaseException trong ghi/rename dọn staging; không ghi đè run có sẵn.
+-- A3: timeout/startup/delay tối đa 3600 giây; sample interval 0.01–60. Cấu hình 1e10/1e300 bị chặn trước runtime.
+-- A4: schema có cận số, anchored patterns, reason enum, timestamp shape, integer/null token. check_schema đệ quy fail-closed với keyword hoặc cấu trúc không hỗ trợ. Version giữ 1. Quan hệ status↔reason ở validate_record; pairing ảnh ở Config.
+-- A5: test endpoint chặn đúng NON_LOOPBACK_ENDPOINT và không tạo HTTPConnection; bằng chứng mutation cũ/mới được lưu.
+-- B1: cleanup không đè primary cancellation/KeyboardInterrupt. B2: không signal process group rỗng. B3: env allowlist PATH/SYSTEMROOT/TEMP/TMP/LANG/LC_ALL. B4: CONFIG_ONLY, phân biệt commit unavailable do thiếu sample/platform, ValueError artifact ra JSON INTERNAL_ERROR thay traceback.
++1. Thay Event trong CLI bằng CancellationFlag đơn điệu: set chỉ gán boolean, is_set đọc boolean, wait polling/time.sleep, không lock hoặc clear. Test ép tín hiệu thứ hai vào đúng dòng Event.set giữ lock làm baseline treo có timeout kiểm soát; bản sửa hoàn tất.
++2. Giữ nguyên inherited SIG_IGN (gồm nohup/SIGHUP). Không cài đè handler mà Python báo None, vì không thể phục hồi None bằng signal.signal. Các handler đã thay đều được phục hồi.
++3. Runner không chỉ tin rc=0: fixed/suite/dry-run bị fail khi có Exception ignored, ResourceWarning hoặc Traceback. PYTHONWARNINGS truyền vào subprocess test/CLI; tests giữ stderr của CLI cũng kiểm ba marker. Test riêng sinh socket leak finalizer trả rc=0 để chứng minh gate bắt được.
++4. Preflight/server init vào try, có fallback metadata null khi chưa đo; sampler/server cleanup bắt Exception; main có last-resort JSON INTERNAL_ERROR không lộ nội dung exception. Provenance index kiểm shape/path/type/hash và báo ValueError có mã an toàn.
++5. **Chính sách cleanup:** lỗi sampler/server cleanup ưu tiên hơn CANCELLED/TIMEOUT → FAIL/MEMORY_SAMPLING_FAILED hoặc CLEANUP_FAILED, exit 1. Không âm thầm gọi cleanup thất bại là hủy thành công. Signal đến sau request đã hoàn tất chỉ được hấp thụ để hoàn tất cleanup/ghi artifact, không đổi kết quả PASS đã hoàn tất. Có test cho cả hai chính sách.
++6. Bổ sung NON_LOOPBACK_ENDPOINT, SERVER_NOT_STARTED, SERVER_ALREADY_STARTED vào reason registry/schema. AST test kiểm các literal ClientError/ServerError phát ra đều được đăng ký. PASS yêu cầu samples>0 và RSS dương trong validate_record, không chỉ CLI.
++7. Temp archive destination được resolve trước khi kiểm containment. Scope dựa vào platform thực, không hardcode Linux. Fingerprint thêm mock_config, requirements/setup và toàn bộ references. Command/cwd dùng placeholder; log chỉ chuẩn hóa các prefix đường dẫn local đã biết để tránh username, giữ nguyên chẩn đoán.
++8. Artifact unit tests dựng fixture riêng, không lấy immutable runtime evidence. Chèn OSError/KeyboardInterrupt tại hai open, hai fsync và rename; tất cả dọn staging. Signal subprocess chờ marker request-phase thay sleep đoán pha; test riêng đưa burst signal đúng trong cleanup và ghi file. Pre-set cancel đã có test ngăn spawn.
+ 
+ ## EVIDENCE
+ 
+-Evidence hiện hành: `evidence/hardening-20261106-final/validation.json`; sinh tự động bằng runner, cùng raw logs từng subprocess. Bắt đầu `2026-11-06T11:30:09.259824+00:00`, kết thúc `2026-11-06T11:30:46.999551+00:00`. Python 3.12.14, psutil 7.2.2. File này chứa command, exit codes, số test và SHA-256 của source/test/schema/runner lúc chạy; xác nhận source không đổi trong suốt lượt kiểm.
++Evidence release: `evidence/review2-20261107-release/validation.json`; bắt đầu 2026-11-06T17:48:18.633107+00:00, kết thúc 2026-11-06T17:48:59.673773+00:00. Python 3.12.14, psutil 7.2.2. Summary sinh tự động từ subprocess; fingerprint source/tests/schema/config/references được kiểm không đổi trong suốt lượt.
+ 
+-- `baseline-A1.log` … `baseline-A4.log`: assertions thất bại trên production baseline; `fixed-A1.log` … `fixed-A4.log`: cùng test qua code mới. Không dùng import error làm bằng chứng hồi quy.
+-- A5 là sửa độ mạnh của test, không sửa guard production vốn đã tồn tại. Vì vậy functional test A5 vẫn PASS trên baseline. `baseline-mutant-A5-undetected.log` cho thấy test cũ PASS dù bỏ guard; `mutation-A5.log` cho thấy test mới FAIL với cùng mutation. `mutation-A5-removed-guard.txt` ghi block đã xóa. Không tuyên bố A5 functional test fail trên baseline nguyên bản.
+-- Dry-run mới ID `c728f4bfa7ee4ac9b85067c8f8c222ea`, exit 0, PASS/OK/SYNTHETIC; manifest/JSONL trong `dry-run/c728f4bfa7ee4ac9b85067c8f8c222ea/`.
+-- `review.patch` là diff source/tests/tools/docs so với baseline; không chứa evidence/checksum để tránh vòng tự tham chiếu. SHA256SUMS bao toàn bộ bộ bàn giao, gồm logs và diff.
+-- Giữ cả lượt kiểm ban đầu `evidence/hardening-20261106/`: ba suite đã PASS, nhưng runner đánh dấu FAIL vì cơ chế injection A2 không bắt cách Path.open dùng keyword ở baseline và vì mong nhầm functional A5 phải fail. Sau sửa test/runner, lượt final ở trên xác minh lại toàn bộ. Không chỉnh tay hoặc thay thế log của lượt đó.
++- `review-baseline-test_nested_signal_cannot_deadlock_handler.log`: lỗi deadlock tái hiện trên 07eb03c, timeout được test chuyển thành assertion đúng lỗi. `fixed-review-*.log`: bản sửa PASS.
++- `review-baseline-test_inherited_ignore_is_preserved.log`: tái hiện inherited ignored SIGHUP bị đổi thành yêu cầu hủy; fixed PASS.
++- `baseline-A1.log` … `baseline-A4.log`: runner yêu cầu từng FAIL block đúng method và fragment assertion của defect, không chấp nhận một assertion bất kỳ hoặc import error. Baseline lỗi có chủ đích vẫn được giữ traceback để review.
++- `baseline-mutant-A5-undetected.log` và `mutation-A5.log`: test cũ bỏ lọt guard bị xóa, test mới bắt được. A5 functional test vẫn PASS baseline nguyên bản vì guard đã tồn tại.
++- Dry-run `552dd6b3afe24dda8421ceb2d550e28d`: PASS/OK/SYNTHETIC, exit 0, log gate sạch. Manifest/JSONL trong dry-run/ của thư mục release.
++- Log vòng trước hardening-20261106-final không có Exception ignored/ResourceWarning. Đây chỉ là kiểm nội dung log, không chứng minh tất cả tiến trình chưa từng leak.
++- Lượt `review2-20261107` có suite PASS nhưng summary FAIL vì matcher A4 ban đầu chỉ nhận schema assertion, chưa nhận config assertion cùng kiểm biên. Lượt `review2-20261107-final` PASS trước khi thêm gate stderr trong test giữ output của CLI. Release đã chạy lại đầy đủ sau thay đổi cuối. Giữ nguyên các evidence đó, không chỉnh tay số liệu.
+ 
+ ## TESTS_EXECUTED
+ 
+-Lệnh tái tạo từ repo root (output cần mới):
++Từ repo root:
+ 
+ ```bash
+-/workspace/.venvs/oceros-task004/bin/python task004/tools/validate_hardening.py --output task004/evidence/hardening-new-run
++/workspace/.venvs/oceros-task004/bin/python task004/tools/validate_hardening.py --output task004/evidence/review2-new-run
+ ```
+ 
+-Runner thực thi `python -W error::ResourceWarning -m unittest discover -s task004/tests -v` ba lần liên tiếp. Baseline lấy bằng git archive vào thư mục tạm; mutation chạy trên bản sao; không sửa working source hoặc tạo worktree. Dùng require_escalated cho socket loopback/tín hiệu test do sandbox mặc định chặn socket.
++Runner lấy Git archive của hai baseline, chạy selected regressions trên cũ/mới, mutation cũ/mới, rồi `python -W error::ResourceWarning -m unittest discover -s task004/tests -v` ba lần liên tiếp và dry-run. Không sửa working source, không tạo worktree. Lệnh socket/tín hiệu dùng quyền executor cho loopback. Test leak finalizer là fixture cố ý, output được test đưa qua gate thay vì để cảnh báo ẩn.
+ 
+ ## TEST_RESULTS
+ 
+ | Lượt | Tests | Failures | Errors | Skipped | Wall seconds |
+ | --- | ---: | ---: | ---: | ---: | ---: |
+-| suite-1 | 87 | 0 | 0 | 0 | 10.300 |
+-| suite-2 | 87 | 0 | 0 | 0 | 10.375 |
+-| suite-3 | 87 | 0 | 0 | 0 | 10.386 |
++| suite-1 | 106 | 0 | 0 | 0 | 10.372 |
++| suite-2 | 106 | 0 | 0 | 0 | 10.299 |
++| suite-3 | 106 | 0 | 0 | 0 | 10.326 |
+ 
+-Số test thực tế ba lượt: 87, 87, 87; khác số 75 trong bản dựng thử của reviewer vì bộ test ở đây chia thành các method khác. Không có lỗi/skip ở suite hiện hành. Cả SIGINT/SIGTERM/SIGHUP đơn lẻ, burst SIGINT/SIGTERM khoảng cách 0/1/3 ms, SIGKILL watchdog, staging OSError/KeyboardInterrupt, bounds/schema và real Linux blocked-connect đã thực thi. Không coi expected baseline/mutant failure là lỗi suite mới.
++Cả ba lượt 106/106; không diagnostic marker bị chặn, không failed expectation. Kiểm A1–A5 và hai hồi quy mới đạt kết quả mong đợi. Generated metadata hiện dùng placeholder thay đường dẫn interpreter/cwd cá nhân. Source schema/artifact integrity được đối chiếu riêng sau validation.
+ 
+ ## BENCHMARK_RESULTS
+ 
+-**NOT_RUN.** Dry-run chỉ SYNTHETIC. Không model inference, TTFT thật, prefill/decode, corpus/scorer/CVC hoặc baseline campaign. Metric phase giữ null; dataset chưa freeze; không PROMOTE.
++NOT_RUN. Không model thật, TTFT/prefill/decode thật, corpus/scorer/CVC, freeze hay PROMOTE. Các artifact runtime chỉ SYNTHETIC; metric không hỗ trợ để null.
+ 
+ ## COST_OR_RESOURCE_USAGE
+ 
+-Không gọi API model trả phí, tải model, training, Colab/GPU hay mua dịch vụ. Runtime psutil đã có. Thời gian test trong bảng lấy từ runner thật; không đo tổng CPU/RAM hoặc chi phí/token phiên ChatGPT. Resource samples trong dry-run chỉ thuộc mock trên máy cloud.
++Không API model trả phí, model downloads, training, Colab/GPU hay mua dịch vụ. Chi phí/token phiên ChatGPT không được cung cấp; UNKNOWN. Thời gian subprocess test trong bảng là quan sát thực; không đo tổng tài nguyên phiên.
+ 
+ ## KNOWN_LIMITATIONS
+ 
+-- **Windows UNVERIFIED**: chưa có Job Object; chưa kiểm socket.shutdown đánh thức recv từ thread khác, Ctrl+C phát toàn console, SIGBREAK, os.rename thư mục, SYSTEMROOT allowlist, GetPerformanceInfo/private bytes, wheel psutil==7.2.2 cho CPython 3.14. Chỉ ghi POSIX changes là Linux-verified.
+-- B1 giữ primary cancellation nhưng connect worker daemon có thể còn tới socket timeout (cận 3600 giây). Chưa chuyển connect sang nonblocking; không khẳng định mọi cancel dừng mọi worker ngay.
+-- Signal handler chỉ yêu cầu hủy; tín hiệu đến sau khi chương trình đã kết thúc nằm ngoài hợp đồng. SIGKILL không thể ghi artifact hoặc chạy finally; watchdog ngăn mock tiếp tục sống. SIGKILL giữa các lần ghi có thể để lại staging chưa công bố.
+-- Atomic rename là công bố cả thư mục cùng lúc, không chứng minh crash/power-loss durability; không fsync thư mục. Output directories giả định nằm trong workspace tin cậy, không chống đối thủ đồng thời thay path.
+-- Fixed mock không daemonize hoặc spawn model; process group không bắt tiến trình cố ý tách session. Watchdog có độ trễ polling và lifetime dự phòng.
+-- Sampling không bao startup/harness và có thể bỏ lỡ peak ngắn. Pixel/token config chưa tokenize ảnh thật. Schema chỉ hỗ trợ tập keyword công bố, không phải engine JSON Schema đầy đủ.
+-- Model/runtime flags/hardware laptop và quyền corpus vẫn chưa xác minh. Không publish môi trường trong lượt sửa này.
++- Windows UNVERIFIED: chưa có Job Object; chưa kiểm socket.shutdown đánh thức recv từ thread khác, Ctrl+C toàn console, SIGBREAK, directory rename, SYSTEMROOT allowlist, GetPerformanceInfo/private bytes hay wheel psutil 7.2.2 CPython 3.14. Test simulating platform label không xác minh Windows runtime.
++- B1 ở client giữ primary cancellation nhưng worker connect bị chặn có thể tồn tại tới socket timeout (cận 3600s). Chưa dùng nonblocking connect. Cleanup thất bại ở cấp run có chính sách FAIL riêng như trên.
++- CancellationFlag là cờ đơn điệu tối thiểu, không phải Event tổng quát; không clear/reset. Test reentrancy tại Python handler không phải bằng chứng cho mọi interpreter/OS.
++- Signals sau khi CLI hoàn tất/khôi phục handler thuộc hành vi OS; SIGKILL không thể tạo artifact/finally. Watchdog dọn mock, nhưng SIGKILL giữa ghi có thể để staging. Không directory fsync/power-loss guarantee.
++- Log gate phát hiện marker trong output đã thu thập; không chứng minh không có leak ở output đã bị devnull, bị cắt hoặc tiến trình ngoài phạm vi. Mock server vẫn quiet theo thiết kế. Chuẩn hóa prefix local không phải bộ lọc mọi PII tùy ý; không ghi secrets/raw nội dung ứng dụng.
++- Fixture compatibility riêng của schema vẫn đọc evidence lịch sử có chủ đích; atomic unit tests đã tách dependency đó. Source reference integrity không xác minh model/license/hardware claims.
+ 
+ ## RISKS
+ 
+-Nhầm SYNTHETIC thành benchmark; nhầm Linux-verified thành Windows-verified; dùng config guard mock làm ngân sách model; coi hash input là bằng chứng runtime/license. Các cổng model thật giữ khóa. Expected-failure logs phải được đọc cùng validation.json, không đánh đồng với suite mới fail.
++Nhầm test PASS với leak-free tuyệt đối, Linux với Windows, mock với model; nhầm expected baseline traceback là lỗi release. Cần đọc validation.json cùng log và các giới hạn. Top-level safe error có thể không có artifact nếu chính việc ghi artifact hoặc metadata nguồn bị hỏng; khi đó CLI báo FAIL/INTERNAL_ERROR hoặc ARTIFACT_WRITE_FAILED thay traceback, không tuyên bố đã lưu kết quả.
+ 
+ ## RECOMMENDATION
+ 
+-Review diff, log final và nguồn tests để quyết định chấp nhận bản hardening. Tách Windows/model thật/CVC thành đợt có điều kiện riêng. Review nội bộ của agent không thay review chấp thuận độc lập của Claude C.
++Reviewer đọc CURRENT_SOURCE.md, cumulative review.patch, round2.patch, validation.json và các baseline logs được gửi đầy đủ trong release directory. Không coi review vòng trước giới hạn tập file là review đầy đủ source. Tiếp tục giữ runtime thật khóa tới khi review/điều kiện môi trường riêng được chốt.
+ 
+ ## NEXT_ACTION
+ 
+-Chuyển commit/diff và thư mục evidence final cho reviewer; dùng các link GitHub của bản cập nhật để đọc trực tiếp. Sau chấp nhận, kiểm Windows với các giới hạn nêu trên trước khi nối runtime thật. Không tự mở calibration/model/corpus từ mock PASS.
++Gửi commit và release review packet cho reviewer để đưa verdict mới. Nếu chấp nhận, Windows là bước xác minh riêng; không tự mở model thật hoặc CVC. GitHub có source và log để người dùng đọc trực tiếp, không cần tải ZIP.
+ 
+ ## UNVERIFIED_CLAIMS
+ 
+-Windows, model thật, hardware laptop, model/mmproj/flags/license, corpus/gold/tokenizer/DEV/bridge/CVC, freeze, review độc lập mới và restore/publish môi trường. Kết quả 75/75 của bản dựng thử là USER-REPORTED; số trong báo cáo hiện hành lấy từ runner thực thi mới.
++Windows/model thật/hardware laptop/model flags/license/corpus/gold/tokenizer/DEV/bridge/CVC/freeze, review chấp thuận mới và publish/restore môi trường. Thí nghiệm reviewer báo giữ REPORTED ngoại trừ những lỗi đã tái hiện cụ thể trong log của phiên này.
+diff --git a/task004/README.md b/task004/README.md
+index 615816e..4fe1877 100644
+--- a/task004/README.md
++++ b/task004/README.md
+@@ -20,7 +20,7 @@ Trong phiên Codex cloud này, sandbox mặc định chặn socket. Các lệnh
+ 
+ ## CLI và cấu hình
+ 
+-Ba lệnh `validate-config`, `preflight`, `dry-run` nhận `--config` (mặc định `task004/mock_config.json`) và `--output-dir` (mặc định `task004/runs`). Mỗi dry-run tạo thư mục run ID mới chứa `manifest.json` và một dòng `runs.jsonl`; không ghi đè lượt trước. Exit code: PASS=0, lỗi lượt chạy=1, cấu hình sai=2, preflight fail=3, timeout=124, hủy=130. SIGINT/SIGTERM/SIGHUP/SIGBREAK (nếu có) chỉ đặt yêu cầu hủy qua Event; tín hiệu lặp bị hấp thụ trong lúc cleanup/ghi artifact. CLI trả CANCELLED/130 khi xử lý hủy. SIGKILL không thể ghi artifact; watchdog của mock xử lý tiến trình còn lại.
++Ba lệnh `validate-config`, `preflight`, `dry-run` nhận `--config` (mặc định `task004/mock_config.json`) và `--output-dir` (mặc định `task004/runs`). Mỗi dry-run tạo thư mục run ID mới chứa `manifest.json` và một dòng `runs.jsonl`; không ghi đè lượt trước. Exit code: PASS=0, lỗi lượt chạy=1, cấu hình sai=2, preflight fail=3, timeout=124, hủy=130. SIGINT/SIGTERM/SIGHUP/SIGBREAK (nếu có) chỉ đặt cờ CancellationFlag không lock (set chỉ gán boolean; wait polling); tín hiệu lặp bị hấp thụ trong lúc cleanup/ghi artifact. CLI trả CANCELLED/130 khi xử lý hủy. SIGKILL không thể ghi artifact; watchdog của mock xử lý tiến trình còn lại.
+ 
+ - `n_ctx` phải khai báo tường minh và là số nguyên dương; 4096 trong ví dụ chỉ là cấu hình mock.
+ - `runtime` chỉ nhận `mock`, `thinking` chỉ nhận `false`, `max_new_tokens` nằm trong 1–96.
+@@ -62,4 +62,12 @@ Tạo bộ chứng cứ bằng lệnh sau (đường dẫn output phải mới):
+ 
+ Runner lấy baseline từ Git archive vào thư mục tạm, chạy hồi quy A1–A4 trên cũ/mới, kiểm A5 bằng mutation trên test cũ/mới, chạy toàn bộ suite ba lần liên tiếp rồi dry-run thật. Không sửa working source, không tạo worktree, không sửa evidence cũ. Các số đếm và log được lấy trực tiếp từ subprocess. A5 functional test có thể qua baseline vì guard vốn tồn tại; bằng chứng là test cũ không bắt được mutation còn test mới bắt được.
+ 
+-Lượt bàn giao hiện hành: **87/87 test, ba lần liên tiếp, không failure/error/skip** trên Linux/Python 3.12.14. Xem [validation.json](evidence/hardening-20261106-final/validation.json), các `suite-*.log`, [mutation A5](evidence/hardening-20261106-final/mutation-A5.log) và [handoff](HANDOFF_REPORT_TASK-004.md). Số liệu được lấy từ runner, không từ số dựng thử trong brief.
++## Review vòng hai: tín hiệu và độ tin cậy evidence
++
++Inherited SIG_IGN (nohup/SIGHUP) và handler None được giữ nguyên. CLI không gọi Event.set trong signal handler; cờ hủy đơn điệu không hỗ trợ clear/reset. Các handler đã thay đều phục hồi khi ra khỏi main.
++
++Lỗi cleanup sampler/server **ưu tiên hơn** CANCELLED/TIMEOUT: FAIL với mã MEMORY_SAMPLING_FAILED/CLEANUP_FAILED, exit 1. Nếu request đã hoàn tất, tín hiệu trong cleanup/ghi artifact được hấp thụ và lượt được ghi xong theo kết quả đã có. Lỗi bất ngờ ở biên main trả JSON INTERNAL_ERROR; nếu artifact/index hỏng, không bảo đảm có file kết quả. Provenance có kiểm shape; PASS bắt buộc có samples và RSS hợp lệ.
++
++Runner truyền PYTHONWARNINGS cho tests/CLI con, chặn Exception ignored/ResourceWarning/Traceback trong successful logs và kiểm assertion cụ thể của expected baseline failures. Nó không chứng minh không leak ở output không được thu thập. Đường dẫn local đã biết trong log/metadata được chuẩn hóa thành placeholder, nội dung chẩn đoán giữ nguyên. Fingerprint bao cả mock_config.json và references. Nhãn execution lấy từ platform thực; Windows vẫn cần xác minh riêng.
++
++Bộ hiện hành: **106/106 test trong ba lượt liên tiếp**, không error/failure/skip hoặc marker bị chặn; Linux/Python 3.12.14. Xem [review packet](evidence/review2-20261107-release/REVIEW_PACKET.md), [validation.json](evidence/review2-20261107-release/validation.json), [source đầy đủ](evidence/review2-20261107-release/CURRENT_SOURCE.md) và [handoff](HANDOFF_REPORT_TASK-004.md). Evidence cũ không bị chỉnh sửa.
+diff --git a/task004/cancellation.py b/task004/cancellation.py
+new file mode 100644
+index 0000000..1079f5d
+--- /dev/null
++++ b/task004/cancellation.py
+@@ -0,0 +1,26 @@
++"""Monotonic cancellation flag safe for reentrant Python signal handlers.
++
++No locks, callbacks or reset operations occur in set(). This is not a general
++Event replacement: it intentionally supports only set/is_set/polling wait.
++"""
++import time
++
++
++class CancellationFlag:
++    def __init__(self):
++        self._cancelled = False
++
++    def set(self):
++        self._cancelled = True
++
++    def is_set(self):
++        return self._cancelled
++
++    def wait(self, timeout=None):
++        deadline = None if timeout is None else time.monotonic() + max(0, timeout)
++        while not self._cancelled:
++            remaining = None if deadline is None else deadline - time.monotonic()
++            if remaining is not None and remaining <= 0:
++                return self._cancelled
++            time.sleep(.01 if remaining is None else min(.01, remaining))
++        return True
+diff --git a/task004/cli.py b/task004/cli.py
+index 3d0191a..e3a0ff6 100644
+--- a/task004/cli.py
++++ b/task004/cli.py
+@@ -3,11 +3,12 @@ import argparse
+ import json
+ from pathlib import Path
+ import signal
+-import threading
++import platform
+ import time
+ import uuid
+ 
+ from .client import ClientError, request_synthetic
++from .cancellation import CancellationFlag
+ from .config import ConfigError, load_config
+ from .preflight import check_preflight
+ from .record import utc_now, write_artifacts
+@@ -25,15 +26,23 @@ def run_dry_run(config, output_dir, cancel_event=None):
+                     "prefill_tokens_s": None, "decode_tokens_s": None, "synthetic_output_tokens": None},
+         "resources": None,
+     }
+-    preflight = check_preflight(config, Path(output_dir))
+-    server = ManagedMockServer(config)
++    # A failed initialization can still produce an honest artifact, with no invented readings.
++    preflight = {
++        "ready": False, "checks": [], "available_ram_bytes": None, "free_disk_bytes": None,
++        "system_commit": {"total_bytes": None, "limit_bytes": None, "available_bytes": None,
++                          "source": None, "unavailable_reason": "PREFLIGHT_NOT_COMPLETED"},
++        "observed_at_utc": utc_now(), "platform": platform.system(), "measurement_scope": "CURRENT_HOST",
++    }
++    server = None
+     sampler = None
+     try:
+         if cancel_event is not None and cancel_event.is_set():
+             raise ClientError("CANCELLED")
++        preflight = check_preflight(config, Path(output_dir))
+         if not preflight["ready"]:
+             record.update(status="PREFLIGHT_FAILED", reason_code="PREFLIGHT_FAILED")
+         else:
++            server = ManagedMockServer(config)
+             server.start(cancel_event)
+             sampler = ResourceSampler(server.pid, config.sample_interval_s).start()
+             metrics = request_synthetic(server.url, config, cancel_event)
+@@ -61,15 +70,17 @@ def run_dry_run(config, output_dir, cancel_event=None):
+             record.update(status="FAIL", reason_code="MEMORY_SAMPLING_FAILED")
+         finally:
+             try:
+-                server.stop()
+-            except (ServerError, OSError):
++                if server is not None:
++                    server.stop()
++            except Exception:
++                # Cleanup integrity takes precedence over request cancellation/timeout.
+                 record.update(status="FAIL", reason_code="CLEANUP_FAILED")
+     record["finished_at_utc"] = utc_now()
+     record["metrics"]["run_elapsed_s"] = time.monotonic() - start
+     return record, write_artifacts(output_dir, config, record, preflight)
+ 
+ 
+-def main(argv=None):
++def _main(argv=None):
+     parser = argparse.ArgumentParser(description="TASK-004 synthetic-only harness")
+     parser.add_argument("command", choices=("validate-config", "preflight", "dry-run"))
+     parser.add_argument("--config", default="task004/mock_config.json")
+@@ -88,13 +99,18 @@ def main(argv=None):
+         print(json.dumps(result, sort_keys=True))
+         return 0 if result["ready"] else 3
+     # Signals request cancellation; repeated signals must not interrupt cleanup or writes.
+-    cancel = threading.Event()
++    cancel = CancellationFlag()
+     previous = {}
+     try:
+         for name in ("SIGINT", "SIGTERM", "SIGHUP", "SIGBREAK"):
+             number = getattr(signal, name, None)
+             if number is not None:
+-                previous[number] = signal.signal(number, lambda *_: cancel.set())
++                old = signal.getsignal(number)
++                # Preserve nohup/inherited ignores and handlers Python cannot restore.
++                if old == signal.SIG_IGN or old is None:
++                    continue
++                signal.signal(number, lambda *_: cancel.set())
++                previous[number] = old
+         record, _ = run_dry_run(config, Path(args.output_dir), cancel)
+         print(json.dumps({key: record[key] for key in ("run_id", "status", "reason_code", "evidence_label")}))
+         return {"PASS": 0, "PREFLIGHT_FAILED": 3, "CANCELLED": 130, "TIMEOUT": 124}.get(record["status"], 1)
+@@ -106,8 +122,16 @@ def main(argv=None):
+         return 1
+     finally:
+         for number, handler in previous.items():
+-            if handler is not None:
+-                signal.signal(number, handler)
++            signal.signal(number, handler)
++
++
++def main(argv=None):
++    try:
++        return _main(argv)
++    except Exception:
++        # Last-resort boundary: no exception text or malformed input in CLI output.
++        print(json.dumps({"status": "FAIL", "reason_code": "INTERNAL_ERROR"}))
++        return 1
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/task004/record.py b/task004/record.py
+index a1e5e9b..04b0e76 100644
+--- a/task004/record.py
++++ b/task004/record.py
+@@ -6,6 +6,7 @@ import math
+ import os
+ from pathlib import Path
+ import platform
++import re
+ import shutil
+ import uuid
+ 
+@@ -19,7 +20,8 @@ STATUS_REASONS = {
+     "PASS": {"OK"},
+     "FAIL": {"HTTP_ERROR", "INVALID_JSON", "INVALID_RESPONSE", "CONNECTION_ERROR",
+              "RESPONSE_TOO_LARGE", "CLIENT_ERROR", "SERVER_ERROR", "SERVER_EXITED",
+-             "INTERNAL_ERROR", "CLEANUP_FAILED", "MEMORY_SAMPLING_FAILED", "CLIENT_CLEANUP_FAILED"},
++             "INTERNAL_ERROR", "CLEANUP_FAILED", "MEMORY_SAMPLING_FAILED", "CLIENT_CLEANUP_FAILED",
++             "NON_LOOPBACK_ENDPOINT", "SERVER_NOT_STARTED", "SERVER_ALREADY_STARTED"},
+     "TIMEOUT": {"TIMEOUT", "STARTUP_TIMEOUT"},
+     "CANCELLED": {"CANCELLED"},
+     "PREFLIGHT_FAILED": {"PREFLIGHT_FAILED"},
+@@ -65,6 +67,33 @@ def validate_record(record):
+         raise ValueError("MOCK_PHASE_METRICS_UNAVAILABLE")
+     if record["status"] == "PASS" and (record["metrics"]["request_latency_s"] is None or record["metrics"]["synthetic_output_tokens"] != 1):
+         raise ValueError("PASS_REQUIRES_REQUEST_EVIDENCE")
++    if record["status"] == "PASS":
++        resources = record["resources"]
++        if (resources is None or type(resources["samples"]) is not int or resources["samples"] <= 0
++                or type(resources["rss_peak_bytes"]) is not int or resources["rss_peak_bytes"] <= 0):
++            raise ValueError("PASS_REQUIRES_RESOURCE_EVIDENCE")
++
++
++def _validate_provenance_index(index):
++    """Malformed metadata is a safe ValueError, never a KeyError/TypeError leak."""
++    if (type(index) is not dict or set(index) - {"scope", "sources"}
++            or "sources" not in index or type(index["sources"]) is not list
++            or ("scope" in index and type(index["scope"]) is not str)):
++        raise ValueError("INVALID_PROVENANCE_INDEX")
++    names = set()
++    for item in index["sources"]:
++        if type(item) is not dict or set(item) != {"file", "bytes", "sha256"}:
++            raise ValueError("INVALID_PROVENANCE_ENTRY")
++        name = item["file"]
++        if (type(name) is not str or not name or name in (".", "..")
++                or any(char in name for char in ("/", "\\", ":", "\x00"))
++                or Path(name).name != name or name in names):
++            raise ValueError("INVALID_PROVENANCE_PATH")
++        if (type(item["bytes"]) is not int or item["bytes"] < 0
++                or type(item["sha256"]) is not str
++                or re.fullmatch(r"[0-9a-f]{64}", item["sha256"]) is None):
++            raise ValueError("INVALID_PROVENANCE_ENTRY")
++        names.add(name)
+ 
+ 
+ def source_provenance():
+@@ -73,12 +102,13 @@ def source_provenance():
+     if not index_path.exists():
+         return {"status": "UNVERIFIED", "sources": []}
+     index = json.loads(index_path.read_text(encoding="utf-8"))
++    _validate_provenance_index(index)
+     result = []
+     for item in index["sources"]:
+         name = item["file"]
+-        if Path(name).name != name:
+-            raise ValueError("INVALID_PROVENANCE_PATH")
+         path = root / name
++        if path.is_symlink():
++            raise ValueError("INVALID_PROVENANCE_PATH")
+         actual = sha256(path.read_bytes()) if path.is_file() else None
+         result.append({"file": name, "expected_sha256": item["sha256"], "actual_sha256": actual,
+                        "integrity": "MATCH" if actual == item["sha256"] else "UNVERIFIED"})
+diff --git a/task004/schemas/run.schema.json b/task004/schemas/run.schema.json
+index fd5dd17..9b0a752 100644
+--- a/task004/schemas/run.schema.json
++++ b/task004/schemas/run.schema.json
+@@ -38,11 +38,14 @@
+         "INVALID_JSON",
+         "INVALID_RESPONSE",
+         "MEMORY_SAMPLING_FAILED",
++        "NON_LOOPBACK_ENDPOINT",
+         "OK",
+         "PREFLIGHT_FAILED",
+         "RESPONSE_TOO_LARGE",
++        "SERVER_ALREADY_STARTED",
+         "SERVER_ERROR",
+         "SERVER_EXITED",
++        "SERVER_NOT_STARTED",
+         "STARTUP_TIMEOUT",
+         "TIMEOUT"
+       ]
+diff --git a/task004/tests/fixtures.py b/task004/tests/fixtures.py
+new file mode 100644
+index 0000000..cc43aa3
+--- /dev/null
++++ b/task004/tests/fixtures.py
+@@ -0,0 +1,24 @@
++"""Construct unit-test objects; never treat these invented values as runtime evidence."""
++from task004.config import Config
++
++
++def artifact_fixture():
++    config = Config(n_ctx=1)
++    stamp = "2026-11-07T00:00:00+00:00"
++    record = {
++        "schema_version": 1, "task_id": "TASK-004", "run_id": "0" * 32,
++        "evidence_label": "SYNTHETIC", "status": "PASS", "reason_code": "OK",
++        "started_at_utc": stamp, "finished_at_utc": stamp,
++        "metrics": {"run_elapsed_s": 1, "request_latency_s": 1, "ttft_s": None,
++                    "prefill_tokens_s": None, "decode_tokens_s": None, "synthetic_output_tokens": 1},
++        "resources": {"rss_peak_bytes": 1, "commit_peak_bytes": None,
++                      "rss_source": "UNIT_TEST_FIXTURE", "commit_source": None,
++                      "commit_unavailable_reason": "UNIT_TEST_FIXTURE", "sample_interval_s": .1,
++                      "samples": 1, "incomplete_samples": 0, "measurement_scope": "UNIT_TEST_FIXTURE",
++                      "sampling_limitation": "Not a measurement"},
++    }
++    preflight = {"ready": True, "checks": [], "available_ram_bytes": None, "free_disk_bytes": None,
++                 "system_commit": {"total_bytes": None, "limit_bytes": None, "available_bytes": None,
++                                   "source": None, "unavailable_reason": "UNIT_TEST_FIXTURE"},
++                 "observed_at_utc": stamp, "platform": "UNIT_TEST_FIXTURE", "measurement_scope": "CURRENT_HOST"}
++    return config, record, preflight
+diff --git a/task004/tests/test_hardening_record.py b/task004/tests/test_hardening_record.py
+index 786f74a..b79f5e3 100644
+--- a/task004/tests/test_hardening_record.py
++++ b/task004/tests/test_hardening_record.py
+@@ -18,9 +18,11 @@ from task004.cli import main
+ from task004.config import parse_config
+ from task004.record import validate_record, write_artifacts
+ from task004.schema import validate_artifact
++from task004.tests.fixtures import artifact_fixture
++from task004 import record as record_module
++from task004.server import ManagedMockServer
+ 
+ ROOT = Path(__file__).resolve().parents[2]
+-FIXTURE = ROOT / "task004/evidence/dry-run/e1979d42784948cfbeb13b44cbc6044a"
+ 
+ 
+ class AtomicArtifactTests(unittest.TestCase):
+@@ -28,9 +30,8 @@ class AtomicArtifactTests(unittest.TestCase):
+         self.tmp = tempfile.TemporaryDirectory()
+         self.addCleanup(self.tmp.cleanup)
+         self.root = Path(self.tmp.name) / "out"
+-        self.manifest = json.loads((FIXTURE / "manifest.json").read_text())
+-        self.record = json.loads((FIXTURE / "runs.jsonl").read_text())
+-        self.config = parse_config(self.manifest["config"])
++        self.config, self.record, preflight = artifact_fixture()
++        self.manifest = {"preflight": preflight}
+ 
+     def write(self):
+         return write_artifacts(self.root, self.config, self.record, self.manifest["preflight"])
+@@ -48,7 +49,56 @@ class AtomicArtifactTests(unittest.TestCase):
+                     return original(path, *args, **kwargs)
+                 with patch.object(Path, "open", faulty), self.assertRaises(type(exception)):
+                     self.write()
+-                self.assertEqual(list(self.root.iterdir()), [])
++                self.assertEqual(list(self.root.iterdir()), [], "partial artifact survived injected failure")
++
++    def test_every_write_sync_and_rename_failure_removes_staging(self):
++        for failure_point in ("runs.jsonl", "manifest.json", "fsync-1", "fsync-2", "rename"):
++            for error in (OSError("injected"), KeyboardInterrupt()):
++                with self.subTest(point=failure_point, error=type(error).__name__):
++                    self.root = Path(self.tmp.name) / (failure_point + type(error).__name__)
++                    original_open, original_sync = Path.open, os.fsync
++                    calls = 0
++                    def faulty_open(path, *args, **kwargs):
++                        if path.name == failure_point and (args[0] if args else kwargs.get('mode')) == 'wb':
++                            raise error
++                        return original_open(path, *args, **kwargs)
++                    def faulty_sync(fd):
++                        nonlocal calls
++                        calls += 1
++                        if failure_point == f'fsync-{calls}':
++                            raise error
++                        return original_sync(fd)
++                    with patch.object(Path, 'open', faulty_open), patch('task004.record.os.fsync', faulty_sync), \
++                            patch('task004.record.os.rename', side_effect=error) if failure_point == 'rename' else contextlib.nullcontext():
++                        with self.assertRaises(type(error)):
++                            self.write()
++                    self.assertEqual(list(self.root.iterdir()), [])
++
++    @unittest.skipUnless(os.name == 'posix', 'POSIX phase signals; Windows UNVERIFIED')
++    def test_signals_during_cleanup_and_write_finish_committed_result(self):
++        for phase in ('cleanup', 'write'):
++            with self.subTest(phase=phase):
++                config_path = Path(self.tmp.name) / 'config.json'
++                config_path.write_text(json.dumps(self.config.to_dict()))
++                output = Path(self.tmp.name) / phase
++                original = ManagedMockServer.stop if phase == 'cleanup' else record_module._write_synced
++                delivered = []
++                def interrupted(*args, **kwargs):
++                    for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGTERM):
++                        os.kill(os.getpid(), sig)
++                        delivered.append(sig)
++                    return original(*args, **kwargs)
++                target = 'task004.cli.ManagedMockServer.stop' if phase == 'cleanup' else 'task004.record._write_synced'
++                captured = io.StringIO()
++                with patch(target, interrupted), contextlib.redirect_stdout(captured):
++                    code = main(['dry-run', '--config', str(config_path), '--output-dir', str(output)])
++                self.assertTrue(delivered)
++                self.assertEqual(code, 0)
++                self.assertEqual(json.loads(captured.getvalue())['status'], 'PASS')
++                folders = list(output.iterdir())
++                self.assertEqual(len(folders), 1)
++                self.assertEqual({p.name for p in folders[0].iterdir()}, {'manifest.json', 'runs.jsonl'})
++                validate_record(json.loads((folders[0]/'runs.jsonl').read_text()))
+ 
+     def test_final_directory_invisible_until_both_synced_files_ready(self):
+         original = Path.open
+@@ -110,7 +160,20 @@ class SignalArtifactTests(unittest.TestCase):
+             cfg = root / "config.json"
+             cfg.write_text(json.dumps({"n_ctx": 1, "mock_scenario": "slow", "mock_delay_s": 10, "timeout_s": 15}))
+             out = root / "out"
+-            process = subprocess.Popen([sys.executable, "-m", "task004.cli", "dry-run", "--config", str(cfg), "--output-dir", str(out)], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
++            ready = root / "request-phase"
++            script = '''
++from pathlib import Path
++import sys
++from task004 import cli
++marker = Path(sys.argv.pop(1))
++original = cli.request_synthetic
++def observed_request(*args, **kwargs):
++    marker.write_text('request-phase', encoding='ascii')
++    return original(*args, **kwargs)
++cli.request_synthetic = observed_request
++raise SystemExit(cli.main())
++'''
++            process = subprocess.Popen([sys.executable, "-c", script, str(ready), "dry-run", "--config", str(cfg), "--output-dir", str(out)], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+             children = []
+             cleaned = False
+             def cleanup():
+@@ -138,11 +201,11 @@ class SignalArtifactTests(unittest.TestCase):
+                 deadline = time.monotonic() + 5
+                 while time.monotonic() < deadline and process.poll() is None:
+                     children = psutil.Process(process.pid).children(recursive=True)
+-                    if children:
++                    if children and ready.exists():
+                         break
+                     time.sleep(.01)
+                 self.assertTrue(children, "mock child did not start")
+-                time.sleep(.1)
++                self.assertTrue(ready.exists(), "CLI did not reach request phase")
+                 for index in range(1 if gap is None else 3):
+                     if index and gap:
+                         time.sleep(gap)
+@@ -157,7 +220,8 @@ class SignalArtifactTests(unittest.TestCase):
+                 result = json.loads(stdout)
+                 self.assertEqual(result["status"], "CANCELLED")
+                 self.assertEqual(result["evidence_label"], "SYNTHETIC")
+-                self.assertNotIn("Traceback", stderr)
++                for marker in ("Traceback", "ResourceWarning", "Exception ignored"):
++                    self.assertNotIn(marker, stderr)
+                 folders = list(out.iterdir())
+                 self.assertEqual(len(folders), 1)
+                 folder = folders[0]
+diff --git a/task004/tests/test_review_cli.py b/task004/tests/test_review_cli.py
+new file mode 100644
+index 0000000..c92268e
+--- /dev/null
++++ b/task004/tests/test_review_cli.py
+@@ -0,0 +1,125 @@
++"""Round-two signal reentrancy, inherited policy and safe CLI failures."""
++import contextlib
++import io
++import json
++import os
++from pathlib import Path
++import signal
++import subprocess
++import sys
++import tempfile
++import unittest
++from unittest.mock import patch
++
++import psutil
++
++from task004 import cli
++from task004.client import ClientError
++from task004.config import Config
++from task004.record import validate_record
++
++ROOT = Path(__file__).resolve().parents[2]
++
++
++class ReviewCliTests(unittest.TestCase):
++    @unittest.skipUnless(os.name == "posix", "POSIX signal test only")
++    def test_nested_signal_cannot_deadlock_handler(self):
++        # Trace the exact assignment inside Event.set's lock on the old implementation.
++        # A second signal at that bytecode must finish; subprocess timeout bounds regression.
++        script = '''
++import linecache, os, signal, sys
++from unittest.mock import patch
++from task004.cli import main
++triggered = False
++def fake(config, output, cancel):
++    def trace(frame, event, arg):
++        global triggered
++        line = linecache.getline(frame.f_code.co_filename, frame.f_lineno)
++        if event == 'line' and frame.f_locals.get('self') is cancel and not triggered and ('_flag = True' in line or '_cancelled = True' in line):
++            triggered = True
++            os.kill(os.getpid(), signal.SIGTERM)
++        return trace
++    sys.settrace(trace)
++    try:
++        os.kill(os.getpid(), signal.SIGTERM)
++    finally:
++        sys.settrace(None)
++    assert triggered and cancel.is_set()
++    return {'run_id': '0'*32, 'status': 'CANCELLED', 'reason_code': 'CANCELLED', 'evidence_label': 'SYNTHETIC'}, None
++with patch('task004.cli.run_dry_run', fake):
++    assert main(['dry-run']) == 130
++'''
++        try:
++            result = subprocess.run([sys.executable, "-c", script], cwd=ROOT,
++                                    capture_output=True, text=True, timeout=3)
++        except subprocess.TimeoutExpired:
++            self.fail("nested signal deadlocked cancellation handler")
++        self.assertEqual(result.returncode, 0, result.stderr)
++        for marker in ("Traceback", "ResourceWarning", "Exception ignored"):
++            self.assertNotIn(marker, result.stderr)
++
++    @unittest.skipUnless(hasattr(signal, "SIGHUP"), "SIGHUP unavailable")
++    def test_inherited_ignore_is_preserved(self):
++        old = signal.signal(signal.SIGHUP, signal.SIG_IGN)
++        self.addCleanup(signal.signal, signal.SIGHUP, old)
++        def fake(config, output, cancel):
++            os.kill(os.getpid(), signal.SIGHUP)
++            self.assertFalse(cancel.is_set(), "inherited ignored SIGHUP requested cancellation")
++            self.assertEqual(signal.getsignal(signal.SIGHUP), signal.SIG_IGN)
++            return {"run_id": "0"*32, "status": "PASS", "reason_code": "OK", "evidence_label": "SYNTHETIC"}, None
++        with patch("task004.cli.run_dry_run", fake), contextlib.redirect_stdout(io.StringIO()):
++            self.assertEqual(cli.main(["dry-run"]), 0)
++        self.assertEqual(signal.getsignal(signal.SIGHUP), signal.SIG_IGN)
++
++    def test_unknown_previous_handler_is_never_replaced(self):
++        with patch("task004.cli.signal.getsignal", return_value=None), patch("task004.cli.signal.signal") as install, \
++                patch("task004.cli.run_dry_run", return_value=({"run_id": "0"*32, "status": "PASS", "reason_code": "OK", "evidence_label": "SYNTHETIC"}, None)), \
++                contextlib.redirect_stdout(io.StringIO()):
++            self.assertEqual(cli.main(["dry-run"]), 0)
++        install.assert_not_called()
++
++    def test_flag_wait_is_monotonic_without_threading_locks(self):
++        from task004.cancellation import CancellationFlag
++        flag = CancellationFlag()
++        self.assertFalse(flag.wait(0))
++        with patch("task004.cancellation.time.sleep", side_effect=lambda _: flag.set()):
++            self.assertTrue(flag.wait(.1))
++        flag.set()
++        self.assertTrue(flag.wait(0))
++
++    def test_initialization_exceptions_still_write_failed_artifact(self):
++        for target in ("check_preflight", "ManagedMockServer"):
++            with self.subTest(target=target), tempfile.TemporaryDirectory() as tmp:
++                with patch("task004.cli." + target, side_effect=RuntimeError("PRIVATE_MARKER")):
++                    record, folder = cli.run_dry_run(Config(n_ctx=1), Path(tmp))
++                self.assertEqual(record["status"], "FAIL")
++                self.assertEqual(record["reason_code"], "INTERNAL_ERROR")
++                validate_record(json.loads((folder/"runs.jsonl").read_text()))
++                self.assertNotIn("PRIVATE_MARKER", (folder/"manifest.json").read_text())
++
++    def test_cleanup_failures_explicitly_override_cancel_and_timeout(self):
++        for primary in ("CANCELLED", "TIMEOUT"):
++            for failing in ("server", "sampler"):
++                with self.subTest(primary=primary, failing=failing), tempfile.TemporaryDirectory() as tmp:
++                    server = cli.ManagedMockServer
++                    sampler = cli.ResourceSampler
++                    original_stop = server.stop if failing == "server" else sampler.stop
++                    def fail_after_stop(obj):
++                        original_stop(obj)
++                        raise psutil.AccessDenied()
++                    target = "task004.cli.ManagedMockServer.stop" if failing == "server" else "task004.cli.ResourceSampler.stop"
++                    with patch("task004.cli.request_synthetic", side_effect=ClientError(primary)), patch(target, fail_after_stop):
++                        record, folder = cli.run_dry_run(Config(n_ctx=1), Path(tmp))
++                    self.assertEqual(record["status"], "FAIL")
++                    self.assertEqual(record["reason_code"], "CLEANUP_FAILED" if failing == "server" else "MEMORY_SAMPLING_FAILED")
++                    validate_record(json.loads((folder/"runs.jsonl").read_text()))
++
++    def test_last_resort_cli_boundary_does_not_expose_exception(self):
++        for command in ("dry-run", "preflight"):
++            capture = io.StringIO()
++            with patch("task004.cli.check_preflight", side_effect=TypeError("PRIVATE_MARKER")), \
++                    patch("task004.cli.write_artifacts", side_effect=KeyError("PRIVATE_MARKER")), \
++                    contextlib.redirect_stdout(capture):
++                self.assertEqual(cli.main([command]), 1)
++            self.assertEqual(json.loads(capture.getvalue())["reason_code"], "INTERNAL_ERROR")
++            self.assertNotIn("PRIVATE_MARKER", capture.getvalue())
+diff --git a/task004/tests/test_review_record.py b/task004/tests/test_review_record.py
+new file mode 100644
+index 0000000..819e638
+--- /dev/null
++++ b/task004/tests/test_review_record.py
+@@ -0,0 +1,45 @@
++import ast
++from copy import deepcopy
++import json
++from pathlib import Path
++import unittest
++from unittest.mock import patch
++
++from task004.record import STATUS_REASONS, source_provenance, validate_record
++from task004.tests.fixtures import artifact_fixture
++
++
++class ReviewRecordTests(unittest.TestCase):
++    def test_malformed_provenance_is_always_safe_valueerror(self):
++        valid = {'file': 'card.md', 'bytes': 1, 'sha256': '0'*64}
++        cases = [None, [], {}, {'sources': None}, {'sources': [None]}, {'sources': [{}]},
++                 {'sources': [{**valid, 'file': ['bad']}]}, {'sources': [{**valid, 'sha256': None}]},
++                 {'sources': [{**valid, 'bytes': True}]}, {'sources': [{**valid, 'file': '../bad'}]},
++                 {'sources': [{**valid, 'file': r'..\bad'}]}, {'sources': [valid, valid]}]
++        for index in cases:
++            with self.subTest(index=index), patch('task004.record.Path.read_text', return_value=json.dumps(index)):
++                with self.assertRaises(ValueError):
++                    source_provenance()
++
++    def test_all_literal_client_and_server_errors_are_registered(self):
++        root = Path(__file__).resolve().parents[1]
++        codes = set()
++        for name in ('client.py', 'server.py'):
++            for node in ast.walk(ast.parse((root/name).read_text())):
++                if (isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
++                        and node.func.id in ('ClientError', 'ServerError') and node.args
++                        and isinstance(node.args[0], ast.Constant) and isinstance(node.args[0].value, str)):
++                    codes.add(node.args[0].value)
++        self.assertGreater(len(codes), 10)
++        self.assertEqual(codes - set().union(*STATUS_REASONS.values()), set())
++
++    def test_pass_requires_positive_resource_evidence(self):
++        _, record, _ = artifact_fixture()
++        validate_record(record)
++        for resources in (None, {**record['resources'], 'samples': 0}, {**record['resources'], 'rss_peak_bytes': None},
++                          {**record['resources'], 'rss_peak_bytes': 0}, {**record['resources'], 'samples': True}):
++            with self.subTest(resources=resources):
++                broken = deepcopy(record)
++                broken['resources'] = resources
++                with self.assertRaises(ValueError):
++                    validate_record(broken)
+diff --git a/task004/tests/test_review_runner.py b/task004/tests/test_review_runner.py
+new file mode 100644
+index 0000000..b1f1a67
+--- /dev/null
++++ b/task004/tests/test_review_runner.py
+@@ -0,0 +1,81 @@
++"""Evidence gates must detect false-success warnings and wrong regressions."""
++import io
++import os
++from pathlib import Path
++import subprocess
++import sys
++import tarfile
++import tempfile
++import unittest
++from unittest.mock import patch
++
++from task004.tools import validate_hardening as runner
++
++
++class ReviewRunnerTests(unittest.TestCase):
++    def test_finalizer_warning_rejected_even_with_success_exit(self):
++        result = subprocess.run([sys.executable, '-W', 'error::ResourceWarning', '-c',
++                                 'import socket,gc; s=socket.socket(); del s; gc.collect()'],
++                                capture_output=True, text=True, timeout=5)
++        self.assertEqual(result.returncode, 0)
++        self.assertIn('ResourceWarning', result.stderr)
++        self.assertTrue(runner.log_diagnostics(result.stdout + result.stderr))
++
++    def test_diagnostic_filter_distinguishes_expected_tracebacks(self):
++        for marker in ('Exception ignored', 'ResourceWarning', 'Traceback'):
++            self.assertIn(marker, runner.log_diagnostics(marker))
++        self.assertEqual(runner.log_diagnostics('Traceback', allow_expected_traceback=True), [])
++        self.assertTrue(runner.log_diagnostics('Exception ignored ResourceWarning', allow_expected_traceback=True))
++
++    def test_assertion_failure_must_be_the_expected_defect(self):
++        prefix = 'FAIL: test_a1_killed_cli_leaves_no_mock_or_owned_scratch (module.Class)\nTraceback\n'
++        self.assertFalse(runner.expected_defect_failures(prefix + 'AssertionError: unrelated crash'))
++        self.assertTrue(runner.expected_defect_failures(prefix + 'AssertionError: mock survived harness SIGKILL'))
++        self.assertFalse(runner.expected_defect_failures(prefix + 'ImportError: mock survived harness SIGKILL'))
++        for operand in ('config_accepts', 'schema_accepts'):
++            block = ('FAIL: test_a4_config_and_manifest_numerical_boundaries_match (module.Class)\n'
++                     f'self.assertEqual({operand}, expected)\nAssertionError: True != False')
++            self.assertTrue(runner.expected_defect_failures(block))
++
++    def test_archive_extraction_accepts_canonicalized_symlink_root(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            root = Path(tmp)
++            (root/'real').mkdir()
++            try:
++                (root/'alias').symlink_to(root/'real', target_is_directory=True)
++            except (OSError, NotImplementedError):
++                self.skipTest('symlink creation unavailable')
++            raw = io.BytesIO()
++            with tarfile.open(fileobj=raw, mode='w') as archive:
++                info = tarfile.TarInfo('source.txt')
++                info.size = 2
++                archive.addfile(info, io.BytesIO(b'ok'))
++            destination = runner.extract_archive(raw.getvalue(), root/'alias'/'baseline')
++            self.assertEqual(destination, (root/'real'/'baseline').resolve())
++            self.assertEqual((destination/'source.txt').read_bytes(), b'ok')
++
++    def test_scope_uses_actual_platform_without_claiming_readiness(self):
++        for system in ('Linux', 'Windows', 'Darwin'):
++            with patch.object(runner.platform, 'system', return_value=system):
++                label = runner.verification_scope()
++            self.assertTrue(label.startswith(system + '-executed'))
++            self.assertNotIn('verified', label)
++
++    def test_fingerprints_cover_data_consumed_by_dry_run(self):
++        with tempfile.TemporaryDirectory() as tmp, patch.object(runner, 'ROOT', Path(tmp)):
++            task = Path(tmp)/'task004'
++            (task/'references').mkdir(parents=True)
++            for name in ('mock_config.json', 'requirements.txt', 'setup.sh', 'references/provenance.json', 'references/card.md'):
++                path = task/name
++                path.write_text('original')
++                before = runner.fingerprints()
++                self.assertIn(str(path.relative_to(tmp)), before)
++                path.write_text('changed')
++                self.assertNotEqual(before, runner.fingerprints())
++
++    def test_metadata_and_diagnostic_paths_hide_known_local_prefixes(self):
++        locations = {r'C:\Users\private-user\work': '<checkout>', '/Users/private-user': '<home>'}
++        for raw in (r'C:\Users\private-user\work\task004\cli.py', r'C:\\Users\\private-user\\work\\task004\\cli.py', '/Users/private-user/venv/bin/python'):
++            sanitized = runner.normalize_paths(raw, locations)
++            self.assertNotIn('private-user', sanitized)
++        self.assertEqual(runner.normalize_paths('AssertionError: preserved', locations), 'AssertionError: preserved')
+diff --git a/task004/tests/test_workflow.py b/task004/tests/test_workflow.py
+index 04ed756..33d8d3c 100644
+--- a/task004/tests/test_workflow.py
++++ b/task004/tests/test_workflow.py
+@@ -190,6 +190,8 @@ class WorkflowTests(unittest.TestCase):
+             command = [sys.executable, "-m", "task004.cli", "dry-run", "--config", str(config), "--output-dir", str(self.out / "cli")]
+             result = subprocess.run(command, capture_output=True, text=True, timeout=10)
+             self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
++            for marker in ("Traceback", "ResourceWarning", "Exception ignored"):
++                self.assertNotIn(marker, result.stderr)
+             self.assertEqual(json.loads(result.stdout)["evidence_label"], "SYNTHETIC")
+ 
+ 
+diff --git a/task004/tools/validate_hardening.py b/task004/tools/validate_hardening.py
+index 30ef970..e81179c 100644
+--- a/task004/tools/validate_hardening.py
++++ b/task004/tools/validate_hardening.py
+@@ -10,6 +10,7 @@ from datetime import datetime, timezone
+ import hashlib
+ import io
+ import json
++import os
+ from pathlib import Path
+ import platform
+ import re
+@@ -23,6 +24,7 @@ import time
+ import psutil
+ 
+ BASELINE = '2cb916803cef6c2c52f03107fddeb866c407ae27'
++REVIEW_BASELINE = '07eb03cd0f01d16feef6f090cd5ed74c4c075eeb'
+ ROOT = Path(__file__).resolve().parents[2]
+ TARGETS = {
+     'A1': ['task004.tests.test_hardening_server.ServerHardeningTests.test_a1_killed_cli_leaves_no_mock_or_owned_scratch'],
+@@ -43,7 +45,66 @@ def fingerprints():
+     files = list((ROOT/'task004').glob('*.py'))
+     for sub, pattern in [('tests', '*.py'), ('schemas', '*.json'), ('tools', '*.py')]:
+         files.extend((ROOT/'task004'/sub).glob(pattern))
+-    return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(files)}
++    files.extend((ROOT/'task004/references').rglob('*'))
++    files.extend(ROOT/'task004'/name for name in ('mock_config.json', 'requirements.txt', 'setup.sh'))
++    return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(files) if p.is_file()}
++
++
++def verification_scope():
++    return f"{platform.system()}-executed mock tests; readiness requires result review"
++
++
++def normalize_paths(text, locations):
++    # Retain diagnostics; redact only known local prefixes, including repr-escaped paths.
++    for path, label in sorted(locations.items(), key=lambda item: len(str(item[0])), reverse=True):
++        path = str(path)
++        for spelling in (path.replace('\\', '\\\\'), path.replace('\\', '/'), path):
++            text = text.replace(spelling, label)
++    return text
++
++
++def extract_archive(data, destination):
++    destination = Path(destination).resolve()
++    destination.mkdir(parents=True, exist_ok=True)
++    with tarfile.open(fileobj=io.BytesIO(data)) as tar:
++        for member in tar.getmembers():
++            target = (destination/member.name).resolve()
++            if not target.is_relative_to(destination) or member.issym() or member.islnk():
++                raise ValueError('unexpected baseline archive member')
++        tar.extractall(destination, filter='data')
++    return destination
++
++
++DEFECT_ASSERTIONS = {
++    'test_a1_killed_cli_leaves_no_mock_or_owned_scratch': ('mock survived harness SIGKILL',),
++    'test_second_write_failure_cleans_staging_for_baseexceptions': ('partial artifact survived injected failure',),
++    'test_a3_timeout_and_sampling_upper_bounds': ('ConfigError not raised',),
++    'test_a3_validate_config_rejects_extreme_values': ('2', 'self.assertEqual(result, 2)'),
++    'test_a4_config_and_manifest_numerical_boundaries_match': ('accepts, expected)', 'AssertionError: True != False'),
++    'test_a4_reason_enum_matches_status_reasons': ('self.assertEqual(set(actual), set().union(*STATUS_REASONS.values()))',),
++    'test_a4_validate_artifact_checks_schema_before_value': ('ValueError not raised',),
++    'test_nonloopback_endpoint_rejected_before_connection': ('NON_LOOPBACK_ENDPOINT',),
++    'test_nested_signal_cannot_deadlock_handler': ('nested signal deadlocked cancellation handler',),
++    'test_inherited_ignore_is_preserved': ('inherited ignored SIGHUP requested cancellation',),
++}
++
++
++def expected_defect_failures(text):
++    blocks = re.findall(r'^FAIL: (.*?)(?=^={10,}|^Ran |\Z)', text, re.MULTILINE | re.DOTALL)
++    if not blocks:
++        return False
++    for block in blocks:
++        method = block.split()[0]
++        if method not in DEFECT_ASSERTIONS or 'AssertionError:' not in block:
++            return False
++        if not all(fragment in block for fragment in DEFECT_ASSERTIONS[method]):
++            return False
++    return True
++
++
++def log_diagnostics(text, allow_expected_traceback=False):
++    markers = ('Exception ignored', 'ResourceWarning') if allow_expected_traceback else ('Exception ignored', 'ResourceWarning', 'Traceback')
++    return [marker for marker in markers if marker in text]
+ 
+ 
+ def main():
+@@ -52,28 +113,33 @@ def main():
+     args = parser.parse_args()
+     output = Path(args.output).resolve()
+     output.mkdir(parents=True, exist_ok=False)
+-    summary = {'baseline_revision': BASELINE, 'started_at_utc': utc(),
++    summary = {'baseline_revision': BASELINE, 'review_baseline_revision': REVIEW_BASELINE, 'started_at_utc': utc(),
+                'python': platform.python_version(), 'psutil': psutil.__version__,
+-               'platform': platform.platform(), 'verification_scope': 'Linux-verified mock only',
++               'platform': platform.system(), 'verification_scope': verification_scope(),
++               'log_policy': 'Known local path prefixes normalized; diagnostic text preserved. Successful runs reject Exception ignored, ResourceWarning and Traceback.',
+                'source_sha256': fingerprints(), 'runs': [], 'windows': 'UNVERIFIED', 'model': 'NOT_RUN'}
+     failures = []
++    locations = {ROOT: '<checkout>', Path(sys.prefix): '<python-env>', Path(sys.base_prefix): '<python-base>', Path.home(): '<home>', Path(tempfile.gettempdir()): '<temp>'}
++    child_env = dict(os.environ, PYTHONWARNINGS='error::ResourceWarning')
+ 
+     def run(label, cwd, args, expected_failure=False):
+         command = [sys.executable, '-W', 'error::ResourceWarning', '-m', 'unittest', *args]
+         start = time.monotonic()
+-        result = subprocess.run(command, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=180)
+-        text = result.stdout.decode('utf-8', errors='replace')
+-        (output/f'{label}.log').write_bytes(result.stdout)
++        result = subprocess.run(command, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=180, env=child_env)
++        text = normalize_paths(result.stdout.decode('utf-8', errors='replace'), locations)
++        (output/f'{label}.log').write_text(text)
+         count = re.search(r'Ran (\d+) tests? in ([0-9.]+)s', text)
+-        entry = {'label': label, 'command': command, 'cwd': str(cwd), 'returncode': result.returncode,
++        entry = {'label': label, 'command': ['<python>', *command[1:]], 'cwd': normalize_paths(str(cwd), locations), 'returncode': result.returncode,
+                  'elapsed_s': time.monotonic()-start, 'tests_run': int(count[1]) if count else None,
+                  'failures': int(re.search(r'failures=(\d+)', text)[1]) if re.search(r'failures=(\d+)', text) else 0,
+                  'errors': int(re.search(r'errors=(\d+)', text)[1]) if re.search(r'errors=(\d+)', text) else 0,
+                  'skipped': int(re.search(r'skipped=(\d+)', text)[1]) if re.search(r'skipped=(\d+)', text) else 0,
+                  'expected_failure': expected_failure, 'log': f'{label}.log'}
+         # Baseline/mutation evidence must be assertion failures, not missing imports.
+-        ok = (entry['tests_run'] and entry['skipped'] == 0 and entry['errors'] == 0
+-              and ((result.returncode != 0 and entry['failures'] > 0) if expected_failure else result.returncode == 0))
++        entry['diagnostic_markers'] = log_diagnostics(text, allow_expected_traceback=expected_failure)
++        entry['defect_assertions_match'] = expected_defect_failures(text) if expected_failure else None
++        ok = (entry['tests_run'] and entry['skipped'] == 0 and entry['errors'] == 0 and not entry['diagnostic_markers']
++              and ((result.returncode != 0 and entry['failures'] > 0 and entry['defect_assertions_match']) if expected_failure else result.returncode == 0))
+         entry['expectation_met'] = bool(ok)
+         summary['runs'].append(entry)
+         if not ok:
+@@ -82,23 +148,28 @@ def main():
+ 
+     try:
+         with tempfile.TemporaryDirectory(prefix='task004-regression-') as tmp:
+-            baseline = Path(tmp)/'baseline'
+-            baseline.mkdir()
++            temp_root = Path(tmp).resolve()
++            baseline = temp_root/'baseline'
++            locations[baseline] = '<baseline>'
+             archive = subprocess.check_output(['git', 'archive', BASELINE], cwd=ROOT)
+-            with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
+-                for member in tar.getmembers():
+-                    target = (baseline/member.name).resolve()
+-                    if not target.is_relative_to(baseline) or member.issym() or member.islnk():
+-                        raise ValueError('unexpected baseline archive member')
+-                tar.extractall(baseline, filter='data')
+-            for name in ['test_hardening_server.py', 'test_hardening_record.py', 'test_hardening_schema.py', 'test_workflow.py']:
++            extract_archive(archive, baseline)
++            for name in ['test_hardening_server.py', 'test_hardening_record.py', 'test_hardening_schema.py', 'test_workflow.py', 'fixtures.py']:
+                 shutil.copy2(ROOT/'task004/tests'/name, baseline/'task004/tests'/name)
+             for requirement, targets in TARGETS.items():
+                 # A5 hardens a TEST; the production guard already exists at baseline.
+                 # Its defect is demonstrated by the baseline test accepting a mutant.
+                 run(f'baseline-{requirement}', baseline, ['-v', *targets], expected_failure=requirement != 'A5')
+                 run(f'fixed-{requirement}', ROOT, ['-v', *targets])
+-            mutant = Path(tmp)/'mutant'
++            review = temp_root/'review-baseline'
++            locations[review] = '<review-baseline>'
++            extract_archive(subprocess.check_output(['git', 'archive', REVIEW_BASELINE], cwd=ROOT), review)
++            shutil.copy2(ROOT/'task004/tests/test_review_cli.py', review/'task004/tests/test_review_cli.py')
++            for name in ('test_nested_signal_cannot_deadlock_handler', 'test_inherited_ignore_is_preserved'):
++                target = 'task004.tests.test_review_cli.ReviewCliTests.' + name
++                run('review-baseline-' + name, review, ['-v', target], expected_failure=True)
++                run('fixed-review-' + name, ROOT, ['-v', target])
++            mutant = temp_root/'mutant'
++            locations[mutant] = '<mutant>'
+             shutil.copytree(ROOT/'task004', mutant/'task004', ignore=shutil.ignore_patterns('__pycache__', 'runs', 'hardening-*'))
+             path = mutant/'task004/client.py'
+             source = path.read_text()
+@@ -124,14 +195,17 @@ def main():
+         for index in range(1, 4):
+             run(f'suite-{index}', ROOT, ['discover', '-s', 'task004/tests', '-v'])
+         dry_command = [sys.executable, '-m', 'task004.cli', 'dry-run', '--output-dir', str(output/'dry-run')]
+-        dry = subprocess.run(dry_command, cwd=ROOT, capture_output=True, text=True, timeout=30)
+-        (output/'dry-run.stdout.log').write_text(dry.stdout)
+-        (output/'dry-run.stderr.log').write_text(dry.stderr)
+-        summary['dry_run'] = {'command': dry_command, 'returncode': dry.returncode, 'result': json.loads(dry.stdout)}
+-        if dry.returncode or summary['dry_run']['result']['status'] != 'PASS':
++        dry = subprocess.run(dry_command, cwd=ROOT, capture_output=True, text=True, timeout=30, env=child_env)
++        (output/'dry-run.stdout.log').write_text(normalize_paths(dry.stdout, locations))
++        (output/'dry-run.stderr.log').write_text(normalize_paths(dry.stderr, locations))
++        summary['dry_run'] = {'command': ['<python>', *[normalize_paths(arg, locations) for arg in dry_command[1:]]], 'returncode': dry.returncode, 'result': json.loads(dry.stdout), 'diagnostic_markers': log_diagnostics(dry.stdout + dry.stderr)}
++        if dry.returncode or summary['dry_run']['result']['status'] != 'PASS' or summary['dry_run']['diagnostic_markers']:
+             failures.append('dry-run')
+         if fingerprints() != summary['source_sha256']:
+             failures.append('source_changed_during_validation')
++    except BaseException:
++        failures.append('runner_interrupted_or_failed')
++        raise
+     finally:
+         summary['finished_at_utc'] = utc()
+         summary['failed_expectations'] = failures

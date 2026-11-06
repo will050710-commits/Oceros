@@ -38,11 +38,14 @@
         "INVALID_JSON",
         "INVALID_RESPONSE",
         "MEMORY_SAMPLING_FAILED",
+        "NON_LOOPBACK_ENDPOINT",
         "OK",
         "PREFLIGHT_FAILED",
         "RESPONSE_TOO_LARGE",
+        "SERVER_ALREADY_STARTED",
         "SERVER_ERROR",
         "SERVER_EXITED",
+        "SERVER_NOT_STARTED",
         "STARTUP_TIMEOUT",
         "TIMEOUT"
       ]

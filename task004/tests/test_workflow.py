@@ -190,6 +190,8 @@ class WorkflowTests(unittest.TestCase):
             command = [sys.executable, "-m", "task004.cli", "dry-run", "--config", str(config), "--output-dir", str(self.out / "cli")]
             result = subprocess.run(command, capture_output=True, text=True, timeout=10)
             self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+            for marker in ("Traceback", "ResourceWarning", "Exception ignored"):
+                self.assertNotIn(marker, result.stderr)
             self.assertEqual(json.loads(result.stdout)["evidence_label"], "SYNTHETIC")
 
 

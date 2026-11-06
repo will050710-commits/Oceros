@@ -1,0 +1,199 @@
+test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) ... 
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='timeout_s', value=3600.001) ... FAIL
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='timeout_s', value=10000000000.0) ... FAIL
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='timeout_s', value=1e+300) ... FAIL
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='startup_timeout_s', value=3600.001) ... FAIL
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='startup_timeout_s', value=10000000000.0) ... FAIL
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='startup_timeout_s', value=1e+300) ... FAIL
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='mock_delay_s', value=3600.001) ... FAIL
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='mock_delay_s', value=10000000000.0) ... FAIL
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='mock_delay_s', value=1e+300) ... FAIL
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='sample_interval_s', value=60.001) ... FAIL
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='sample_interval_s', value=10000000000.0) ... FAIL
+  test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='sample_interval_s', value=1e+300) ... FAIL
+test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) ... 
+  test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='timeout_s', value=10000000000.0) ... FAIL
+  test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='timeout_s', value=1e+300) ... FAIL
+  test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='startup_timeout_s', value=10000000000.0) ... FAIL
+  test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='startup_timeout_s', value=1e+300) ... FAIL
+  test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='mock_delay_s', value=10000000000.0) ... FAIL
+  test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='mock_delay_s', value=1e+300) ... FAIL
+  test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='sample_interval_s', value=10000000000.0) ... FAIL
+  test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='sample_interval_s', value=1e+300) ... FAIL
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='timeout_s', value=3600.001)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='timeout_s', value=10000000000.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='timeout_s', value=1e+300)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='startup_timeout_s', value=3600.001)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='startup_timeout_s', value=10000000000.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='startup_timeout_s', value=1e+300)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='mock_delay_s', value=3600.001)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='mock_delay_s', value=10000000000.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='mock_delay_s', value=1e+300)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='sample_interval_s', value=60.001)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='sample_interval_s', value=10000000000.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_timeout_and_sampling_upper_bounds (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds) (key='sample_interval_s', value=1e+300)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 32, in test_a3_timeout_and_sampling_upper_bounds
+    with self.subTest(key=key, value=value), self.assertRaises(ConfigError):
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ConfigError not raised
+
+======================================================================
+FAIL: test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='timeout_s', value=10000000000.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 44, in test_a3_validate_config_rejects_extreme_values
+    self.assertEqual(result, 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='timeout_s', value=1e+300)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 44, in test_a3_validate_config_rejects_extreme_values
+    self.assertEqual(result, 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='startup_timeout_s', value=10000000000.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 44, in test_a3_validate_config_rejects_extreme_values
+    self.assertEqual(result, 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='startup_timeout_s', value=1e+300)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 44, in test_a3_validate_config_rejects_extreme_values
+    self.assertEqual(result, 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='mock_delay_s', value=10000000000.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 44, in test_a3_validate_config_rejects_extreme_values
+    self.assertEqual(result, 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='mock_delay_s', value=1e+300)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 44, in test_a3_validate_config_rejects_extreme_values
+    self.assertEqual(result, 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='sample_interval_s', value=10000000000.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 44, in test_a3_validate_config_rejects_extreme_values
+    self.assertEqual(result, 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_a3_validate_config_rejects_extreme_values (task004.tests.test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values) (key='sample_interval_s', value=1e+300)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 44, in test_a3_validate_config_rejects_extreme_values
+    self.assertEqual(result, 2)
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.005s
+
+FAILED (failures=20)

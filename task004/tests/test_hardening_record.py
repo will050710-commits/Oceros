@@ -18,9 +18,11 @@ from task004.cli import main
 from task004.config import parse_config
 from task004.record import validate_record, write_artifacts
 from task004.schema import validate_artifact
+from task004.tests.fixtures import artifact_fixture
+from task004 import record as record_module
+from task004.server import ManagedMockServer
 
 ROOT = Path(__file__).resolve().parents[2]
-FIXTURE = ROOT / "task004/evidence/dry-run/e1979d42784948cfbeb13b44cbc6044a"
 
 
 class AtomicArtifactTests(unittest.TestCase):
@@ -28,9 +30,8 @@ class AtomicArtifactTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name) / "out"
-        self.manifest = json.loads((FIXTURE / "manifest.json").read_text())
-        self.record = json.loads((FIXTURE / "runs.jsonl").read_text())
-        self.config = parse_config(self.manifest["config"])
+        self.config, self.record, preflight = artifact_fixture()
+        self.manifest = {"preflight": preflight}
 
     def write(self):
         return write_artifacts(self.root, self.config, self.record, self.manifest["preflight"])
@@ -48,7 +49,56 @@ class AtomicArtifactTests(unittest.TestCase):
                     return original(path, *args, **kwargs)
                 with patch.object(Path, "open", faulty), self.assertRaises(type(exception)):
                     self.write()
-                self.assertEqual(list(self.root.iterdir()), [])
+                self.assertEqual(list(self.root.iterdir()), [], "partial artifact survived injected failure")
+
+    def test_every_write_sync_and_rename_failure_removes_staging(self):
+        for failure_point in ("runs.jsonl", "manifest.json", "fsync-1", "fsync-2", "rename"):
+            for error in (OSError("injected"), KeyboardInterrupt()):
+                with self.subTest(point=failure_point, error=type(error).__name__):
+                    self.root = Path(self.tmp.name) / (failure_point + type(error).__name__)
+                    original_open, original_sync = Path.open, os.fsync
+                    calls = 0
+                    def faulty_open(path, *args, **kwargs):
+                        if path.name == failure_point and (args[0] if args else kwargs.get('mode')) == 'wb':
+                            raise error
+                        return original_open(path, *args, **kwargs)
+                    def faulty_sync(fd):
+                        nonlocal calls
+                        calls += 1
+                        if failure_point == f'fsync-{calls}':
+                            raise error
+                        return original_sync(fd)
+                    with patch.object(Path, 'open', faulty_open), patch('task004.record.os.fsync', faulty_sync), \
+                            patch('task004.record.os.rename', side_effect=error) if failure_point == 'rename' else contextlib.nullcontext():
+                        with self.assertRaises(type(error)):
+                            self.write()
+                    self.assertEqual(list(self.root.iterdir()), [])
+
+    @unittest.skipUnless(os.name == 'posix', 'POSIX phase signals; Windows UNVERIFIED')
+    def test_signals_during_cleanup_and_write_finish_committed_result(self):
+        for phase in ('cleanup', 'write'):
+            with self.subTest(phase=phase):
+                config_path = Path(self.tmp.name) / 'config.json'
+                config_path.write_text(json.dumps(self.config.to_dict()))
+                output = Path(self.tmp.name) / phase
+                original = ManagedMockServer.stop if phase == 'cleanup' else record_module._write_synced
+                delivered = []
+                def interrupted(*args, **kwargs):
+                    for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGTERM):
+                        os.kill(os.getpid(), sig)
+                        delivered.append(sig)
+                    return original(*args, **kwargs)
+                target = 'task004.cli.ManagedMockServer.stop' if phase == 'cleanup' else 'task004.record._write_synced'
+                captured = io.StringIO()
+                with patch(target, interrupted), contextlib.redirect_stdout(captured):
+                    code = main(['dry-run', '--config', str(config_path), '--output-dir', str(output)])
+                self.assertTrue(delivered)
+                self.assertEqual(code, 0)
+                self.assertEqual(json.loads(captured.getvalue())['status'], 'PASS')
+                folders = list(output.iterdir())
+                self.assertEqual(len(folders), 1)
+                self.assertEqual({p.name for p in folders[0].iterdir()}, {'manifest.json', 'runs.jsonl'})
+                validate_record(json.loads((folders[0]/'runs.jsonl').read_text()))
 
     def test_final_directory_invisible_until_both_synced_files_ready(self):
         original = Path.open
@@ -110,7 +160,20 @@ class SignalArtifactTests(unittest.TestCase):
             cfg = root / "config.json"
             cfg.write_text(json.dumps({"n_ctx": 1, "mock_scenario": "slow", "mock_delay_s": 10, "timeout_s": 15}))
             out = root / "out"
-            process = subprocess.Popen([sys.executable, "-m", "task004.cli", "dry-run", "--config", str(cfg), "--output-dir", str(out)], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            ready = root / "request-phase"
+            script = '''
+from pathlib import Path
+import sys
+from task004 import cli
+marker = Path(sys.argv.pop(1))
+original = cli.request_synthetic
+def observed_request(*args, **kwargs):
+    marker.write_text('request-phase', encoding='ascii')
+    return original(*args, **kwargs)
+cli.request_synthetic = observed_request
+raise SystemExit(cli.main())
+'''
+            process = subprocess.Popen([sys.executable, "-c", script, str(ready), "dry-run", "--config", str(cfg), "--output-dir", str(out)], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             children = []
             cleaned = False
             def cleanup():
@@ -138,11 +201,11 @@ class SignalArtifactTests(unittest.TestCase):
                 deadline = time.monotonic() + 5
                 while time.monotonic() < deadline and process.poll() is None:
                     children = psutil.Process(process.pid).children(recursive=True)
-                    if children:
+                    if children and ready.exists():
                         break
                     time.sleep(.01)
                 self.assertTrue(children, "mock child did not start")
-                time.sleep(.1)
+                self.assertTrue(ready.exists(), "CLI did not reach request phase")
                 for index in range(1 if gap is None else 3):
                     if index and gap:
                         time.sleep(gap)
@@ -157,7 +220,8 @@ class SignalArtifactTests(unittest.TestCase):
                 result = json.loads(stdout)
                 self.assertEqual(result["status"], "CANCELLED")
                 self.assertEqual(result["evidence_label"], "SYNTHETIC")
-                self.assertNotIn("Traceback", stderr)
+                for marker in ("Traceback", "ResourceWarning", "Exception ignored"):
+                    self.assertNotIn(marker, stderr)
                 folders = list(out.iterdir())
                 self.assertEqual(len(folders), 1)
                 folder = folders[0]

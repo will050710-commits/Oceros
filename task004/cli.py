@@ -3,11 +3,12 @@ import argparse
 import json
 from pathlib import Path
 import signal
-import threading
+import platform
 import time
 import uuid
 
 from .client import ClientError, request_synthetic
+from .cancellation import CancellationFlag
 from .config import ConfigError, load_config
 from .preflight import check_preflight
 from .record import utc_now, write_artifacts
@@ -25,15 +26,23 @@ def run_dry_run(config, output_dir, cancel_event=None):
                     "prefill_tokens_s": None, "decode_tokens_s": None, "synthetic_output_tokens": None},
         "resources": None,
     }
-    preflight = check_preflight(config, Path(output_dir))
-    server = ManagedMockServer(config)
+    # A failed initialization can still produce an honest artifact, with no invented readings.
+    preflight = {
+        "ready": False, "checks": [], "available_ram_bytes": None, "free_disk_bytes": None,
+        "system_commit": {"total_bytes": None, "limit_bytes": None, "available_bytes": None,
+                          "source": None, "unavailable_reason": "PREFLIGHT_NOT_COMPLETED"},
+        "observed_at_utc": utc_now(), "platform": platform.system(), "measurement_scope": "CURRENT_HOST",
+    }
+    server = None
     sampler = None
     try:
         if cancel_event is not None and cancel_event.is_set():
             raise ClientError("CANCELLED")
+        preflight = check_preflight(config, Path(output_dir))
         if not preflight["ready"]:
             record.update(status="PREFLIGHT_FAILED", reason_code="PREFLIGHT_FAILED")
         else:
+            server = ManagedMockServer(config)
             server.start(cancel_event)
             sampler = ResourceSampler(server.pid, config.sample_interval_s).start()
             metrics = request_synthetic(server.url, config, cancel_event)
@@ -61,15 +70,17 @@ def run_dry_run(config, output_dir, cancel_event=None):
             record.update(status="FAIL", reason_code="MEMORY_SAMPLING_FAILED")
         finally:
             try:
-                server.stop()
-            except (ServerError, OSError):
+                if server is not None:
+                    server.stop()
+            except Exception:
+                # Cleanup integrity takes precedence over request cancellation/timeout.
                 record.update(status="FAIL", reason_code="CLEANUP_FAILED")
     record["finished_at_utc"] = utc_now()
     record["metrics"]["run_elapsed_s"] = time.monotonic() - start
     return record, write_artifacts(output_dir, config, record, preflight)
 
 
-def main(argv=None):
+def _main(argv=None):
     parser = argparse.ArgumentParser(description="TASK-004 synthetic-only harness")
     parser.add_argument("command", choices=("validate-config", "preflight", "dry-run"))
     parser.add_argument("--config", default="task004/mock_config.json")
@@ -88,13 +99,18 @@ def main(argv=None):
         print(json.dumps(result, sort_keys=True))
         return 0 if result["ready"] else 3
     # Signals request cancellation; repeated signals must not interrupt cleanup or writes.
-    cancel = threading.Event()
+    cancel = CancellationFlag()
     previous = {}
     try:
         for name in ("SIGINT", "SIGTERM", "SIGHUP", "SIGBREAK"):
             number = getattr(signal, name, None)
             if number is not None:
-                previous[number] = signal.signal(number, lambda *_: cancel.set())
+                old = signal.getsignal(number)
+                # Preserve nohup/inherited ignores and handlers Python cannot restore.
+                if old == signal.SIG_IGN or old is None:
+                    continue
+                signal.signal(number, lambda *_: cancel.set())
+                previous[number] = old
         record, _ = run_dry_run(config, Path(args.output_dir), cancel)
         print(json.dumps({key: record[key] for key in ("run_id", "status", "reason_code", "evidence_label")}))
         return {"PASS": 0, "PREFLIGHT_FAILED": 3, "CANCELLED": 130, "TIMEOUT": 124}.get(record["status"], 1)
@@ -106,8 +122,16 @@ def main(argv=None):
         return 1
     finally:
         for number, handler in previous.items():
-            if handler is not None:
-                signal.signal(number, handler)
+            signal.signal(number, handler)
+
+
+def main(argv=None):
+    try:
+        return _main(argv)
+    except Exception:
+        # Last-resort boundary: no exception text or malformed input in CLI output.
+        print(json.dumps({"status": "FAIL", "reason_code": "INTERNAL_ERROR"}))
+        return 1
 
 
 if __name__ == "__main__":

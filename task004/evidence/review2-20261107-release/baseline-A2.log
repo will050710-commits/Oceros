@@ -1,0 +1,38 @@
+test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) ... 
+  test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='OSError') ... FAIL
+  test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='KeyboardInterrupt') ... FAIL
+
+======================================================================
+FAIL: test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='OSError')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_record.py", line 52, in test_second_write_failure_cleans_staging_for_baseexceptions
+    self.assertEqual(list(self.root.iterdir()), [], "partial artifact survived injected failure")
+AssertionError: Lists differ: [PosixPath('<temp><temp>ju360r7d/OSError/00000000000000000000000000000000')] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+PosixPath('<temp><temp>ju360r7d/OSError/00000000000000000000000000000000')
+
+- [PosixPath('<temp><temp>ju360r7d/OSError/00000000000000000000000000000000')]
++ [] : partial artifact survived injected failure
+
+======================================================================
+FAIL: test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) (exception='KeyboardInterrupt')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_record.py", line 52, in test_second_write_failure_cleans_staging_for_baseexceptions
+    self.assertEqual(list(self.root.iterdir()), [], "partial artifact survived injected failure")
+AssertionError: Lists differ: [PosixPath('<temp><temp>ju360r7d/KeyboardInter[35 chars]00')] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+PosixPath('<temp><temp>ju360r7d/KeyboardInterrupt/00000000000000000000000000000000')
+
+- [PosixPath('<temp><temp>ju360r7d/KeyboardInterrupt/00000000000000000000000000000000')]
++ [] : partial artifact survived injected failure
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+FAILED (failures=2)

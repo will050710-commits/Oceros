@@ -1,0 +1,32 @@
+test_nested_signal_cannot_deadlock_handler (task004.tests.test_review_cli.ReviewCliTests.test_nested_signal_cannot_deadlock_handler) ... FAIL
+
+======================================================================
+FAIL: test_nested_signal_cannot_deadlock_handler (task004.tests.test_review_cli.ReviewCliTests.test_nested_signal_cannot_deadlock_handler)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-baseline>/task004/tests/test_review_cli.py", line 53, in test_nested_signal_cannot_deadlock_handler
+    result = subprocess.run([sys.executable, "-c", script], cwd=ROOT,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<python-base>/lib/python3.12/subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<python-base>/lib/python3.12/subprocess.py", line 1209, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<python-base>/lib/python3.12/subprocess.py", line 2116, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  File "<python-base>/lib/python3.12/subprocess.py", line 1253, in _check_timeout
+    raise TimeoutExpired(
+subprocess.TimeoutExpired: Command '['<python-env>/bin/python', '-c', "\nimport linecache, os, signal, sys\nfrom unittest.mock import patch\nfrom task004.cli import main\ntriggered = False\ndef fake(config, output, cancel):\n    def trace(frame, event, arg):\n        global triggered\n        line = linecache.getline(frame.f_code.co_filename, frame.f_lineno)\n        if event == 'line' and frame.f_locals.get('self') is cancel and not triggered and ('_flag = True' in line or '_cancelled = True' in line):\n            triggered = True\n            os.kill(os.getpid(), signal.SIGTERM)\n        return trace\n    sys.settrace(trace)\n    try:\n        os.kill(os.getpid(), signal.SIGTERM)\n    finally:\n        sys.settrace(None)\n    assert triggered and cancel.is_set()\n    return {'run_id': '0'*32, 'status': 'CANCELLED', 'reason_code': 'CANCELLED', 'evidence_label': 'SYNTHETIC'}, None\nwith patch('task004.cli.run_dry_run', fake):\n    assert main(['dry-run']) == 130\n"]' timed out after 3 seconds
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<review-baseline>/task004/tests/test_review_cli.py", line 56, in test_nested_signal_cannot_deadlock_handler
+    self.fail("nested signal deadlocked cancellation handler")
+AssertionError: nested signal deadlocked cancellation handler
+
+----------------------------------------------------------------------
+Ran 1 test in 3.006s
+
+FAILED (failures=1)

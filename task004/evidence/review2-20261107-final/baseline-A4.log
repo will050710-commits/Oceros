@@ -1,0 +1,159 @@
+test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) ... 
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='n_ctx', value=0) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='max_new_tokens', value=0) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='max_new_tokens', value=97) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='timeout_s', value=0) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='timeout_s', value=3600.001) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='startup_timeout_s', value=0) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='startup_timeout_s', value=3600.001) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='sample_interval_s', value=0.009) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='sample_interval_s', value=60.001) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='mock_delay_s', value=3600.001) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='image_long_edge_px', value=0) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='image_long_edge_px', value=769) ... FAIL
+  test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='max_image_tokens', value=0) ... FAIL
+test_a4_reason_enum_matches_status_reasons (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_reason_enum_matches_status_reasons) ... FAIL
+test_a4_validate_artifact_checks_schema_before_value (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_validate_artifact_checks_schema_before_value) ... FAIL
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='n_ctx', value=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 82, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(schema_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='max_new_tokens', value=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 82, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(schema_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='max_new_tokens', value=97)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 82, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(schema_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='timeout_s', value=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 82, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(schema_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='timeout_s', value=3600.001)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 81, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(config_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='startup_timeout_s', value=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 82, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(schema_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='startup_timeout_s', value=3600.001)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 81, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(config_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='sample_interval_s', value=0.009)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 82, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(schema_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='sample_interval_s', value=60.001)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 81, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(config_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='mock_delay_s', value=3600.001)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 81, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(config_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='image_long_edge_px', value=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 82, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(schema_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='image_long_edge_px', value=769)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 82, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(schema_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_config_and_manifest_numerical_boundaries_match (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match) (key='max_image_tokens', value=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 82, in test_a4_config_and_manifest_numerical_boundaries_match
+    self.assertEqual(schema_accepts, expected)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_a4_reason_enum_matches_status_reasons (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_reason_enum_matches_status_reasons)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 98, in test_a4_reason_enum_matches_status_reasons
+    self.assertEqual(set(actual), set().union(*STATUS_REASONS.values()))
+AssertionError: Items in the second set but not the first:
+'HTTP_ERROR'
+'CLIENT_ERROR'
+'CLIENT_CLEANUP_FAILED'
+'INVALID_RESPONSE'
+'CLEANUP_FAILED'
+'TIMEOUT'
+'CANCELLED'
+'STARTUP_TIMEOUT'
+'OK'
+'SERVER_EXITED'
+'INTERNAL_ERROR'
+'CONNECTION_ERROR'
+'INVALID_JSON'
+'PREFLIGHT_FAILED'
+'SERVER_ERROR'
+'RESPONSE_TOO_LARGE'
+'MEMORY_SAMPLING_FAILED'
+
+======================================================================
+FAIL: test_a4_validate_artifact_checks_schema_before_value (task004.tests.test_hardening_schema.SchemaContractTests.test_a4_validate_artifact_checks_schema_before_value)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline>/task004/tests/test_hardening_schema.py", line 117, in test_a4_validate_artifact_checks_schema_before_value
+    with self.assertRaisesRegex(ValueError, "SCHEMA_UNSUPPORTED_KEYWORD"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.003s
+
+FAILED (failures=15)

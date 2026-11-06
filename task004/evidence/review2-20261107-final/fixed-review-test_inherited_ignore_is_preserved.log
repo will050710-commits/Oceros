@@ -1,0 +1,6 @@
+test_inherited_ignore_is_preserved (task004.tests.test_review_cli.ReviewCliTests.test_inherited_ignore_is_preserved) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

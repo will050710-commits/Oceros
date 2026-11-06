@@ -1,0 +1,6 @@
+test_second_write_failure_cleans_staging_for_baseexceptions (task004.tests.test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.007s
+
+OK

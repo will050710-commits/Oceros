@@ -1,0 +1,6 @@
+test_nested_signal_cannot_deadlock_handler (task004.tests.test_review_cli.ReviewCliTests.test_nested_signal_cannot_deadlock_handler) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.078s
+
+OK

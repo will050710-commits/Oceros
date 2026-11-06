@@ -1,0 +1,6 @@
+test_nonloopback_endpoint_rejected_before_connection (task004.tests.test_workflow.WorkflowTests.test_nonloopback_endpoint_rejected_before_connection) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+OK
