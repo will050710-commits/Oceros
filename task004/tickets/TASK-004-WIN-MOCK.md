@@ -4,7 +4,7 @@ Ngày lập/cập nhật: 07/11/2026 (Asia/Bangkok). Ticket trong repo; đã nh�
 
 | Trường | Giá trị |
 | --- | --- |
-| STATUS | SURVEY_FAILED_REPORTED / NOT_VERIFIED; BLOCKED_ON_REPORTED_DEFECT_AND_WINDOWS_TEST_GAPS |
+| STATUS | SURVEY_LOG_CONFIRMED / NOT_VERIFIED; BLOCKED_ON_CLIENT_DEFECT_AND_WINDOWS_TEST_GAPS |
 | OWNER | Lượt intake do người dùng chuyển tiếp; owner bản vá/kiểm tiếp chưa phân công, do chủ dự án chỉ định |
 | Implementation cần xác minh | `47aaeee91739c2f09ea30538e40c66e853653543` |
 | Mốc hồ sơ khi lập ticket | `c45347100e763fbbb1efb537b457c73f115dcaf0` — chỉ bổ sung tài liệu so với implementation được chấp nhận |
@@ -18,7 +18,7 @@ Xác minh các đường cài đặt, CLI, HTTP, hủy, dọn tiến trình, đo
 
 Đầu vào cần có trước khi chạy: bản clone hoặc ZIP giải nén đầy đủ (gồm `task004/evidence/` cho hai test compatibility), quyền dùng máy đích, Python đích, thư mục output có quyền ghi và người thực thi xác nhận đây là máy cần đo. Không dùng ZIP triển khai cũ `2cb9168`. Với Git, ghi full SHA và trạng thái working tree; với ZIP, ghi commit trong comment, SHA-256 archive và kết quả kiểm tệp bên dưới. Không reset thay đổi của người dùng để khớp revision. Nếu source khác 47aaeee, ghi diff và không gọi đó là xác minh nguyên bản 47aaeee.
 
-[ACK packet 879dcfa](../reviews/2026-11-07/ORCHESTRATOR_ACK.md) ghi trạng thái READY_FOR_ASSIGNMENT / NOT_RUN tại thời điểm đó. Sau ACK đã nhận [Windows intake](../evidence/windows-intake-20261107/README.md): bốn artifact khớp hash/validator; smoke PASS/SYNTHETIC được báo, suite 106 test = 92 pass + 1 failure + 13 skip. Log survey và script/output chẩn đoán chưa nhận; Windows vẫn NOT_VERIFIED. Finding worker còn sống sau cancel được theo dõi ở [TASK-004-WIN-CLIENT-CANCEL](TASK-004-WIN-CLIENT-CANCEL.md), chưa triển khai bản vá.
+[ACK packet 879dcfa](../reviews/2026-11-07/ORCHESTRATOR_ACK.md) ghi trạng thái READY_FOR_ASSIGNMENT / NOT_RUN tại thời điểm đó. Sau ACK đã nhận [Windows intake](../evidence/windows-intake-20261107/README.md): bốn artifact khớp hash/validator; smoke PASS/SYNTHETIC được báo, suite 106 test = 92 pass + 1 failure + 13 skip. Log survey nguyên byte đã xác nhận kết quả, mã/output chẩn đoán có trong PDF được [đối chiếu](../evidence/windows-intake-20261107/SUPPLEMENT_REVIEW.md); Windows vẫn NOT_VERIFIED. Finding worker còn sống sau cancel được theo dõi ở [TASK-004-WIN-CLIENT-CANCEL](TASK-004-WIN-CLIENT-CANCEL.md), chưa triển khai bản vá.
 
 Nếu cần sửa để tương thích Windows, thực hiện thành commit riêng nối tiếp baseline, giữ hồi quy Linux và trình reviewer xác nhận đúng commit mới. Verdict Linux tại 47aaeee không tự áp cho code đã sửa.
 

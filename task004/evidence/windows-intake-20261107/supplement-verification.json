@@ -1,0 +1,614 @@
+{
+  "verified_at_utc": "2026-11-07T11:18:36.734661+00:00",
+  "scope": "UPLOADED_LOG_PARSE_AND_CONVERSATION_REVIEW_NOT_WINDOWS_RERUN",
+  "log": {
+    "stored_path": "unittest-survey.sanitized.log",
+    "bytes": 16245,
+    "reported_sha256": "8592f8a806b10bf376fa3afcda204bfc1c3c5f855329492960c631c303c23b13",
+    "computed_sha256": "8592f8a806b10bf376fa3afcda204bfc1c3c5f855329492960c631c303c23b13",
+    "hash_result": "MATCH",
+    "results": [
+      {
+        "id": "test_client_edges.ClientEdgeTests.test_cancel_during_http10_body_read",
+        "result": "FAIL",
+        "skip_reason": null
+      },
+      {
+        "id": "test_client_edges.ClientEdgeTests.test_response_size_is_bounded",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_client_edges.ClientEdgeTests.test_timeout_during_http10_body_read",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_boolean_does_not_count_as_integer",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_config_must_be_object",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_context_is_required",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_defaults_and_round_trip",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_direct_constructor_validates",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_image_dimension_boundaries",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_image_requires_explicit_token_budget",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_integer_over_python_digit_limit_is_config_error",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_invalid_utf8_and_missing_file_are_safe_errors",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_json_load_and_reject_duplicate_or_nonfinite",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_mock_scenario_and_delay",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_non_thinking_enforced",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_nonpositive_context_rejected",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_resource_thresholds_must_be_nonnegative",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_timeout_and_interval_validation",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_token_cap_boundaries",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.ConfigTests.test_unknown_keys_and_external_runtime_rejected",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.PreflightTests.test_disk_boundary",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.PreflightTests.test_disk_failure_is_reported",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.PreflightTests.test_existing_file_blocks_output",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.PreflightTests.test_linux_commit_is_explicitly_unavailable",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.PreflightTests.test_nested_missing_directory_uses_ancestor_without_writes",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.PreflightTests.test_ram_boundary",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.PreflightTests.test_ram_failure_is_not_zero_or_success",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_config_preflight.PreflightTests.test_report_identifies_host_and_measurement_sources",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_client.ClientHardeningTests.test_cancel_keeps_primary_for_real_blocked_connect",
+        "result": "skipped",
+        "skip_reason": "Linux backlog behavior only"
+      },
+      {
+        "id": "test_hardening_client.ClientHardeningTests.test_cancel_keeps_primary_when_connect_cleanup_stalls",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_client.ClientHardeningTests.test_keyboard_interrupt_keeps_primary_when_cleanup_stalls",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_client.ClientHardeningTests.test_no_valid_samples_is_distinct_from_unsupported_platform",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_record.AtomicArtifactTests.test_every_write_sync_and_rename_failure_removes_staging",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_record.AtomicArtifactTests.test_existing_run_not_overwritten",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_record.AtomicArtifactTests.test_final_directory_invisible_until_both_synced_files_ready",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_record.AtomicArtifactTests.test_invalid_manifest_has_no_partial_run",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_record.AtomicArtifactTests.test_main_valueerror_safe_and_signal_handlers_restored",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_record.AtomicArtifactTests.test_second_write_failure_cleans_staging_for_baseexceptions",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_record.AtomicArtifactTests.test_signals_during_cleanup_and_write_finish_committed_result",
+        "result": "skipped",
+        "skip_reason": "POSIX phase signals; Windows UNVERIFIED"
+      },
+      {
+        "id": "test_hardening_record.AtomicArtifactTests.test_validate_config_scope",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_record.SignalArtifactTests.test_burst_signals_do_not_interrupt_cleanup_or_artifacts",
+        "result": "skipped",
+        "skip_reason": "POSIX signal integration; Windows UNVERIFIED"
+      },
+      {
+        "id": "test_hardening_record.SignalArtifactTests.test_single_signals_produce_complete_cancelled_artifacts",
+        "result": "skipped",
+        "skip_reason": "POSIX signal integration; Windows UNVERIFIED"
+      },
+      {
+        "id": "test_hardening_schema.ConfigBoundsTests.test_a3_timeout_and_sampling_upper_bounds",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_schema.ConfigBoundsTests.test_a3_validate_config_rejects_extreme_values",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_schema.SchemaContractTests.test_a4_config_and_manifest_numerical_boundaries_match",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_schema.SchemaContractTests.test_a4_every_pattern_is_anchored",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_schema.SchemaContractTests.test_a4_existing_committed_evidence_remains_valid",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_schema.SchemaContractTests.test_a4_malformed_supported_keyword_forms_fail_closed",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_schema.SchemaContractTests.test_a4_maximum_and_exclusive_minimum_enforced",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_schema.SchemaContractTests.test_a4_reason_enum_matches_status_reasons",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_schema.SchemaContractTests.test_a4_run_schema_rejects_bad_reason_time_token_and_id",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_schema.SchemaContractTests.test_a4_unsupported_keywords_fail_at_every_depth",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_schema.SchemaContractTests.test_a4_validate_artifact_checks_schema_before_value",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_server.ServerHardeningTests.test_a1_killed_cli_leaves_no_mock_or_owned_scratch",
+        "result": "skipped",
+        "skip_reason": "POSIX SIGKILL integration; Windows unverified"
+      },
+      {
+        "id": "test_hardening_server.ServerHardeningTests.test_a1_missing_parent_exits_immediately_and_cleans_scratch",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_server.ServerHardeningTests.test_a1_mock_maximum_lifetime_exits",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_hardening_server.ServerHardeningTests.test_b2_empty_owned_group_is_not_signalled",
+        "result": "skipped",
+        "skip_reason": "POSIX owned groups; Windows unverified"
+      },
+      {
+        "id": "test_hardening_server.ServerHardeningTests.test_b3_mock_does_not_inherit_harness_secret",
+        "result": "skipped",
+        "skip_reason": "child environ read verified on Linux only"
+      },
+      {
+        "id": "test_review_cli.ReviewCliTests.test_cleanup_failures_explicitly_override_cancel_and_timeout",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_cli.ReviewCliTests.test_flag_wait_is_monotonic_without_threading_locks",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_cli.ReviewCliTests.test_inherited_ignore_is_preserved",
+        "result": "skipped",
+        "skip_reason": "SIGHUP unavailable"
+      },
+      {
+        "id": "test_review_cli.ReviewCliTests.test_initialization_exceptions_still_write_failed_artifact",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_cli.ReviewCliTests.test_last_resort_cli_boundary_does_not_expose_exception",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_cli.ReviewCliTests.test_nested_signal_cannot_deadlock_handler",
+        "result": "skipped",
+        "skip_reason": "POSIX signal test only"
+      },
+      {
+        "id": "test_review_cli.ReviewCliTests.test_unknown_previous_handler_is_never_replaced",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_record.ReviewRecordTests.test_all_literal_client_and_server_errors_are_registered",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_record.ReviewRecordTests.test_malformed_provenance_is_always_safe_valueerror",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_record.ReviewRecordTests.test_pass_requires_positive_resource_evidence",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_runner.ReviewRunnerTests.test_archive_extraction_accepts_canonicalized_symlink_root",
+        "result": "skipped",
+        "skip_reason": "symlink creation unavailable"
+      },
+      {
+        "id": "test_review_runner.ReviewRunnerTests.test_assertion_failure_must_be_the_expected_defect",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_runner.ReviewRunnerTests.test_diagnostic_filter_distinguishes_expected_tracebacks",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_runner.ReviewRunnerTests.test_finalizer_warning_rejected_even_with_success_exit",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_runner.ReviewRunnerTests.test_fingerprints_cover_data_consumed_by_dry_run",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_runner.ReviewRunnerTests.test_metadata_and_diagnostic_paths_hide_known_local_prefixes",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_review_runner.ReviewRunnerTests.test_scope_uses_actual_platform_without_claiming_readiness",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_server.ServerTests.test_cancel_set_before_start_leaves_no_live_child",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_server.ServerTests.test_cleanup_access_denied_is_safe_error",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_server.ServerTests.test_exited_parent_term_resistant_child_is_force_killed",
+        "result": "skipped",
+        "skip_reason": "POSIX group SIGKILL escalation only"
+      },
+      {
+        "id": "test_server.ServerTests.test_exited_session_parent_descendant_cleanup_and_unrelated_survival",
+        "result": "skipped",
+        "skip_reason": "POSIX session isolation; Windows live-tree fallback"
+      },
+      {
+        "id": "test_server.ServerTests.test_group_cleanup_requires_matching_owner",
+        "result": "skipped",
+        "skip_reason": "POSIX process groups only"
+      },
+      {
+        "id": "test_server.ServerTests.test_health_failure_reaches_deadline_and_cleans_process",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_server.ServerTests.test_keyboard_interrupt_propagates_after_cleanup",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_server.ServerTests.test_owned_descendants_stopped_without_touching_unrelated_process",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_server.ServerTests.test_second_start_rejected_without_replacing_live_process",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_server.ServerTests.test_startup_cancel_after_spawn_stops_child",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_server.ServerTests.test_stop_is_idempotent_before_and_after_start",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_server.ServerTests.test_success_startup_answers_health_and_context_stops",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_server.ServerTests.test_url_unavailable_before_start",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_cancel_before_launch",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_cancel_in_flight",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_cleanup_failure_is_recorded",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_cli_errors_do_not_echo_config_secrets",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_cli_subprocess_exit_codes",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_connection_failure",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_fault_results",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_health_timeout_writes_evidence",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_nested_schema_rejects_unrecognized_log_fields",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_no_raw_content_or_environment_in_logs",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_nonloopback_endpoint_rejected_before_connection",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_preflight_failure_prevents_spawn",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_real_adapter_disabled",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_record_rejects_wrong_label_or_fabricated_metrics",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_repeated_runs_keep_both_artifacts",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_sampler_real_memory_allocation",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_success_artifact_integrity_and_missing_metrics",
+        "result": "ok",
+        "skip_reason": null
+      },
+      {
+        "id": "test_workflow.WorkflowTests.test_timeout_is_bounded_and_threads_finish",
+        "result": "ok",
+        "skip_reason": null
+      }
+    ],
+    "counts": {
+      "ran": 106,
+      "passed": 92,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 13
+    },
+    "wall_seconds_from_footer": 17.224,
+    "footer": "FAILED (failures=1, skipped=13)",
+    "exit_code_printed_in_log": false,
+    "marker_interpretation": {
+      "Exception ignored": 0,
+      "Traceback": {
+        "count": 1,
+        "classification": "EXPECTED_FAILURE_TRACEBACK"
+      },
+      "ResourceWarning": {
+        "count": 1,
+        "classification": "COMMAND_LINE_WARNING_FILTER_ONLY"
+      }
+    },
+    "drive_absolute_paths_found": false
+  },
+  "conversation_pdf": {
+    "original_filename": "Hướng dẫn xác thực tệp ZIP nhiệm vụ.pdf",
+    "bytes": 427847,
+    "sha256": "b8394b319989dd9991834cec75976247160b15f3221b3c191317143db79ba39d",
+    "pages": 17,
+    "original_committed": false,
+    "reason": "Original attachment contains local user-profile paths and a private conversation URL; repository stores only relevant reviewed observations with page references",
+    "evidence_level": "TRANSCRIPT_SUPPORTED_NOT_INDEPENDENTLY_REPRODUCED",
+    "shutdown_comparisons": [
+      {
+        "method": "shutdown_only",
+        "output": "Method=shutdown_only: elapsed=1.0077s, alive=True",
+        "pdf_pages": [
+          9
+        ],
+        "source_role": "USER_PROMPT_PASTED_TERMINAL_OUTPUT"
+      },
+      {
+        "method": "shutdown_and_close",
+        "output": "Method=shutdown_and_close: elapsed=1.0056s, alive=True",
+        "pdf_pages": [
+          9
+        ],
+        "source_role": "USER_PROMPT_PASTED_TERMINAL_OUTPUT"
+      }
+    ],
+    "raw_closesocket": {
+      "pdf_pages": [
+        10,
+        11
+      ],
+      "source_role": "USER_PROMPT_PASTED_TERMINAL_OUTPUT",
+      "output": "Winsock closesocket: elapsed=0.0575s, alive=False",
+      "finalizer_error": "Exception ignored while finalizing HTTPResponse; WinError 10038"
+    },
+    "short_poll_timeout_proposal": {
+      "pdf_pages": [
+        11,
+        14
+      ],
+      "source_role": "GEMINI_RESPONSE",
+      "implementation_or_test_evidence_found": false
+    },
+    "script_files_received": false,
+    "script_text_visible_in_pdf": true
+  },
+  "prior_intake_verification": "intake-verification.json is retained unchanged as the earlier receipt before these uploads",
+  "current_evidence_status": "SURVEY_LOG_CONFIRMED_DIAGNOSTICS_TRANSCRIPT_SUPPORTED",
+  "overall_windows_status": "NOT_VERIFIED / BLOCKED_ON_CLIENT_DEFECT_AND_WINDOWS_TEST_GAPS"
+}

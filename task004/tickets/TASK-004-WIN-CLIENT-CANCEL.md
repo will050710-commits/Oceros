@@ -8,15 +8,15 @@ Ngày lập: 07/11/2026 (Asia/Bangkok). Ticket theo sau [Windows intake](../evid
 | Owner | Chưa phân công; agent sửa code và người có máy Windows phối hợp kiểm đúng revision |
 | Ticket cha | [TASK-004-WIN-MOCK](TASK-004-WIN-MOCK.md) |
 | Implementation baseline | `47aaeee91739c2f09ea30538e40c66e853653543`; các commit hồ sơ sau đó không thay client/tests |
-| Finding | USER_REPORTED: `test_cancel_during_http10_body_read` fail vì `task004-http` còn sống sau khi `request_synthetic` trả CANCELLED |
+| Finding | CONFIRMED_FROM_UPLOADED_LOG: `test_cancel_during_http10_body_read` fail vì `task004-http` còn sống sau khi `request_synthetic` trả CANCELLED |
 | Máy cần tái kiểm | Windows 11 10.0.26200 / CPython 3.14.4 / psutil 7.2.2 theo intake |
 | Ranh giới | Launcher/client/mock; stdlib + psutil; không model thật, API model, CVC, ticket/ledger/costlog |
 
 ## Vấn đề và đầu vào
 
-Trong fixture HTTP/1.0 body stall, báo cáo cho biết `socket.shutdown(SHUT_RDWR)` từ thread khác không đánh thức worker kịp `join(.5)` trên Windows. Request chính giữ đúng CANCELLED nhưng worker còn sống. Đây là finding cần sửa; mô tả Winsock/select và chẩn đoán `closesocket` vẫn cần script/log để xác nhận nguyên nhân cụ thể.
+Trong fixture HTTP/1.0 body stall, báo cáo cho biết `socket.shutdown(SHUT_RDWR)` từ thread khác không đánh thức worker kịp `join(.5)` trên Windows. Request chính giữ đúng CANCELLED nhưng worker còn sống. Đây là finding cần sửa; mã/output chẩn đoán đã có trong [PDF được đối chiếu](../evidence/windows-intake-20261107/SUPPLEMENT_REVIEW.md). Probe cho thấy worker còn sống sau một giây, chưa quan sát trực tiếp Winsock/select.
 
-Bốn artifact intake đã khớp hash và validator. Log survey và log thí nghiệm chưa nhận; yêu cầu người chạy giữ nguyên byte của `unittest-survey.sanitized.log` và gửi script/chỉ dẫn tái hiện. Không cần chạy lại toàn suite nguyên bản nhiều lần chỉ để tạo lại log đã có.
+Bốn artifact intake đã khớp hash và validator. Log survey đã nhận, hash khớp và xác nhận 92 ok / 1 FAIL / 13 skipped. PDF có script và output shutdown/closesocket ở trang 8–11; đây là transcript, không phải script .py nguyên byte. Không cần gửi lại hoặc chạy lại toàn suite nguyên bản để thu thập các bằng chứng đã có.
 
 ## Yêu cầu bản sửa
 

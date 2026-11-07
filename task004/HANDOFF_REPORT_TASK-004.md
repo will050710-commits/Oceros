@@ -24,13 +24,15 @@ Review dựa trên `07eb03cd0f01d16feef6f090cd5ed74c4c075eeb`; baseline ban đ�
 
 ## FILES_READ
 
-Bổ sung Windows intake: báo cáo người dùng dán, bốn khối JSON/JSONL và bảng hash/skip; đọc client/test lỗi và validator. Chưa nhận byte log survey hoặc script/output chẩn đoán Winsock. Snapshot tài nguyên đã nhận không thay JSON/probe TASK-001 gốc còn thiếu.
+Bổ sung Windows intake: báo cáo người dùng dán, bốn khối JSON/JSONL và bảng hash/skip; đọc client/test lỗi và validator. Đã nhận bổ sung log survey nguyên byte và PDF hội thoại có script/output chẩn đoán Winsock; xem evidence/windows-intake-20261107/SUPPLEMENT_REVIEW.md. Snapshot tài nguyên đã nhận không thay JSON/probe TASK-001 gốc còn thiếu.
 
 Bổ sung ngày 07/11: verdict ACCEPT trong tin nhắn, review vòng hai gốc và hai minor; ACK orchestrator được chuyển tiếp cho packet 879dcfa và ba ghi chú về owner Windows, ZIP không Git, nguồn hardware. Đối chiếu code/tests tại commit được chấp nhận; phiếu 24/10 nguyên bản và JSON/probe phần cứng gốc chưa có để đọc.
 
 Đọc toàn bộ review dán, source/tests/runner/schema và evidence của bản 07eb03c; đối chiếu handoff/context. Không tái nghiên cứu model hoặc xác minh lại claims hardware/license trong tài liệu nguồn. References và evidence cũ không sửa.
 
 ## FILES_CHANGED
+
+Lần bổ sung tiếp theo lưu log survey nguyên byte, kết quả phân tích tự động và đối chiếu PDF có số trang/hash. PDF gốc giữ ở tệp đính kèm vì có đường dẫn hồ sơ cá nhân và URL hội thoại; không đưa các thông tin đó vào repo. Cập nhật các trạng thái thiếu log/chẩn đoán; không sửa code hoặc dữ liệu intake lần trước.
 
 Thêm `evidence/windows-intake-20261107/` gồm báo cáo nguyên byte, bốn artifact trích xuất khớp hash, kết quả kiểm ngoại tuyến và handoff 17 trường; thêm ticket TASK-004-WIN-CLIENT-CANCEL. Cập nhật hồ sơ trạng thái và checksum, chưa triển khai bản vá client.
 
@@ -53,7 +55,7 @@ Thêm cancellation.py, unit fixture builder và tests review CLI/record/runner. 
 
 ## EVIDENCE
 
-[Windows intake](evidence/windows-intake-20261107/README.md): 4/4 artifact hash khớp; manifest schema và validate_record PASS; config/provenance/manifest→JSONL nhất quán. ZIP GitHub đối chiếu độc lập có cùng hash và 171/171 tệp khớp; 43/43 fingerprint implementation giữ nguyên. Survey Windows 106 test, 92 pass, 1 fail, 13 skip là USER_REPORTED, chưa nhận log; không gộp với evidence Linux dưới đây.
+[Windows intake](evidence/windows-intake-20261107/README.md): 4/4 artifact hash khớp; manifest schema và validate_record PASS; config/provenance/manifest→JSONL nhất quán. ZIP GitHub đối chiếu độc lập có cùng hash và 171/171 tệp khớp; 43/43 fingerprint implementation giữ nguyên. Survey Windows 106 test, 92 pass, 1 fail, 13 skip đã đối chiếu từ log sanitized có hash khớp; chẩn đoán có output trong PDF, chưa tái chạy Windows; không gộp với evidence Linux dưới đây.
 
 ACK orchestrator tại `reviews/2026-11-07/ORCHESTRATOR_ACK.md` do người dùng chuyển tiếp: nhận packet 879dcfa, báo suite 106/106 và checksum 180/180 ở snapshot đó. Nhãn REPORTED; không gộp với ba lượt implementer dưới đây hoặc gọi là lượt chạy mới trong bước ghi ACK. ACK không xác nhận riêng hai minor, không phân công owner Windows hay mở model/CVC.
 
@@ -70,6 +72,8 @@ Evidence release: `evidence/review2-20261107-release/validation.json`; bắt đ�
 - Lượt `review2-20261107` có suite PASS nhưng summary FAIL vì matcher A4 ban đầu chỉ nhận schema assertion, chưa nhận config assertion cùng kiểm biên. Lượt `review2-20261107-final` PASS trước khi thêm gate stderr trong test giữ output của CLI. Release đã chạy lại đầy đủ sau thay đổi cuối. Giữ nguyên các evidence đó, không chỉnh tay số liệu.
 
 ## TESTS_EXECUTED
+
+Đã phân tích tệp log bổ sung: 106 ID duy nhất, khớp source và bảng 13 skip; kiểm footer, hash và marker. Đối chiếu phần User prompt trong PDF trang 9–11 với output thí nghiệm; không chạy lệnh trong PDF và không tái chạy Windows.
 
 Bước intake chỉ chạy kiểm hash/schema/tính nhất quán artifact ngoại tuyến; không chạy lại suite Windows hoặc toàn bộ suite Linux. Kiểm riêng buffered socket trên Linux/CPython 3.12.14 cho thấy đọc tiếp sau socket.makefile timeout ném OSError, nên không áp dụng máy móc đề xuất timeout 50 ms. Đây không phải tái lập lỗi Winsock.
 
@@ -107,7 +111,7 @@ Không API model trả phí, model downloads, training, Colab/GPU hay mua dịch
 
 - Chưa có launcher llama-server thật; chưa có bảng/test preflight theo model (bao gồm case 0,98 GiB); hardware_reference vẫn null. Ngưỡng mock 64 MiB không thay các ngưỡng model được thuật lại. Chờ Windows mock, nguồn hardware/RAM sạch và quyết định người dùng trước scope mới.
 - Ghi chú không chặn mới: `validate_record` với `run_elapsed_s=10**400` có thể ném OverflowError khi gọi như thư viện; implementer đã tái hiện. Giữ mã đã được chấp nhận; follow-up chuẩn hóa lỗi nếu được giao riêng. Hai test compatibility vẫn cần evidence lịch sử trong bản sao repo.
-- Windows NOT_VERIFIED: đã nhận smoke artifact và survey FAILED được báo trên CPython 3.14.4/psutil 7.2.2; lỗi worker còn sống sau cancel cần vá/test riêng. GetPerformanceInfo/private bytes có số trong artifact nhưng không phải phép đo implementer tái chạy. Chưa đủ log, chưa có Job Object hoặc đủ test Windows cho console signals, watchdog/cây tiến trình, environment và các đường ghi file; mô phỏng Linux không thay Windows thật.
+- Windows NOT_VERIFIED: đã nhận smoke artifact và survey FAILED được báo trên CPython 3.14.4/psutil 7.2.2; lỗi worker còn sống sau cancel cần vá/test riêng. GetPerformanceInfo/private bytes có số trong artifact nhưng không phải phép đo implementer tái chạy. Đã nhận log survey một lượt; chưa có Job Object hoặc đủ test Windows cho console signals, watchdog/cây tiến trình, environment và các đường ghi file; mô phỏng Linux không thay Windows thật.
 - B1 ở client giữ primary cancellation nhưng worker connect bị chặn có thể tồn tại tới socket timeout (cận 3600s). Chưa dùng nonblocking connect. Cleanup thất bại ở cấp run có chính sách FAIL riêng như trên.
 - CancellationFlag là cờ đơn điệu tối thiểu, không phải Event tổng quát; không clear/reset. Test reentrancy tại Python handler không phải bằng chứng cho mọi interpreter/OS.
 - Signals sau khi CLI hoàn tất/khôi phục handler thuộc hành vi OS; SIGKILL không thể tạo artifact/finally. Watchdog dọn mock, nhưng SIGKILL giữa ghi có thể để staging. Không directory fsync/power-loss guarantee.
@@ -124,7 +128,7 @@ Theo dõi [ORCHESTRATOR_HANDOFF.md](ORCHESTRATOR_HANDOFF.md) cùng ACK đã lưu
 
 ## NEXT_ACTION
 
-Đã nhận ACK packet 879dcfa và Windows intake qua người dùng; chưa có thao tác gửi/đóng issue qua connector. Nhận log survey/script chẩn đoán, triển khai [TASK-004-WIN-CLIENT-CANCEL](tickets/TASK-004-WIN-CLIENT-CANCEL.md) thành commit riêng và hoàn tất các test Windows còn thiếu theo [ticket cha](tickets/TASK-004-WIN-MOCK.md). Snapshot RAM/đĩa/commit đã nhận; JSON/probe TASK-001 gốc và điều kiện RAM sạch còn thiếu. Model/CVC chưa chạy. [LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) giữ NOT_IMPLEMENTED; nhận phiếu 24/10 nguyên byte để chốt AC khi giao riêng. Không dùng ZIP 2cb9168 thay mã đã chấp nhận.
+Đã nhận ACK packet 879dcfa và Windows intake qua người dùng; chưa có thao tác gửi/đóng issue qua connector. Log survey và PDF chẩn đoán đã nhận; triển khai [TASK-004-WIN-CLIENT-CANCEL](tickets/TASK-004-WIN-CLIENT-CANCEL.md) thành commit riêng và hoàn tất các test Windows còn thiếu theo [ticket cha](tickets/TASK-004-WIN-MOCK.md). Snapshot RAM/đĩa/commit đã nhận; JSON/probe TASK-001 gốc và điều kiện RAM sạch còn thiếu. Model/CVC chưa chạy. [LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) giữ NOT_IMPLEMENTED; nhận phiếu 24/10 nguyên byte để chốt AC khi giao riêng. Không dùng ZIP 2cb9168 thay mã đã chấp nhận.
 
 ## UNVERIFIED_CLAIMS
 

@@ -1,4 +1,5 @@
 HANDOFF_REPORTED.txt -text
+*.log -text
 source-*.json -text
 hardware-*.json -text
 smoke/** -text
