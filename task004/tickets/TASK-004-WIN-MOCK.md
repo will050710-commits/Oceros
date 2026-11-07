@@ -5,7 +5,7 @@ Ngày lập: 07/11/2026 (Asia/Bangkok). Đây là ticket trong repo; chưa tạo
 | Trường | Giá trị |
 | --- | --- |
 | STATUS | READY_FOR_ASSIGNMENT / NOT_RUN |
-| OWNER | TBD — người có máy Windows được chủ dự án giao |
+| OWNER | TBD — chủ dự án chỉ định người có máy Windows; orchestrator không phân công thay |
 | Implementation cần xác minh | `47aaeee91739c2f09ea30538e40c66e853653543` |
 | Mốc hồ sơ khi lập ticket | `c45347100e763fbbb1efb537b457c73f115dcaf0` — chỉ bổ sung tài liệu so với implementation được chấp nhận |
 | Môi trường đích | Windows 11 x64; CPython 3.14 là đích cần xác minh, phiên bản khác phải báo thành ô ma trận riêng |
@@ -16,33 +16,117 @@ Ngày lập: 07/11/2026 (Asia/Bangkok). Đây là ticket trong repo; chưa tạo
 
 Xác minh các đường cài đặt, CLI, HTTP, hủy, dọn tiến trình, đo tài nguyên và ghi artifact của **mock** trên Windows thật. Kết quả Linux đã được chấp nhận không thay chứng cứ Windows. Ticket này không triển khai bộ ticket/ledger/costlog theo phiếu 24/10, không mở CVC/corpus/scorer và không bật adapter model thật.
 
-Đầu vào cần có trước khi chạy: checkout đầy đủ (gồm `task004/evidence/` cho hai test compatibility), quyền dùng máy đích, Python đích, thư mục output có quyền ghi và người thực thi xác nhận đây là máy cần đo. Không dùng ZIP triển khai cũ `2cb9168`. Ghi full Git SHA và trạng thái working tree; không reset thay đổi của người dùng để khớp một revision. Nếu source khác 47aaeee, ghi diff và không gọi đó là xác minh nguyên bản 47aaeee.
+Đầu vào cần có trước khi chạy: bản clone hoặc ZIP giải nén đầy đủ (gồm `task004/evidence/` cho hai test compatibility), quyền dùng máy đích, Python đích, thư mục output có quyền ghi và người thực thi xác nhận đây là máy cần đo. Không dùng ZIP triển khai cũ `2cb9168`. Với Git, ghi full SHA và trạng thái working tree; với ZIP, ghi commit trong comment, SHA-256 archive và kết quả kiểm tệp bên dưới. Không reset thay đổi của người dùng để khớp revision. Nếu source khác 47aaeee, ghi diff và không gọi đó là xác minh nguyên bản 47aaeee.
+
+[ACK packet 879dcfa](../reviews/2026-11-07/ORCHESTRATOR_ACK.md) giữ ticket này ở READY_FOR_ASSIGNMENT / NOT_RUN. Chủ dự án chỉ định owner khi bố trí lượt chạy trên laptop; việc ghi ACK chưa phải phân công hoặc kết quả Windows.
 
 Nếu cần sửa để tương thích Windows, thực hiện thành commit riêng nối tiếp baseline, giữ hồi quy Linux và trình reviewer xác nhận đúng commit mới. Verdict Linux tại 47aaeee không tự áp cho code đã sửa.
 
 ## Chuẩn bị trên máy đích
 
-Các lệnh sau là hướng dẫn dự kiến, **chưa được chạy trên Windows**. Mở PowerShell tại thư mục gốc checkout Oceros; không dùng `task004/setup.sh` có đường dẫn cloud. Không đổi execution policy chỉ để activate venv; gọi Python trong venv trực tiếp.
+Các lệnh sau là hướng dẫn dự kiến, **chưa được chạy trên Windows**. Dùng PowerShell; không dùng `task004/setup.sh` có đường dẫn cloud. Không đổi execution policy chỉ để activate venv; gọi Python trong venv trực tiếp. Dừng ở lệnh báo lỗi và giữ output để chẩn đoán, không tiếp tục bằng interpreter/dependency khác.
+
+### 1. Kiểm tra Python
+
+```powershell
+py -3.14 --version
+```
+
+Nếu chưa có Python 3.14, cài bản CPython Windows x64 từ [python.org](https://www.python.org/downloads/windows/), mở lại PowerShell rồi kiểm tra lại. Python phiên bản khác là ô môi trường khác, không thay thế phép kiểm 3.14.
+
+### 2. Chọn một cách lấy và nhận diện mã nguồn
+
+**Nếu dùng bản clone có Git:** mở PowerShell ở thư mục chứa `task004` và `.git`, chạy hai lệnh này rồi sang bước 3. Ghi nhận thay đổi local, không dùng reset để xóa chúng.
 
 ```powershell
 git rev-parse HEAD
 git status --short
-py -3.14 --version
+```
+
+**Nếu không có Git hoặc dùng ZIP:**
+
+1. Tải [ZIP GitHub ghim commit 47aaeee](https://github.com/will050710-commits/Oceros/archive/47aaeee91739c2f09ea30538e40c66e853653543.zip). Giữ nguyên tệp ZIP để ghi provenance; tài liệu hướng dẫn mới đọc ở main, mã thực thi lấy từ snapshot này.
+2. Dùng **Extract All / Giải nén tất cả** vào thư mục mới. Mở thư mục con `Oceros-47aaeee...` chứa `task004`; mở PowerShell tại đó. Không chép đè lên bản cũ.
+3. Chạy nguyên khối dưới đây; khi được hỏi, dán đường dẫn đầy đủ tới ZIP vừa tải, không kèm dấu ngoặc kép. Khối này chỉ đọc ZIP và các tệp đã giải nén, rồi ghi biên nhận mới trong `task004/runs/windows-intake/`.
+
+```powershell
+$taskZip = Read-Host "Duong dan day du toi ZIP vua tai (khong kem dau ngoac kep)"
+@'
+from datetime import datetime, timezone
+from pathlib import Path
+from zipfile import ZipFile
+import hashlib, json, sys
+
+expected_commit = "47aaeee91739c2f09ea30538e40c66e853653543"
+expected_sums_sha256 = "a4bf0983852c26a46e6a047b2829dfc6a60112fc88437c753d518879b50acef8"
+archive = Path(sys.argv[1])
+with ZipFile(archive) as bundle:
+    commit = bundle.comment.decode("ascii").strip()
+    if commit != expected_commit:
+        raise SystemExit("STOP: ZIP comment missing or wrong commit; keep this ZIP for diagnosis")
+    sums_members = [n for n in bundle.namelist() if n.endswith("/task004/SHA256SUMS")]
+    if len(sums_members) != 1:
+        raise SystemExit("STOP: unexpected ZIP layout")
+    sums_name = sums_members[0]
+    prefix = sums_name[:-len("task004/SHA256SUMS")]
+    raw_sums = bundle.read(sums_name)
+    if hashlib.sha256(raw_sums).hexdigest() != expected_sums_sha256:
+        raise SystemExit("STOP: SHA256SUMS differs from the accepted snapshot")
+    if Path("task004/SHA256SUMS").read_bytes() != raw_sums:
+        raise SystemExit("STOP: wrong extracted folder or changed SHA256SUMS")
+    lines = raw_sums.decode("utf-8").splitlines()
+    for line in lines:
+        expected, relative = line.split("  ", 1)
+        for raw in (bundle.read(prefix + relative), Path(relative).read_bytes()):
+            if hashlib.sha256(raw).hexdigest() != expected:
+                raise SystemExit("STOP: checksum mismatch: " + relative)
+
+observed = datetime.now(timezone.utc)
+receipt = {
+    "observed_at_utc": observed.isoformat(),
+    "source_kind": "GITHUB_ZIP", "archive_commit": commit,
+    "archive_sha256": hashlib.sha256(archive.read_bytes()).hexdigest(),
+    "checksum_file_sha256": expected_sums_sha256,
+    "verified_entries": len(lines), "verification_scope": "SHA256SUMS_ENTRIES_ONLY"
+}
+out = Path("task004/runs/windows-intake")
+out.mkdir(parents=True, exist_ok=True)
+path = out / ("source-" + observed.strftime("%Y%m%dT%H%M%S%fZ") + ".json")
+with path.open("x", encoding="utf-8") as target:
+    target.write(json.dumps(receipt, indent=2) + "\n")
+print(json.dumps(receipt, indent=2))
+print("Saved: " + path.as_posix())
+'@ | py -3.14 - $taskZip
+if ($LASTEXITCODE -ne 0) { throw "Source verification failed; stop here" }
+```
+
+Kết quả đúng có `archive_commit=47aaeee...` và `verified_entries=171`. Comment ZIP chỉ là metadata; SHA-256 ZIP định danh archive tải về, không tự chứng minh nguồn tin cậy. Khối trên còn so SHA256SUMS với hash đã ghim từ commit được chấp nhận và kiểm các tệp được liệt kê trong cả ZIP lẫn thư mục giải nén. README ở gốc và tệp ngoài danh sách không thuộc phép kiểm này. Nếu GitHub trả archive không có comment hoặc kiểm thất bại, giữ tệp và output để đối chiếu; không sửa comment/checksum hoặc bỏ kiểm. Không cần Git cho đường ZIP.
+
+### 3. Tạo môi trường và kiểm cấu hình
+
+Từ cùng thư mục chứa `task004`:
+
+```powershell
 py -3.14 -m venv task004/.venv
+if ($LASTEXITCODE -ne 0) { throw "Virtual environment creation failed" }
 $taskPython = ".\task004\.venv\Scripts\python.exe"
 & $taskPython -m pip install --only-binary=:all: -r task004/requirements.txt
 if ($LASTEXITCODE -ne 0) { throw "Dependency installation failed" }
 & $taskPython -c "import platform, psutil; print(platform.python_version()); print(psutil.__version__)"
+if ($LASTEXITCODE -ne 0) { throw "Dependency import failed" }
 & $taskPython -m task004.cli validate-config
-& $taskPython -m task004.cli preflight --output-dir task004/runs/windows-intake
-& $taskPython -m task004.cli dry-run --output-dir task004/runs/windows-intake/smoke
+if ($LASTEXITCODE -ne 0) { throw "Config validation failed" }
 ```
 
 Ghi exit code ngay sau từng lệnh native, trước khi chạy lệnh tiếp theo. Nếu Python 3.14 hoặc wheel psutil 7.2.2 không có/không cài được, lưu lỗi đã bỏ thông tin cá nhân và đánh dấu BLOCKED cho ô môi trường đó; không âm thầm dùng Python khác hoặc build package không kiểm chứng. Giữ TLS/proxy và kiểm tra package bình thường. Không cần token ứng dụng.
 
 ## Snapshot phần cứng và RAM sạch
 
-Đo trên Windows đích; không lấy số RAM cloud hay snapshot cũ làm số hiện tại. Người thực thi đóng các ứng dụng không cần thiết bằng thao tác thông thường, chờ máy ổn định và ghi điều kiện đo; không tự dừng dịch vụ/tiến trình không thuộc harness. Đọc ít nhất ba mẫu RAM khả dụng tại thời điểm trước test, ghi thời điểm UTC và khoảng cách mẫu. Số này chỉ mô tả điều kiện máy, không chứng minh đủ RAM cho model.
+**Snapshot dưới đây chỉ ghi RAM/đĩa/commit phục vụ mock, chưa tương đương hồ sơ TASK-001.** Nó thiếu CPU, GFLOPS, băng thông và power plan. Thông tin i7-8665U/94 GFLOPS hiện là USER_REPORTED; chưa có JSON gốc/probe gốc trong repo để xác minh phương pháp hoặc tái lập các con số. Không điền lại 94 GFLOPS vào JSON mới như một phép đo.
+
+Để tái lập hồ sơ ban đầu khi có probe: giữ JSON cũ và mã probe nguyên byte, ghi SHA-256 bằng `Get-FileHash -Algorithm SHA256 <file>`, ghi phiên bản/tham số probe, đơn vị và điều kiện đo. Sau khi lưu công việc, chủ máy khởi động lại Windows và đặt **Settings → System → Power & battery → Power mode → Best performance** nếu máy hỗ trợ; ghi trạng thái thực tế nếu tùy chọn không có. Ghi nguồn điện AC/pin, thời gian từ lúc boot và thời gian chờ ổn định. Lưu thêm kết quả `powercfg /getactivescheme`; active power plan và Power mode của Windows có thể khác nhau, không suy cái này từ cái kia. CPU có thể đọc bằng `Get-CimInstance Win32_Processor | Select-Object Name, NumberOfCores, NumberOfLogicalProcessors`. GFLOPS và băng thông phải dùng đúng probe/phương pháp gốc, chưa có probe thì giữ NOT_MEASURED.
+
+Đo trên Windows đích; không lấy số RAM cloud hay snapshot cũ làm số hiện tại. Người thực thi đóng các ứng dụng không cần thiết bằng thao tác thông thường, chờ máy ổn định và ghi điều kiện đo; không tự dừng dịch vụ/tiến trình không thuộc harness. Lấy ba mẫu RAM khả dụng cách nhau 5 giây tại thời điểm trước test bằng khối dưới đây; ghi thời điểm UTC và điều kiện đo. Có thể lấy snapshot giới hạn này để khảo sát mock trong khi chờ nguồn TASK-001; nguồn phần cứng đầy đủ cho bước model vẫn chưa có. Nếu mở lại PowerShell sau reboot, đặt lại `$taskPython = ".\task004\.venv\Scripts\python.exe"` từ thư mục chứa `task004`.
 
 Ví dụ lấy một snapshot chỉ đọc, không có username/hostname/serial/đường dẫn cá nhân:
 
@@ -51,19 +135,32 @@ New-Item -ItemType Directory -Force task004/runs/windows-intake | Out-Null
 @'
 from datetime import datetime, timezone
 from pathlib import Path
-import hashlib, json, platform, shutil, psutil
+import hashlib, json, platform, shutil, time, psutil
 from task004.preflight import windows_system_commit
+if platform.system() != "Windows":
+    raise SystemExit("This snapshot must be collected on the target Windows host")
 observed = datetime.now(timezone.utc)
+samples = []
+for index in range(3):
+    if index:
+        time.sleep(5)
+    memory = psutil.virtual_memory()
+    samples.append({
+        "observed_at_utc": datetime.now(timezone.utc).isoformat(),
+        "ram_total_bytes": memory.total,
+        "ram_available_bytes": memory.available,
+        "output_volume_free_bytes": shutil.disk_usage(Path.cwd()).free,
+        "system_commit": windows_system_commit()
+    })
 data = {
     "observed_at_utc": observed.isoformat(),
-    "measurement_scope": "CURRENT_WINDOWS_HOST",
+    "measurement_scope": "WINDOWS_MOCK_RESOURCE_SNAPSHOT_ONLY",
+    "task001_equivalent": False,
     "os": platform.system(), "os_version": platform.version(),
     "architecture": platform.machine(), "python_version": platform.python_version(),
     "psutil_version": psutil.__version__,
-    "ram_total_bytes": psutil.virtual_memory().total,
-    "ram_available_bytes": psutil.virtual_memory().available,
-    "output_volume_free_bytes": shutil.disk_usage(Path.cwd()).free,
-    "system_commit": windows_system_commit()
+    "sample_interval_s": 5,
+    "samples": samples
 }
 path = Path("task004/runs/windows-intake") / ("hardware-" + observed.strftime("%Y%m%dT%H%M%S%fZ") + ".json")
 raw = (json.dumps(data, indent=2) + "\n").encode("utf-8")
@@ -72,9 +169,22 @@ with path.open("xb") as output:
 print(path.as_posix())
 print(hashlib.sha256(raw).hexdigest())
 '@ | & $taskPython -
+if ($LASTEXITCODE -ne 0) { throw "Hardware snapshot failed" }
 ```
 
-Đặt mỗi mẫu vào file mới, không ghi đè mẫu cũ khi lặp. Lưu hash và đường dẫn tương đối của snapshot trong báo cáo Windows, liên kết với run IDs. Manifest hiện tại có `hardware_reference=null`; không sửa tay manifest hay evidence đã sinh để lấp trường này. Nếu cần thay hợp đồng manifest, mở thay đổi có schema/tests riêng. Ngưỡng mock 64 MiB/10 MiB không phải bảng preflight theo model.
+Mỗi lần chạy tạo một file mới chứa ba mẫu, không ghi đè lượt cũ. Lưu hash và đường dẫn tương đối của snapshot trong báo cáo Windows, liên kết với run IDs. Manifest hiện tại có `hardware_reference=null`; không sửa tay manifest hay evidence đã sinh để lấp trường này. Nếu cần thay hợp đồng manifest, mở thay đổi có schema/tests riêng. Ngưỡng mock 64 MiB/10 MiB không phải bảng preflight theo model.
+
+## Chạy thử mock sau khi lấy snapshot
+
+```powershell
+& $taskPython -m task004.cli preflight --output-dir task004/runs/windows-intake
+if ($LASTEXITCODE -ne 0) { throw "Preflight failed; keep output and stop here" }
+& $taskPython -m task004.cli dry-run --output-dir task004/runs/windows-intake/smoke
+$smokeExit = $LASTEXITCODE
+Write-Output "dry_run_exit=$smokeExit"
+```
+
+Gửi output và thư mục run được tạo để đối chiếu. Một smoke PASS phải có nhãn SYNTHETIC, benchmark NOT_RUN và đủ manifest/JSONL; nó chưa thay thế các phép thử Windows bắt buộc dưới đây. Nếu có lỗi, giữ nguyên artifact/log và chẩn đoán trước khi lặp.
 
 ## Khảo sát suite hiện có và báo cáo skip
 
@@ -110,7 +220,7 @@ Các test signal/process phải tự dọn mọi tiến trình do chúng tạo n
 
 Chỉ đề nghị ACCEPT cho **Windows mock trên đúng OS/interpreter/build đã đo** sau khi có đủ:
 
-1. Ma trận môi trường thực, full commit/diff, dependency versions và snapshot phần cứng/hash; bản gốc log giữ riêng nếu có đường dẫn cá nhân, bản chia sẻ nêu rõ cách chuẩn hóa.
+1. Ma trận môi trường thực, full commit/diff hoặc biên nhận ZIP (comment commit, archive SHA-256, kiểm các tệp giải nén), dependency versions và snapshot phần cứng/hash; ghi rõ snapshot giới hạn hay hồ sơ đầy đủ TASK-001. Bản gốc log giữ riêng nếu có đường dẫn cá nhân, bản chia sẻ nêu rõ cách chuẩn hóa.
 2. Bộ test bắt buộc Windows ở trên thực thi, không missing/skip các đường Windows cần xác minh; ba lượt liên tiếp để kiểm độ ổn định signal/cleanup, báo riêng passed/failed/skipped/unrun. Không yêu cầu POSIX-only test chạy giả trên Windows.
 3. Dry-run thật tạo manifest/JSONL qua validator/hash, kiểm không còn tiến trình/scratch thuộc lượt; cleanup failure không được che bằng CANCELLED/PASS. Không có marker cảnh báo bất ngờ trong output đã thu thập.
 4. Nếu sửa code: test hồi quy cho lỗi đã phát hiện, kiểm Linux liên quan vẫn qua, evidence sinh tự động và checksum mới; không sửa evidence cũ hoặc source đã chấp nhận để giả giữ hash.

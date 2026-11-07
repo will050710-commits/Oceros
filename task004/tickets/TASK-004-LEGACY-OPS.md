@@ -52,4 +52,4 @@ Tên module trùng với chức năng hiện có của mock không chứng minh 
 - [Bản bàn giao orchestrator](../ORCHESTRATOR_HANDOFF.md).
 - [TASK-004-WIN-MOCK](TASK-004-WIN-MOCK.md) là ticket xác minh Windows mock riêng, vẫn NOT_RUN.
 
-Adapter model thật, bảng preflight theo model, benchmark và CVC thuộc các phạm vi khác; việc lập ticket này không khởi động chúng. Việc gửi/tiếp nhận qua orchestrator chưa được ghi nhận.
+Adapter model thật, bảng preflight theo model, benchmark và CVC thuộc các phạm vi khác; việc lập ticket này không khởi động chúng. [ACK orchestrator do người dùng chuyển tiếp](../reviews/2026-11-07/ORCHESTRATOR_ACK.md) đã ghi nhận packet 879dcfa và trạng thái PLANNED / NOT_IMPLEMENTED của ticket này; chưa phân công triển khai hay tạo issue ngoài. Phiếu 24/10 nguyên byte vẫn cần được cung cấp để lưu vào references; không dựng lại nguồn từ bản tóm tắt.

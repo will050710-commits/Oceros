@@ -12,7 +12,7 @@ Codex. Một agent hỗ trợ sửa record/provenance; agent chính hoàn tất 
 
 ## STATUS
 
-**ACCEPT — launcher/client/mock trên Linux tại commit `47aaeee91739c2f09ea30538e40c66e853653543`, theo verdict reviewer do người dùng chuyển tiếp (REPORTED).** Verdict bao phủ 8 finding chính; reviewer chưa đối chiếu riêng hai minor với review gốc. [Bản lưu verdict](reviews/2026-11-07/ACCEPT_REVIEW.md) và [đối chiếu minor của implementer](reviews/2026-11-07/MINOR_CROSSCHECK.md). Sẵn sàng bàn giao orchestrator, chưa gửi/nhận acknowledgment. Windows UNVERIFIED; model thật NOT_RUN.
+**ACCEPT — launcher/client/mock trên Linux tại commit `47aaeee91739c2f09ea30538e40c66e853653543`, theo verdict reviewer do người dùng chuyển tiếp (REPORTED).** Verdict bao phủ 8 finding chính; reviewer chưa đối chiếu riêng hai minor với review gốc. [Bản lưu verdict](reviews/2026-11-07/ACCEPT_REVIEW.md) và [đối chiếu minor của implementer](reviews/2026-11-07/MINOR_CROSSCHECK.md). Đã ghi nhận [ACK orchestrator cho packet 879dcfa](reviews/2026-11-07/ORCHESTRATOR_ACK.md), do người dùng chuyển tiếp (ACK_REPORTED / PACKET_RECEIVED). Windows UNVERIFIED; model thật NOT_RUN.
 
 **Scope replacement: USER-DECIDED. TASK-004 theo phiếu 24/10 (ticket/ledger/provenance/costlog/runner/CLI cũ): đã tách thành [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md), giữ PLANNED / NOT_IMPLEMENTED theo quyết định người dùng.** [Sổ trạng thái](STATUS_LEDGER.md) và [kiểm bổ sung](reviews/2026-11-07/ADDITIONAL_SCOPE_AUDIT.md) ghi riêng các phạm vi; ACCEPT này không có nghĩa mọi yêu cầu của phiếu cũ/prompt gốc đã hoàn thành.
 
@@ -24,13 +24,13 @@ Review dựa trên `07eb03cd0f01d16feef6f090cd5ed74c4c075eeb`; baseline ban đ�
 
 ## FILES_READ
 
-Bổ sung ngày 07/11: verdict ACCEPT trong tin nhắn, review vòng hai gốc và hai minor; đối chiếu code/tests tại commit được chấp nhận.
+Bổ sung ngày 07/11: verdict ACCEPT trong tin nhắn, review vòng hai gốc và hai minor; ACK orchestrator được chuyển tiếp cho packet 879dcfa và ba ghi chú về owner Windows, ZIP không Git, nguồn hardware. Đối chiếu code/tests tại commit được chấp nhận; phiếu 24/10 nguyên bản và JSON/probe phần cứng gốc chưa có để đọc.
 
 Đọc toàn bộ review dán, source/tests/runner/schema và evidence của bản 07eb03c; đối chiếu handoff/context. Không tái nghiên cứu model hoặc xác minh lại claims hardware/license trong tài liệu nguồn. References và evidence cũ không sửa.
 
 ## FILES_CHANGED
 
-Bổ sung ghi sổ phạm vi: STATUS_LEDGER, bản ghi audit bổ sung, ticket Windows mock và ticket TASK-004-LEGACY-OPS trong repo; cập nhật quyết định tách phiếu cũ, README và bản bàn giao orchestrator. Hướng dẫn nguồn bàn giao loại ZIP cũ. Chỉ tài liệu/checksum, không đổi runtime/tests hay evidence đã chấp nhận.
+Bổ sung ghi sổ phạm vi: STATUS_LEDGER, bản ghi audit bổ sung, ticket Windows mock và ticket TASK-004-LEGACY-OPS trong repo; cập nhật quyết định tách phiếu cũ, README và bản bàn giao orchestrator. Bổ sung ORCHESTRATOR_ACK, hướng dẫn nhận diện ZIP không Git và giới hạn snapshot hardware; owner WIN-MOCK do chủ dự án chỉ định. Chỉ tài liệu/checksum, không đổi runtime/tests hay evidence đã chấp nhận.
 
 Bước ghi nhận acceptance: thêm `reviews/2026-11-07/` (verdict, review gốc nguyên byte, đối chiếu minor và log 2 test), `ORCHESTRATOR_HANDOFF.md`; cập nhật README, handoff và SHA256SUMS. Không sửa implementation đã được review. Các thay đổi implementation dưới đây thuộc lịch sử tới 47aaeee.
 
@@ -48,6 +48,8 @@ Thêm cancellation.py, unit fixture builder và tests review CLI/record/runner. 
 8. Artifact unit tests dựng fixture riêng, không lấy immutable runtime evidence. Chèn OSError/KeyboardInterrupt tại hai open, hai fsync và rename; tất cả dọn staging. Signal subprocess chờ marker request-phase thay sleep đoán pha; test riêng đưa burst signal đúng trong cleanup và ghi file. Pre-set cancel đã có test ngăn spawn.
 
 ## EVIDENCE
+
+ACK orchestrator tại `reviews/2026-11-07/ORCHESTRATOR_ACK.md` do người dùng chuyển tiếp: nhận packet 879dcfa, báo suite 106/106 và checksum 180/180 ở snapshot đó. Nhãn REPORTED; không gộp với ba lượt implementer dưới đây hoặc gọi là lượt chạy mới trong bước ghi ACK. ACK không xác nhận riêng hai minor, không phân công owner Windows hay mở model/CVC.
 
 Verdict được lưu tại `reviews/2026-11-07/ACCEPT_REVIEW.md`, chấp nhận scope Linux mock tại 47aaeee. Reviewer báo tái lập 106/106 × 3, 6/6 lượt dưới tải, 14/14 mutation và fuzz hơn 30.000 index: REPORTED, không tính là các lượt implementer chạy mới. Các số 43 fingerprint và 171 checksum reviewer nêu thuộc snapshot 47aaeee, không phải số tệp của commit bổ sung tài liệu.
 
@@ -110,12 +112,12 @@ Nhầm test PASS với leak-free tuyệt đối, Linux với Windows, mock với
 
 ## RECOMMENDATION
 
-Bàn giao [ORCHESTRATOR_HANDOFF.md](ORCHESTRATOR_HANDOFF.md), verdict đã lưu và commit implementation được chấp nhận. Giữ nguyên phạm vi ACCEPT; không đòi mở lại review 8 finding vì hai ghi chú không chặn. Có thể gửi review gốc và bảng đối chiếu minor để reviewer bổ sung xác nhận riêng.
+Theo dõi [ORCHESTRATOR_HANDOFF.md](ORCHESTRATOR_HANDOFF.md) cùng ACK đã lưu và commit implementation được chấp nhận. Giữ nguyên phạm vi ACCEPT; không đòi mở lại review 8 finding vì hai ghi chú không chặn. Có thể gửi review gốc và bảng đối chiếu minor để reviewer bổ sung xác nhận riêng.
 
 ## NEXT_ACTION
 
-Người dùng gửi packet cho orchestrator để ghi nhận kết quả và xác nhận đã nhận. Phiên này chưa gửi qua messaging/tracker hay nhận acknowledgment. Đã lập ticket trong repo [TASK-004-WIN-MOCK](tickets/TASK-004-WIN-MOCK.md) để phân công, chưa thực thi Windows/model/CVC. Phần legacy đã tách thành [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) theo quyết định người dùng, giữ PLANNED / NOT_IMPLEMENTED; đối chiếu phiếu gốc và chốt AC khi giao triển khai riêng. Không dùng ZIP 2cb9168 làm artifact của mã đã chấp nhận.
+Đã nhận ACK packet 879dcfa qua người dùng; chưa có thao tác gửi/đóng issue qua connector. Chủ dự án chỉ định owner [TASK-004-WIN-MOCK](tickets/TASK-004-WIN-MOCK.md), hiện READY_FOR_ASSIGNMENT / NOT_RUN. Nhận JSON/probe phần cứng gốc và đo RAM sạch trên Windows thật; chưa thực thi Windows/model/CVC. Phần legacy [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) giữ PLANNED / NOT_IMPLEMENTED; nhận phiếu 24/10 nguyên byte để lưu references, đối chiếu và chốt AC khi giao triển khai riêng. Không dùng ZIP 2cb9168 làm artifact của mã đã chấp nhận.
 
 ## UNVERIFIED_CLAIMS
 
-Windows/model thật/hardware laptop/model flags/license/corpus/gold/tokenizer/DEV/bridge/CVC/freeze và publish/restore môi trường. Verdict ACCEPT hiện đã được người dùng cung cấp và lưu, nhưng các thí nghiệm độc lập reviewer kể vẫn là REPORTED; chưa có xác nhận riêng hai minor hay acknowledgment từ orchestrator.
+Windows/model thật/hardware laptop/model flags/license/corpus/gold/tokenizer/DEV/bridge/CVC/freeze và publish/restore môi trường. Verdict ACCEPT và ACK orchestrator đã được người dùng cung cấp và lưu; các thí nghiệm độc lập được kể vẫn là REPORTED. Chưa có xác nhận riêng hai minor, owner Windows hay sự kiện đóng/giao issue trên tracker.
