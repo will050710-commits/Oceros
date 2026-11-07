@@ -1,0 +1,52 @@
+{
+  "observed_at_utc": "2026-11-07T10:35:56.669197+00:00",
+  "measurement_scope": "WINDOWS_MOCK_RESOURCE_SNAPSHOT_ONLY",
+  "task001_equivalent": false,
+  "os": "Windows",
+  "os_version": "10.0.26200",
+  "architecture": "AMD64",
+  "python_version": "3.14.4",
+  "psutil_version": "7.2.2",
+  "sample_interval_s": 5,
+  "samples": [
+    {
+      "observed_at_utc": "2026-11-07T10:35:56.669361+00:00",
+      "ram_total_bytes": 8394911744,
+      "ram_available_bytes": 1797738496,
+      "output_volume_free_bytes": 33421115392,
+      "system_commit": {
+        "total_bytes": 9667129344,
+        "limit_bytes": 12689879040,
+        "available_bytes": 3022749696,
+        "source": "GetPerformanceInfo",
+        "unavailable_reason": null
+      }
+    },
+    {
+      "observed_at_utc": "2026-11-07T10:36:01.672918+00:00",
+      "ram_total_bytes": 8394911744,
+      "ram_available_bytes": 1806880768,
+      "output_volume_free_bytes": 33421090816,
+      "system_commit": {
+        "total_bytes": 9644384256,
+        "limit_bytes": 12689879040,
+        "available_bytes": 3045494784,
+        "source": "GetPerformanceInfo",
+        "unavailable_reason": null
+      }
+    },
+    {
+      "observed_at_utc": "2026-11-07T10:36:06.674047+00:00",
+      "ram_total_bytes": 8394911744,
+      "ram_available_bytes": 1822953472,
+      "output_volume_free_bytes": 33421058048,
+      "system_commit": {
+        "total_bytes": 9602404352,
+        "limit_bytes": 12689879040,
+        "available_bytes": 3087474688,
+        "source": "GetPerformanceInfo",
+        "unavailable_reason": null
+      }
+    }
+  ]
+}

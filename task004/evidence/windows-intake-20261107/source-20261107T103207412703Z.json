@@ -1,0 +1,9 @@
+{
+  "observed_at_utc": "2026-11-07T10:32:07.412703+00:00",
+  "source_kind": "GITHUB_ZIP",
+  "archive_commit": "47aaeee91739c2f09ea30538e40c66e853653543",
+  "archive_sha256": "503afa4e2e06d6821c94b56783f6cb7fafa525fc223d9424f81956097365bce9",
+  "checksum_file_sha256": "a4bf0983852c26a46e6a047b2829dfc6a60112fc88437c753d518879b50acef8",
+  "verified_entries": 171,
+  "verification_scope": "SHA256SUMS_ENTRIES_ONLY"
+}

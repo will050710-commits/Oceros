@@ -1,0 +1,348 @@
+Toàn bộ dữ liệu, mã băm (SHA-256), kết quả chạy thử (smoke test), log khảo sát đã chuẩn hóa (ẩn đường dẫn cá nhân) và chẩn đoán lỗi thực nghiệm trên Windows đã đầy đủ 100%.
+
+Bạn chỉ cần **copy nguyên khối báo cáo Markdown dưới đây** và gửi trực tiếp cho Agent chính (Orchestrator / Reviewer) để xác thực:
+
+```markdown
+# HANDOFF REPORT — TASK-004-WIN-MOCK (Windows Intake, Smoke & Unittest Survey)
+
+## 1. Task & Revision Identity
+- **Ticket**: `TASK-004-WIN-MOCK`
+- **Target Implementation Commit**: `47aaeee91739c2f09ea30538e40c66e853653543` (unmodified snapshot)
+- **Source Acquisition Method**: `GITHUB_ZIP` (no `.git` directory; verified via pinned `SHA256SUMS`)
+- **Archive SHA-256**: `503afa4e2e06d6821c94b56783f6cb7fafa525fc223d9424f81956097365bce9`
+- **Pinned `task004/SHA256SUMS` SHA-256**: `a4bf0983852c26a46e6a047b2829dfc6a60112fc88437c753d518879b50acef8`
+- **Verified Entries**: `171 / 171` (`SHA256SUMS_ENTRIES_ONLY`)
+
+## 2. Executive Verdict & Current Status
+- **Intake / Config / Preflight / Smoke Dry-Run**: `PASS` (`SYNTHETIC`, `benchmark_status=NOT_RUN`)
+- **Unittest Survey at Unmodified `47aaeee`**: `FAILED (ran=106, passed=92, failures=1, skipped=13)` in `17.224s`
+- **Overall Windows Verification Verdict**: `NOT_VERIFIED / BLOCKED_ON_DEFECT_AND_WINDOWS_TEST_GAPS`
+  - Sesuai quy định của `TASK-004-WIN-MOCK.md`, không tuyên bố `WINDOWS VERIFIED` hoặc `ACCEPT` cho commit `47aaeee` nguyên bản vì:
+    1. Phát hiện **1 lỗi thật trên Windows (Winsock defect)** tại `test_cancel_during_http10_body_read` (`socket.shutdown(SHUT_RDWR)` từ thread khác không đánh thức `recv()` đang chờ trong `select()` có timeout trên Winsock).
+    2. Trong 13 test bị `skipped`, có các đường tích hợp bắt buộc trên Windows (Console signals `Ctrl+C`/`Ctrl+Break`, killed-CLI watchdog, process-tree cleanup, child environment secret filtering) đang gắn nhãn `Windows UNVERIFIED` và cần bản vá + test Windows chuyên biệt ở commit nối tiếp.
+
+## 3. Target Environment Matrix
+- **OS**: Windows 11 (`os="Windows"`, `os_version="10.0.26200"`, `architecture="AMD64"`)
+- **Python Interpreter**: CPython `3.14.4` (64-bit, invoked via `py -3.14` and `.venv\Scripts\python.exe`)
+- **Dependencies**: `psutil==7.2.2` installed strictly via `--only-binary=:all:` (`psutil-7.2.2-cp37-abi3-win_amd64.whl`)
+- **Execution Policy**: Unchanged (venv Python invoked directly via `& $taskPython`)
+
+## 4. Step-by-Step CLI & Exit Code Record
+1. `py -3.14 --version` -> `Python 3.14.4` (`exit_code=0`)
+2. ZIP Provenance Verification -> `verified_entries=171`, saved `task004/runs/windows-intake/source-20261107T103207412703Z.json` (`exit_code=0`)
+3. `py -3.14 -m venv task004/.venv` -> `exit_code=0`
+4. `& $taskPython -m pip install --only-binary=:all: -r task004/requirements.txt` -> `Successfully installed psutil-7.2.2` (`exit_code=0`)
+5. `& $taskPython -c "import platform, psutil; ..."` -> `3.14.4` / `7.2.2` (`exit_code=0`)
+6. `& $taskPython -m task004.cli validate-config` -> `{"status": "PASS", "runtime": "mock", "scope": "CONFIG_ONLY"}` (`exit_code=0`)
+7. Hardware Snapshot (3 samples, 5s interval) -> saved `task004/runs/windows-intake/hardware-20261107T103556669197Z.json` (`exit_code=0`)
+8. `& $taskPython -m task004.cli preflight --output-dir task004/runs/windows-intake` -> `"ready": true` (`exit_code=0`)
+9. `& $taskPython -m task004.cli dry-run --output-dir task004/runs/windows-intake/smoke` -> `run_id="657485234bf14015800ecdfc635c2dad"`, `status="PASS"`, `reason_code="OK"`, `evidence_label="SYNTHETIC"` (`dry_run_exit=0`)
+10. `& $taskPython -W error::ResourceWarning -m unittest discover -s task004/tests -v` -> `Ran 106 tests in 17.224s`, `FAILED (failures=1, skipped=13)` (`suite_exit=1`)
+
+## 5. Artifact Inventory & SHA-256 Digests
+| Relative Path | SHA-256 | Notes |
+| --- | --- | --- |
+| `task004/runs/windows-intake/source-20261107T103207412703Z.json` | `29f84c126af44a3463d1de8370668c662fa8bb64f258aa084ee15296e1ccdc68` | ZIP provenance & 171 entries check |
+| `task004/runs/windows-intake/hardware-20261107T103556669197Z.json` | `b7bea05fde232e2d220e7b5d12885990121cea9d45fd63fe1e2d971aef63c032` | 3 RAM/disk/commit samples (`task001_equivalent=false`) |
+| `task004/runs/windows-intake/smoke/657485234bf14015800ecdfc635c2dad/manifest.json` | `4564c97e7a29710b526528f3c3479d83e28ecb73bb837846bb0540710f436494` | Smoke manifest (`config_sha256=e4890e4d...`) |
+| `task004/runs/windows-intake/smoke/657485234bf14015800ecdfc635c2dad/runs.jsonl` | `e0b2efea03857e48b4c5669076280e09cdf10fbbf53edcc51a3ba5ec9b347eb1` | Smoke JSONL record (2 resource samples) |
+| `task004/runs/windows-intake/unittest-survey.sanitized.log` | `8592f8a806b10bf376fa3afcda204bfc1c3c5f855329492960c631c303c23b13` | UTF-8 normalized log with local repo root prefix stripped |
+
+## 6. Defect Diagnosis: `test_cancel_during_http10_body_read` (FAIL)
+- **Failing Test**: `test_client_edges.ClientEdgeTests.test_cancel_during_http10_body_read`
+- **Traceback Summary**:
+  ```text
+  File "task004\tests\test_client_edges.py", line 77, in test_cancel_during_http10_body_read
+    self.assert_worker_stopped()
+  File "task004\tests\test_client_edges.py", line 53, in assert_worker_stopped
+    self.assertFalse(any(t.name == "task004-http" for t in threading.enumerate()))
+  AssertionError: True is not false
+
+```
+
+* **Root Cause Analysis (Winsock vs POSIX socket wakeup)**:
+* Trong `task004/client.py`, `HTTPConnection("127.0.0.1", port, timeout=config.timeout_s)` khởi tạo socket với timeout `5.0s`. Khi worker thread `task004-http` gọi `response.read(65537)` trên body bị treo (`stall`), CPython trên Windows thực thi `sock_call_ex` bằng cách gọi hàm `select()` của Winsock với timeout `5.0s` trước khi gọi `recv()`.
+* Khi `cancel_event` bật, khối `finally` ở thread chính gọi `sock.shutdown(socket.SHUT_RDWR)` rồi chờ `worker.join(timeout=.5)`.
+* Thực nghiệm trực tiếp trên host Windows 11 (`10.0.26200`, Python `3.14.4`) chứng minh:
+* `shutdown(SHUT_RDWR)` từ thread chính: `elapsed=1.0077s, alive=True` (không đánh thức `select()` của Winsock).
+* `shutdown(SHUT_RDWR)` + `sock.close()` từ thread chính: `elapsed=1.0056s, alive=True` (`sock.close()` ở tầng Python chỉ giảm refcount `_decref_socketios`, chưa đóng descriptor OS khi `response.read()` còn giữ tham chiếu).
+* Gọi trực tiếp `ws2_32.closesocket(s.fileno())` qua `ctypes`: đánh thức thread sau `0.0575s` (`alive=False`), **nhưng** làm hỏng descriptor của đối tượng socket trong Python, gây ra `Exception ignored while finalizing file <http.client.HTTPResponse>: OSError: [WinError 10038]` khi đóng kết nối.
+
+
+
+
+* **Recommended Fix for Follow-up Commit**:
+* Đặt timeout mỗi nhịp đọc trên socket (`conn.sock.settimeout(min(0.05, remaining))`) hoặc đọc theo lát thời gian ngắn trong `perform()` kết hợp kiểm tra `closing.is_set()` và tổng `deadline`, giúp worker thread `task004-http` tự thoát sạch sẽ trong `<= 50ms` trên Windows mà không cần phá descriptor bằng `closesocket()` và không sinh `ResourceWarning` hay `WinError 10038`.
+
+
+
+## 7. Complete Skip Matrix (13 Skipped Tests)
+
+| # | Test Identifier | Skip Reason | Classification |
+| --- | --- | --- | --- |
+| 1 | `test_hardening_client.ClientHardeningTests.test_cancel_keeps_primary_for_real_blocked_connect` | `Linux backlog behavior only` | POSIX/Linux specific |
+| 2 | `test_hardening_record.AtomicArtifactTests.test_signals_during_cleanup_and_write_finish_committed_result` | `POSIX phase signals; Windows UNVERIFIED` | **Windows gap (needs Windows signal test)** |
+| 3 | `test_hardening_record.SignalArtifactTests.test_burst_signals_do_not_interrupt_cleanup_or_artifacts` | `POSIX signal integration; Windows UNVERIFIED` | **Windows gap (needs Windows console signal test)** |
+| 4 | `test_hardening_record.SignalArtifactTests.test_single_signals_produce_complete_cancelled_artifacts` | `POSIX signal integration; Windows UNVERIFIED` | **Windows gap (needs Windows console signal test)** |
+| 5 | `test_hardening_server.ServerHardeningTests.test_a1_killed_cli_leaves_no_mock_or_owned_scratch` | `POSIX SIGKILL integration; Windows unverified` | **Windows gap (needs forced CLI kill watchdog test)** |
+| 6 | `test_hardening_server.ServerHardeningTests.test_b2_empty_owned_group_is_not_signalled` | `POSIX owned groups; Windows unverified` | POSIX process group specific |
+| 7 | `test_hardening_server.ServerHardeningTests.test_b3_mock_does_not_inherit_harness_secret` | `child environ read verified on Linux only` | **Windows gap (needs Windows child env inspection test)** |
+| 8 | `test_review_cli.ReviewCliTests.test_inherited_ignore_is_preserved` | `SIGHUP unavailable` | POSIX `SIGHUP` specific |
+| 9 | `test_review_cli.ReviewCliTests.test_nested_signal_cannot_deadlock_handler` | `POSIX signal test only` | POSIX signal specific |
+| 10 | `test_review_runner.ReviewRunnerTests.test_archive_extraction_accepts_canonicalized_symlink_root` | `symlink creation unavailable` | Host privilege/Developer Mode capability skip |
+| 11 | `test_server.ServerTests.test_exited_parent_term_resistant_child_is_force_killed` | `POSIX group SIGKILL escalation only` | POSIX group escalation specific |
+| 12 | `test_server.ServerTests.test_exited_session_parent_descendant_cleanup_and_unrelated_survival` | `POSIX session isolation; Windows live-tree fallback` | **Windows gap (needs exited-parent tree cleanup test)** |
+| 13 | `test_server.ServerTests.test_group_cleanup_requires_matching_owner` | `POSIX process groups only` | POSIX process group specific |
+
+## 8. Raw JSON Artifacts (Exact File Contents)
+
+### 8.1. `task004/runs/windows-intake/source-20261107T103207412703Z.json`
+
+```json
+{
+  "observed_at_utc": "2026-11-07T10:32:07.412703+00:00",
+  "source_kind": "GITHUB_ZIP",
+  "archive_commit": "47aaeee91739c2f09ea30538e40c66e853653543",
+  "archive_sha256": "503afa4e2e06d6821c94b56783f6cb7fafa525fc223d9424f81956097365bce9",
+  "checksum_file_sha256": "a4bf0983852c26a46e6a047b2829dfc6a60112fc88437c753d518879b50acef8",
+  "verified_entries": 171,
+  "verification_scope": "SHA256SUMS_ENTRIES_ONLY"
+}
+
+```
+
+### 8.2. `task004/runs/windows-intake/hardware-20261107T103556669197Z.json`
+
+```json
+{
+  "observed_at_utc": "2026-11-07T10:35:56.669197+00:00",
+  "measurement_scope": "WINDOWS_MOCK_RESOURCE_SNAPSHOT_ONLY",
+  "task001_equivalent": false,
+  "os": "Windows",
+  "os_version": "10.0.26200",
+  "architecture": "AMD64",
+  "python_version": "3.14.4",
+  "psutil_version": "7.2.2",
+  "sample_interval_s": 5,
+  "samples": [
+    {
+      "observed_at_utc": "2026-11-07T10:35:56.669361+00:00",
+      "ram_total_bytes": 8394911744,
+      "ram_available_bytes": 1797738496,
+      "output_volume_free_bytes": 33421115392,
+      "system_commit": {
+        "total_bytes": 9667129344,
+        "limit_bytes": 12689879040,
+        "available_bytes": 3022749696,
+        "source": "GetPerformanceInfo",
+        "unavailable_reason": null
+      }
+    },
+    {
+      "observed_at_utc": "2026-11-07T10:36:01.672918+00:00",
+      "ram_total_bytes": 8394911744,
+      "ram_available_bytes": 1806880768,
+      "output_volume_free_bytes": 33421090816,
+      "system_commit": {
+        "total_bytes": 9644384256,
+        "limit_bytes": 12689879040,
+        "available_bytes": 3045494784,
+        "source": "GetPerformanceInfo",
+        "unavailable_reason": null
+      }
+    },
+    {
+      "observed_at_utc": "2026-11-07T10:36:06.674047+00:00",
+      "ram_total_bytes": 8394911744,
+      "ram_available_bytes": 1822953472,
+      "output_volume_free_bytes": 33421058048,
+      "system_commit": {
+        "total_bytes": 9602404352,
+        "limit_bytes": 12689879040,
+        "available_bytes": 3087474688,
+        "source": "GetPerformanceInfo",
+        "unavailable_reason": null
+      }
+    }
+  ]
+}
+
+```
+
+### 8.3. `task004/runs/windows-intake/smoke/657485234bf14015800ecdfc635c2dad/manifest.json`
+
+```json
+{
+  "benchmark_status": "NOT_RUN",
+  "config": {
+    "image_long_edge_px": null,
+    "max_image_tokens": null,
+    "max_new_tokens": 96,
+    "min_available_ram_bytes": 67108864,
+    "min_free_disk_bytes": 10485760,
+    "mock_delay_s": 0,
+    "mock_scenario": "success",
+    "n_ctx": 4096,
+    "runtime": "mock",
+    "sample_interval_s": 0.1,
+    "startup_timeout_s": 5,
+    "thinking": false,
+    "timeout_s": 5
+  },
+  "config_sha256": "e4890e4d55c7f73949c431e620c94ae4a509dbed834ac3265974e824d215591c",
+  "dataset_manifest_hash": null,
+  "decoding": {
+    "n": 1,
+    "seed": 1729,
+    "temperature": 0,
+    "thinking": false
+  },
+  "evidence_label": "SYNTHETIC",
+  "external_model_api_calls": 0,
+  "hardware_reference": null,
+  "input_provenance": {
+    "sources": [
+      {
+        "actual_sha256": "0e61286612322912ec2a3611f650985b3edfd05a3d5349f487e52fdeb8bdf343",
+        "expected_sha256": "0e61286612322912ec2a3611f650985b3edfd05a3d5349f487e52fdeb8bdf343",
+        "file": "TASK-002_v2.3_MODEL_MATRIX_RUNTIME_ResearchCard.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "126e4b9860ae04fee0b59a2b95c5e0b6c6caf910a0e1e2e86521b319f257e486",
+        "expected_sha256": "126e4b9860ae04fee0b59a2b95c5e0b6c6caf910a0e1e2e86521b319f257e486",
+        "file": "HANDOFF_REPORT_TASK-004.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "a02e3e391b49e3ede390fa4904ccbc550c748ab0652da90483788454b7ed614b",
+        "expected_sha256": "a02e3e391b49e3ede390fa4904ccbc550c748ab0652da90483788454b7ed614b",
+        "file": "BENCHMARK_SPEC_v0.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "1eb9315960ee8386075f8b1581e70e0f14a2bf97ef073a84b5a6eab815a38086",
+        "expected_sha256": "1eb9315960ee8386075f8b1581e70e0f14a2bf97ef073a84b5a6eab815a38086",
+        "file": "ERRATA_TASK003_v0.3.1.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "39510d0f581c3db835465afd95e3a0d0a799cb657d2189c7fd3ff1ca4013eb9e",
+        "expected_sha256": "39510d0f581c3db835465afd95e3a0d0a799cb657d2189c7fd3ff1ca4013eb9e",
+        "file": "GB0_INTERNAL_NOTICE_v1.txt",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "defdf7bca0761e7a98671e5e22f80edde2d57a0282f6cba6ad0555c9b3280147",
+        "expected_sha256": "defdf7bca0761e7a98671e5e22f80edde2d57a0282f6cba6ad0555c9b3280147",
+        "file": "HANDOFF_REPORT_TASK-003-DESIGN.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "3a2c600e098d09825e21a98628464af27aab17a3df4932903ac831e48db525a1",
+        "expected_sha256": "3a2c600e098d09825e21a98628464af27aab17a3df4932903ac831e48db525a1",
+        "file": "RESPONSE_TO_CLAUDE_REVIEW_v03.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "6a89687992dd3f79405dbce7c2c6de94e04a3c5b234d527f70ecbde5bdb7bac2",
+        "expected_sha256": "6a89687992dd3f79405dbce7c2c6de94e04a3c5b234d527f70ecbde5bdb7bac2",
+        "file": "TASK-003-CVC-001.md",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "6fc5a8db73e0afb85624fb4f91a783e65b70288a2a78e730c85369fc73c92417",
+        "expected_sha256": "6fc5a8db73e0afb85624fb4f91a783e65b70288a2a78e730c85369fc73c92417",
+        "file": "TASK003_NUMERICAL_AUDIT_v03.json",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "ec3e91e03ccddf1a5c567dd37f4c20c554e2667eec0e3e34c7980c9526716503",
+        "expected_sha256": "ec3e91e03ccddf1a5c567dd37f4c20c554e2667eec0e3e34c7980c9526716503",
+        "file": "TASK003_NUMERICAL_AUDIT_v031.json",
+        "integrity": "MATCH"
+      },
+      {
+        "actual_sha256": "6bdd6b189e2b7bce7a82db3198ebb9b02b1fda5c8ed0194ff19afb57e36c3b66",
+        "expected_sha256": "6bdd6b189e2b7bce7a82db3198ebb9b02b1fda5c8ed0194ff19afb57e36c3b66",
+        "file": "TASK003_v032_Q1-Q5_Closure.md",
+        "integrity": "MATCH"
+      }
+    ],
+    "status": "MATCH"
+  },
+  "metric_unavailability": {
+    "decode_tokens_s": "No real decode phase; one synthetic output token",
+    "prefill_tokens_s": "No model or runtime prefill phase timer",
+    "ttft_s": "Non-streaming synthetic fixture; no content-token event"
+  },
+  "preflight": {
+    "available_ram_bytes": 2074144768,
+    "checks": [
+      {
+        "measured_bytes": 2074144768,
+        "name": "available_ram",
+        "passed": true,
+        "required_bytes": 67108864,
+        "source": "psutil.virtual_memory.available",
+        "unavailable_reason": null
+      },
+      {
+        "name": "output_path",
+        "passed": true
+      },
+      {
+        "measured_bytes": 33420922880,
+        "name": "free_disk",
+        "passed": true,
+        "required_bytes": 10485760,
+        "source": "shutil.disk_usage.free",
+        "unavailable_reason": null
+      }
+    ],
+    "free_disk_bytes": 33420922880,
+    "measurement_scope": "CURRENT_HOST",
+    "observed_at_utc": "2026-11-07T10:37:48.518836+00:00",
+    "platform": "Windows",
+    "ready": true,
+    "system_commit": {
+      "available_bytes": 3161829376,
+      "limit_bytes": 12689879040,
+      "source": "GetPerformanceInfo",
+      "total_bytes": 9528049664,
+      "unavailable_reason": null
+    }
+  },
+  "results": {
+    "file": "runs.jsonl",
+    "records": 1,
+    "sha256": "e0b2efea03857e48b4c5669076280e09cdf10fbbf53edcc51a3ba5ec9b347eb1"
+  },
+  "run_id": "657485234bf14015800ecdfc635c2dad",
+  "runtime": {
+    "kind": "mock",
+    "os": "Windows",
+    "phase_timers_supported": false,
+    "psutil_version": "7.2.2",
+    "python_version": "3.14.4",
+    "streaming_supported": false
+  },
+  "schema_version": 1,
+  "status": "PASS",
+  "task_id": "TASK-004"
+}
+
+```
+
+### 8.4. `task004/runs/windows-intake/smoke/657485234bf14015800ecdfc635c2dad/runs.jsonl`
+
+```json
+{"evidence_label": "SYNTHETIC", "finished_at_utc": "2026-11-07T10:37:48.887275+00:00", "metrics": {"decode_tokens_s": null, "prefill_tokens_s": null, "request_latency_s": 0.025204800003848504, "run_elapsed_s": 0.40787019999697804, "synthetic_output_tokens": 1, "ttft_s": null}, "reason_code": "OK", "resources": {"commit_peak_bytes": 18862080, "commit_source": "psutil Windows private bytes", "commit_unavailable_reason": null, "incomplete_samples": 0, "measurement_scope": "mock server and descendants after health readiness; excludes harness and startup", "rss_peak_bytes": 32776192, "rss_source": "psutil simultaneous process-tree RSS samples", "sample_interval_s": 0.1, "samples": 2, "sampling_limitation": "Sampling can miss peaks between observations"}, "run_id": "657485234bf14015800ecdfc635c2dad", "schema_version": 1, "started_at_utc": "2026-11-07T10:37:48.479449+00:00", "status": "PASS", "task_id": "TASK-004"}
+
+```
+
+```
+
+Nếu Agent chính tiếp tục giao nhiệm vụ viết commit vá lỗi `task004/client.py` và bổ sung bộ test Windows cho các mục `Windows UNVERIFIED`, bạn chỉ cần nhắn lại đây để mình hỗ trợ viết code và chạy kiểm tra tiếp nhé!
+
+```

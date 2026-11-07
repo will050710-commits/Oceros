@@ -8,11 +8,11 @@ Ngày ghi nhận: 07/11/2026 (Asia/Bangkok).
 | Trạng thái bàn giao | ACK_REPORTED / PACKET_RECEIVED tại packet `879dcfa`; [ACK do người dùng chuyển tiếp](reviews/2026-11-07/ORCHESTRATOR_ACK.md), không có gì chặn ghi sổ |
 | Verdict reviewer | **ACCEPT — launcher/client/mock trên Linux**, do người dùng chuyển tiếp; chỉ bao phủ 8 finding vòng hai |
 | Commit implementation được chấp nhận | [`47aaeee91739c2f09ea30538e40c66e853653543`](https://github.com/will050710-commits/Oceros/commit/47aaeee91739c2f09ea30538e40c66e853653543) |
-| Thay đổi sau verdict | Chỉ tài liệu, bản lưu review, log kiểm riêng hai minor và checksum; không đổi code/tests/schema/config/dependency hoặc evidence runtime đã được review |
+| Thay đổi sau verdict | Hồ sơ, review, log hai minor, packet Windows intake do người dùng cung cấp và checksum; không đổi code/tests/schema/config/dependency hoặc evidence Linux đã được review |
 | Scope hoàn thành | Launcher, client HTTP loopback, mock, preflight, sampling, record/schema, CLI; stdlib + psutil |
 | Quyết định scope thay phiếu 24/10 | USER-DECIDED; xem [sổ trạng thái](STATUS_LEDGER.md) |
 | Phần phiếu 24/10 | NOT_IMPLEMENTED; người dùng đã chọn tách [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) thành ticket riêng, giữ chưa triển khai |
-| Chưa xác minh/thực thi | Windows UNVERIFIED; model thật/benchmark/CVC NOT_RUN; không freeze dataset |
+| Chưa xác minh/thực thi | Windows NOT_VERIFIED: survey FAILED được báo, đã có smoke artifact hợp lệ; model thật/benchmark/CVC NOT_RUN; không freeze dataset |
 
 ## Bằng chứng và nguồn review
 
@@ -20,6 +20,7 @@ Ngày ghi nhận: 07/11/2026 (Asia/Bangkok).
 
 - [Verdict ACCEPT được lưu từ tin nhắn](reviews/2026-11-07/ACCEPT_REVIEW.md).
 - [ACK orchestrator ngày 07/11](reviews/2026-11-07/ORCHESTRATOR_ACK.md): nhận packet 879dcfa, báo kiểm Linux suite 106/106 và checksum 180/180. Giữ nhãn REPORTED và gắn đúng snapshot; đây không phải lượt chạy mới của implementer hay ACK qua connector.
+- [Windows intake sau ACK](evidence/windows-intake-20261107/README.md): 4/4 artifact khớp hash, manifest/run hợp lệ; ZIP khớp bản GitHub tải độc lập. Survey 92 pass / 1 fail / 13 skip là USER_REPORTED, thiếu log nguyên byte; chưa đủ Windows acceptance.
 - [Review vòng hai gốc](reviews/2026-11-07/ROUND2_REVIEW_ORIGINAL.txt) và [đối chiếu hai minor](reviews/2026-11-07/MINOR_CROSSCHECK.md).
 - [Handoff 17 trường tại commit được chấp nhận](https://github.com/will050710-commits/Oceros/blob/47aaeee91739c2f09ea30538e40c66e853653543/task004/HANDOFF_REPORT_TASK-004.md).
 - [Review packet có source/diff/log](https://github.com/will050710-commits/Oceros/blob/47aaeee91739c2f09ea30538e40c66e853653543/task004/evidence/review2-20261107-release/REVIEW_PACKET.md).
@@ -40,8 +41,8 @@ ACK đã ghi nhận ACCEPT cho đúng scope Linux launcher/client/mock tại 47a
 
 ACK ghi nhận [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md), PLANNED / NOT_IMPLEMENTED, theo quyết định người dùng “Tách thành ticket riêng, giữ trạng thái chưa triển khai (đề xuất)”. Đây là ticket trong repo, chưa tạo issue ngoài/chưa phân công. Phiếu 24/10 nguyên byte vẫn cần được cung cấp để lưu references và đối chiếu AC chi tiết cho lượt triển khai riêng.
 
-Đã lập [TASK-004-WIN-MOCK](tickets/TASK-004-WIN-MOCK.md) trong repo: READY_FOR_ASSIGNMENT / NOT_RUN, owner do chủ dự án chỉ định; orchestrator chưa phân công. Ticket có phương án ZIP khi không có Git. Snapshot RAM/đĩa/commit chỉ mô tả điều kiện mock, chưa tương đương TASK-001; cần JSON/probe gốc để đo lại RAM sạch và lưu nguồn/hash. Sau Windows mock và phép đo có nguồn, cần người dùng duyệt trước khi mở ticket bảng preflight theo model + adapter llama.cpp. Hiện chưa có adapter thật, bảng ngưỡng theo model hay hardware_reference khác null.
+[TASK-004-WIN-MOCK](tickets/TASK-004-WIN-MOCK.md) đã nhận intake, trạng thái SURVEY_FAILED_REPORTED / NOT_VERIFIED. Cần log survey/script Winsock và [bản vá client riêng](tickets/TASK-004-WIN-CLIENT-CANCEL.md) cùng các test Windows còn thiếu. Snapshot RAM/đĩa/commit đã nhận có hash khớp, chưa tương đương TASK-001 hoặc chứng minh RAM sạch; JSON/probe gốc và điều kiện đo vẫn thiếu. Sau Windows mock và phép đo có nguồn, cần người dùng duyệt trước khi mở bảng preflight theo model + adapter llama.cpp. Hiện chưa có adapter thật, bảng ngưỡng theo model hay hardware_reference khác null.
 
 ## Nội dung ngắn để cập nhật hồ sơ
 
-> Đã ghi nhận ORCHESTRATOR ACK ngày 07/11/2026 do người dùng chuyển tiếp cho packet `879dcfa`. Launcher/client/mock Linux tại `47aaeee91739c2f09ea30538e40c66e853653543` = ACCEPTED (verdict reviewer REPORTED); scope thay phiếu 24/10 = USER-DECIDED; TASK-004-LEGACY-OPS = PLANNED / NOT_IMPLEMENTED. TASK-004-WIN-MOCK = READY_FOR_ASSIGNMENT / NOT_RUN, owner do chủ dự án chỉ định. Windows/model thật chưa xác minh; bảng preflight theo model, adapter llama.cpp và CVC chưa mở. Hai minor chưa được reviewer xác nhận. Hồ sơ: https://github.com/will050710-commits/Oceros/blob/main/task004/ORCHESTRATOR_HANDOFF.md
+> Đã ghi nhận ORCHESTRATOR ACK ngày 07/11/2026 cho packet `879dcfa` và Windows intake sau đó. Linux launcher/client/mock tại `47aaeee` vẫn ACCEPTED (verdict REPORTED); scope thay phiếu 24/10 USER-DECIDED; LEGACY-OPS PLANNED / NOT_IMPLEMENTED. Windows intake có 4 artifact hash/validator hợp lệ; survey 92 pass / 1 fail / 13 skip được báo, thiếu log nguyên byte. Windows NOT_VERIFIED, theo dõi bản vá TASK-004-WIN-CLIENT-CANCEL và các test Windows còn thiếu; chưa đổi source. Model thật, bảng preflight model, adapter llama.cpp và CVC chưa mở. Hồ sơ: https://github.com/will050710-commits/Oceros/blob/main/task004/ORCHESTRATOR_HANDOFF.md

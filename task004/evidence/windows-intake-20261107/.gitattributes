@@ -1,0 +1,4 @@
+HANDOFF_REPORTED.txt -text
+source-*.json -text
+hardware-*.json -text
+smoke/** -text

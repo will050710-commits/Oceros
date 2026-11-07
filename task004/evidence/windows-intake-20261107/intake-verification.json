@@ -1,0 +1,97 @@
+{
+  "verified_at_utc": "2026-11-07T10:58:18.060982+00:00",
+  "verification_scope": "OFFLINE_ARTIFACT_INTEGRITY_AND_CONSISTENCY_ONLY",
+  "user_report": {
+    "file": "HANDOFF_REPORTED.txt",
+    "bytes": 19359,
+    "sha256": "7bcf6208364b0d75bdddfc7e66cf44dee65a410970bde0e5eaeb8a698105aaaa",
+    "transport": "USER_PASTED_TEXT"
+  },
+  "target_implementation_commit": "47aaeee91739c2f09ea30538e40c66e853653543",
+  "artifacts": [
+    {
+      "reported_path": "task004/runs/windows-intake/source-20261107T103207412703Z.json",
+      "stored_path": "source-20261107T103207412703Z.json",
+      "reported_sha256": "29f84c126af44a3463d1de8370668c662fa8bb64f258aa084ee15296e1ccdc68",
+      "computed_sha256": "29f84c126af44a3463d1de8370668c662fa8bb64f258aa084ee15296e1ccdc68",
+      "bytes": 424,
+      "result": "MATCH",
+      "extraction_encoding": "CRLF_one_final_newline",
+      "origin": "EXTRACTED_FROM_USER_PASTED_TEXT_HASH_MATCHED"
+    },
+    {
+      "reported_path": "task004/runs/windows-intake/hardware-20261107T103556669197Z.json",
+      "stored_path": "hardware-20261107T103556669197Z.json",
+      "reported_sha256": "b7bea05fde232e2d220e7b5d12885990121cea9d45fd63fe1e2d971aef63c032",
+      "computed_sha256": "b7bea05fde232e2d220e7b5d12885990121cea9d45fd63fe1e2d971aef63c032",
+      "bytes": 1584,
+      "result": "MATCH",
+      "extraction_encoding": "LF_one_final_newline",
+      "origin": "EXTRACTED_FROM_USER_PASTED_TEXT_HASH_MATCHED"
+    },
+    {
+      "reported_path": "task004/runs/windows-intake/smoke/657485234bf14015800ecdfc635c2dad/manifest.json",
+      "stored_path": "smoke/657485234bf14015800ecdfc635c2dad/manifest.json",
+      "reported_sha256": "4564c97e7a29710b526528f3c3479d83e28ecb73bb837846bb0540710f436494",
+      "computed_sha256": "4564c97e7a29710b526528f3c3479d83e28ecb73bb837846bb0540710f436494",
+      "bytes": 5624,
+      "result": "MATCH",
+      "extraction_encoding": "LF_one_final_newline",
+      "origin": "EXTRACTED_FROM_USER_PASTED_TEXT_HASH_MATCHED"
+    },
+    {
+      "reported_path": "task004/runs/windows-intake/smoke/657485234bf14015800ecdfc635c2dad/runs.jsonl",
+      "stored_path": "smoke/657485234bf14015800ecdfc635c2dad/runs.jsonl",
+      "reported_sha256": "e0b2efea03857e48b4c5669076280e09cdf10fbbf53edcc51a3ba5ec9b347eb1",
+      "computed_sha256": "e0b2efea03857e48b4c5669076280e09cdf10fbbf53edcc51a3ba5ec9b347eb1",
+      "bytes": 922,
+      "result": "MATCH",
+      "extraction_encoding": "LF_one_final_newline",
+      "origin": "EXTRACTED_FROM_USER_PASTED_TEXT_HASH_MATCHED"
+    }
+  ],
+  "checks": {
+    "manifest_schema": "PASS",
+    "run_schema_and_validate_record": "PASS",
+    "manifest_results_hash": "MATCH",
+    "manifest_config_hash": "MATCH",
+    "input_provenance_11_sources": "MATCH",
+    "synthetic_not_run_labels": "PASS",
+    "hardware_arithmetic_and_timestamps_shape": "PASS",
+    "reported_skip_ids_present_in_source": 13,
+    "implementation_fingerprints_unchanged": 43
+  },
+  "independent_archive_comparison": {
+    "source": "Previously downloaded official GitHub ZIP pinned to target commit",
+    "sha256": "503afa4e2e06d6821c94b56783f6cb7fafa525fc223d9424f81956097365bce9",
+    "matches_user_source_receipt": true,
+    "zip_comment": "47aaeee91739c2f09ea30538e40c66e853653543",
+    "sha256sums_entries_checked": 171
+  },
+  "windows_execution": "USER_REPORTED_NOT_RERUN_BY_IMPLEMENTER",
+  "reported_unittest_survey": {
+    "ran": 106,
+    "passed": 92,
+    "failures": 1,
+    "skipped": 13,
+    "elapsed_s": 17.224,
+    "exit_code": 1,
+    "raw_log_received": false
+  },
+  "missing_inputs": [
+    {
+      "reported_path": "task004/runs/windows-intake/unittest-survey.sanitized.log",
+      "reported_sha256": "8592f8a806b10bf376fa3afcda204bfc1c3c5f855329492960c631c303c23b13",
+      "status": "NOT_PROVIDED"
+    },
+    {
+      "item": "Winsock diagnostic scripts and raw outputs",
+      "status": "NOT_PROVIDED"
+    },
+    {
+      "item": "Original TASK-001 hardware JSON/probe and clean-boot/power-mode conditions",
+      "status": "NOT_PROVIDED"
+    }
+  ],
+  "overall_windows_status": "NOT_VERIFIED / BLOCKED_ON_REPORTED_DEFECT_AND_WINDOWS_TEST_GAPS"
+}

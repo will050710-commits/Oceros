@@ -1,11 +1,11 @@
 # TASK-004-WIN-MOCK — xác minh launcher/client/mock trên Windows
 
-Ngày lập: 07/11/2026 (Asia/Bangkok). Đây là ticket trong repo; chưa tạo issue ở tracker ngoài, chưa giao cho người thực thi.
+Ngày lập/cập nhật: 07/11/2026 (Asia/Bangkok). Ticket trong repo; đã nhận intake do người dùng chuyển tiếp, chưa tạo issue ở tracker ngoài.
 
 | Trường | Giá trị |
 | --- | --- |
-| STATUS | READY_FOR_ASSIGNMENT / NOT_RUN |
-| OWNER | TBD — chủ dự án chỉ định người có máy Windows; orchestrator không phân công thay |
+| STATUS | SURVEY_FAILED_REPORTED / NOT_VERIFIED; BLOCKED_ON_REPORTED_DEFECT_AND_WINDOWS_TEST_GAPS |
+| OWNER | Lượt intake do người dùng chuyển tiếp; owner bản vá/kiểm tiếp chưa phân công, do chủ dự án chỉ định |
 | Implementation cần xác minh | `47aaeee91739c2f09ea30538e40c66e853653543` |
 | Mốc hồ sơ khi lập ticket | `c45347100e763fbbb1efb537b457c73f115dcaf0` — chỉ bổ sung tài liệu so với implementation được chấp nhận |
 | Môi trường đích | Windows 11 x64; CPython 3.14 là đích cần xác minh, phiên bản khác phải báo thành ô ma trận riêng |
@@ -18,13 +18,13 @@ Xác minh các đường cài đặt, CLI, HTTP, hủy, dọn tiến trình, đo
 
 Đầu vào cần có trước khi chạy: bản clone hoặc ZIP giải nén đầy đủ (gồm `task004/evidence/` cho hai test compatibility), quyền dùng máy đích, Python đích, thư mục output có quyền ghi và người thực thi xác nhận đây là máy cần đo. Không dùng ZIP triển khai cũ `2cb9168`. Với Git, ghi full SHA và trạng thái working tree; với ZIP, ghi commit trong comment, SHA-256 archive và kết quả kiểm tệp bên dưới. Không reset thay đổi của người dùng để khớp revision. Nếu source khác 47aaeee, ghi diff và không gọi đó là xác minh nguyên bản 47aaeee.
 
-[ACK packet 879dcfa](../reviews/2026-11-07/ORCHESTRATOR_ACK.md) giữ ticket này ở READY_FOR_ASSIGNMENT / NOT_RUN. Chủ dự án chỉ định owner khi bố trí lượt chạy trên laptop; việc ghi ACK chưa phải phân công hoặc kết quả Windows.
+[ACK packet 879dcfa](../reviews/2026-11-07/ORCHESTRATOR_ACK.md) ghi trạng thái READY_FOR_ASSIGNMENT / NOT_RUN tại thời điểm đó. Sau ACK đã nhận [Windows intake](../evidence/windows-intake-20261107/README.md): bốn artifact khớp hash/validator; smoke PASS/SYNTHETIC được báo, suite 106 test = 92 pass + 1 failure + 13 skip. Log survey và script/output chẩn đoán chưa nhận; Windows vẫn NOT_VERIFIED. Finding worker còn sống sau cancel được theo dõi ở [TASK-004-WIN-CLIENT-CANCEL](TASK-004-WIN-CLIENT-CANCEL.md), chưa triển khai bản vá.
 
 Nếu cần sửa để tương thích Windows, thực hiện thành commit riêng nối tiếp baseline, giữ hồi quy Linux và trình reviewer xác nhận đúng commit mới. Verdict Linux tại 47aaeee không tự áp cho code đã sửa.
 
 ## Chuẩn bị trên máy đích
 
-Các lệnh sau là hướng dẫn dự kiến, **chưa được chạy trên Windows**. Dùng PowerShell; không dùng `task004/setup.sh` có đường dẫn cloud. Không đổi execution policy chỉ để activate venv; gọi Python trong venv trực tiếp. Dừng ở lệnh báo lỗi và giữ output để chẩn đoán, không tiếp tục bằng interpreter/dependency khác.
+Các bước intake/smoke/survey dưới đây đã được người dùng báo chạy trên Windows; implementer chỉ kiểm artifact ngoại tuyến, chưa chạy lại Windows. Giữ hướng dẫn để tái lập, không yêu cầu người đã chạy làm lại từ đầu khi còn giữ log. Dùng PowerShell; không dùng `task004/setup.sh` có đường dẫn cloud. Không đổi execution policy chỉ để activate venv; gọi Python trong venv trực tiếp. Dừng ở lệnh báo lỗi và giữ output để chẩn đoán, không tiếp tục bằng interpreter/dependency khác.
 
 ### 1. Kiểm tra Python
 
@@ -122,7 +122,7 @@ Ghi exit code ngay sau từng lệnh native, trước khi chạy lệnh tiếp t
 
 ## Snapshot phần cứng và RAM sạch
 
-**Snapshot dưới đây chỉ ghi RAM/đĩa/commit phục vụ mock, chưa tương đương hồ sơ TASK-001.** Nó thiếu CPU, GFLOPS, băng thông và power plan. Thông tin i7-8665U/94 GFLOPS hiện là USER_REPORTED; chưa có JSON gốc/probe gốc trong repo để xác minh phương pháp hoặc tái lập các con số. Không điền lại 94 GFLOPS vào JSON mới như một phép đo.
+**Snapshot dưới đây chỉ ghi RAM/đĩa/commit phục vụ mock, chưa tương đương hồ sơ TASK-001.** Đã nhận [ba mẫu từ lượt intake](../evidence/windows-intake-20261107/hardware-20261107T103556669197Z.json), hash khớp báo cáo. Chưa có điều kiện clean boot/Best performance hoặc CPU/GFLOPS/băng thông/power plan đi kèm. Thông tin i7-8665U/94 GFLOPS hiện là USER_REPORTED; chưa có JSON TASK-001/probe gốc để xác minh phương pháp hoặc tái lập. Không điền lại 94 GFLOPS vào JSON mới như một phép đo.
 
 Để tái lập hồ sơ ban đầu khi có probe: giữ JSON cũ và mã probe nguyên byte, ghi SHA-256 bằng `Get-FileHash -Algorithm SHA256 <file>`, ghi phiên bản/tham số probe, đơn vị và điều kiện đo. Sau khi lưu công việc, chủ máy khởi động lại Windows và đặt **Settings → System → Power & battery → Power mode → Best performance** nếu máy hỗ trợ; ghi trạng thái thực tế nếu tùy chọn không có. Ghi nguồn điện AC/pin, thời gian từ lúc boot và thời gian chờ ổn định. Lưu thêm kết quả `powercfg /getactivescheme`; active power plan và Power mode của Windows có thể khác nhau, không suy cái này từ cái kia. CPU có thể đọc bằng `Get-CimInstance Win32_Processor | Select-Object Name, NumberOfCores, NumberOfLogicalProcessors`. GFLOPS và băng thông phải dùng đúng probe/phương pháp gốc, chưa có probe thì giữ NOT_MEASURED.
 

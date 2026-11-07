@@ -9,16 +9,21 @@ Ngày cập nhật: 07/11/2026 (Asia/Bangkok). Đây là hồ sơ quản lý ph�
 | Launcher/client/mock trên Linux | ACCEPTED tại `47aaeee91739c2f09ea30538e40c66e853653543` | [Verdict do người dùng chuyển tiếp](reviews/2026-11-07/ACCEPT_REVIEW.md); evidence implementer 106/106 × 3. Chỉ scope mock. |
 | Thay phạm vi triển khai của đợt này | USER-DECIDED | Người dùng chọn “launcher/client/mock theo khuyến nghị handoff” trong chat, sau khi được hỏi lựa chọn giữa hai phạm vi. Không tự gộp hai bộ AC. |
 | TASK-004 theo phiếu gốc 24/10: ticket/ledger/provenance/costlog/runner/CLI | NOT_IMPLEMENTED; SEPARATE_TICKET / USER-DECIDED | Người dùng đã chọn tách thành [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md), giữ chưa triển khai. Ticket trong repo, chưa phân công/chưa tạo issue ngoài. |
-| Kiểm mock trên Windows | READY_FOR_ASSIGNMENT / NOT_RUN | [TASK-004-WIN-MOCK](tickets/TASK-004-WIN-MOCK.md), phiếu trong repo; owner do chủ dự án chỉ định, chưa giao người thực hiện/chưa chạy trên Windows. |
+| Kiểm mock trên Windows | SURVEY_FAILED_REPORTED / NOT_VERIFIED | [Intake](evidence/windows-intake-20261107/README.md): bốn artifact khớp hash/validator; smoke PASS được báo. Survey 106 = 92 pass + 1 fail + 13 skip, thiếu log để kiểm; [ticket cha](tickets/TASK-004-WIN-MOCK.md) còn các đường Windows bắt buộc. |
+| Sửa hủy HTTP trên Windows | READY_FOR_IMPLEMENTATION / NOT_IMPLEMENTED | [TASK-004-WIN-CLIENT-CANCEL](tickets/TASK-004-WIN-CLIENT-CANCEL.md): worker còn sống sau cancel được báo; cần commit/test riêng, chưa sửa source. |
 | Adapter llama-server thật | NOT_IMPLEMENTED / NOT_AUTHORIZED_TO_RUN | `real_model_adapter` chủ động chặn; config chỉ nhận mock. |
 | Bảng preflight theo model | NOT_IMPLEMENTED / GATED_FOLLOWUP | Hiện chỉ có guard tài nguyên mock, không có test “0,98 GiB từ chối cả bốn model”. |
-| Hardware reference trong manifest | NULL / NO_VERIFIED_REFERENCE | Chưa có JSON phần cứng gốc được xác minh để gắn nguồn. Không dùng RAM cloud thay cho laptop. |
+| Hardware reference trong manifest | NULL / NO_FULL_TASK001_REFERENCE | Đã nhận snapshot RAM/đĩa/commit của intake, hash khớp; JSON/probe TASK-001 gốc và điều kiện RAM sạch vẫn thiếu. Không sửa tay manifest để gắn nguồn. |
 | Model inference / benchmark / CVC / freeze | NOT_RUN / NOT_FROZEN | ACCEPT Linux mock không mở những scope này. |
 | Chuyển cho orchestrator | ACK_REPORTED / PACKET_RECEIVED | Người dùng đã chuyển tiếp [xác nhận tiếp nhận](reviews/2026-11-07/ORCHESTRATOR_ACK.md) packet tại 879dcfa: không có gì chặn ghi sổ. Đây là ACK qua chat, không phải sự kiện từ connector/tracker. |
 
 ## ACK orchestrator — 07/11/2026
 
 Đã ghi nhận [ACK do người dùng chuyển tiếp](reviews/2026-11-07/ORCHESTRATOR_ACK.md), gắn với packet `879dcfae77bac2990c6ee4ba3946d26be1bbbb08`. Bên xác nhận báo suite 106/106 và SHA256SUMS 180/180 tại mốc đó; các số này giữ nhãn REPORTED, không tính là lượt chạy mới của implementer. ACK không phân công owner Windows hay mở phạm vi model/CVC.
+
+## Windows intake sau ACK — 07/11/2026
+
+[Packet nhận từ văn bản dán](evidence/windows-intake-20261107/README.md) giữ báo cáo nguyên byte và bốn artifact trích xuất có hash khớp. Kiểm ngoại tuyến xác nhận schema, config/provenance, manifest→JSONL và ZIP GitHub; không chứng minh thực thi Windows. Log `unittest-survey.sanitized.log` và thí nghiệm Winsock chưa được cung cấp; không ghi “đủ 100%”. Windows BLOCKED vì finding hủy request được báo và các đường tích hợp chưa kiểm. Linux ACCEPT tại 47aaeee giữ nguyên.
 
 ## Quyết định tách phiếu cũ — 07/11/2026
 
@@ -33,8 +38,8 @@ Các mức 1,21 / 1,90 / 2,01–2,67 / 3,45 GiB trong bản kiểm bổ sung là
 ## Cổng cho bước tiếp theo
 
 1. Giữ [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) trong backlog riêng, NOT_IMPLEMENTED, như ACK đã ghi nhận. Nhận phiếu gốc nguyên byte để lưu references, đối chiếu và chốt AC khi giao triển khai ticket đó.
-2. Chủ dự án chỉ định owner cho Windows mock; người được giao chạy trên máy Windows thật và lưu bằng chứng của máy đó. Trạng thái hiện tại vẫn READY_FOR_ASSIGNMENT / NOT_RUN.
-3. Đo RAM sạch theo probe gốc và lưu JSON/hash cùng điều kiện máy vừa khởi động lại, chế độ nguồn thực tế. Snapshot RAM/đĩa/commit trong ticket là dữ liệu giới hạn; chưa có CPU/GFLOPS/băng thông/power plan tương đương hồ sơ TASK-001. JSON/probe gốc vẫn chưa được cung cấp.
+2. Nhận log survey/script chẩn đoán đã có; triển khai [bản vá client riêng](tickets/TASK-004-WIN-CLIENT-CANCEL.md), kiểm hồi quy Linux và Windows đúng commit. Hoàn tất các phép kiểm Windows còn thiếu theo ticket cha trước verdict.
+3. Giữ snapshot intake đã nhận; bổ sung điều kiện đo và JSON/probe TASK-001 gốc. Đo RAM sạch theo probe gốc với thời điểm boot/chế độ nguồn thực tế; ba mẫu RAM/đĩa/commit không thay CPU/GFLOPS/băng thông/power plan.
 4. Sau khi người dùng duyệt phần cứng/phạm vi, mới mở ticket bảng preflight theo model + adapter llama.cpp. Không mở/chạy model trước cổng này.
 
 ## Bản bàn giao được dùng
