@@ -1,0 +1,66 @@
+I'll start with the file-reading skill, since the HTML evidence page isn't in context yet.
+
+I read the memory note: this is round two on the hardening of `2cb9168`, in launcher/client/mock scope, with the same focus areas, and Windows and real-model runs still unverified. I kept to that.
+
+**Verdict: needs-fix (narrow), not accept yet.** Nothing needs a redesign, and the artifact-write half of A2 holds up. But I reproduced a hang in the cancel path, and the evidence is less strict than the handoff reads. I also could only see part of the code (see the end).
+
+**Fix before accept**
+
+1. **The cancel handler can deadlock the CLI** (`cli.py`, `lambda *_: cancel.set()`).
+   - `Event.set()` takes a non-reentrant lock, and Python runs handlers on the main thread between bytecodes. If a signal lands while the main thread is inside `Event.wait()` or `clear()`, or a second signal lands inside the first handler's `set()`, the handler blocks on a lock its own thread holds.
+   - I reproduced it. Forcing the nested signal hangs with the stack in `Event.set`. With your handler copied verbatim and a lock-heavy main loop, it hung within 99 bursts of three signals.
+   - A plain `wait(0.002)` loop survived about 990 bursts, so the window is narrow and depends on how `client.py` and `server.py` wait on the event. 87/87 passing doesn't rule it out.
+   - Fix: replace the Event with a lock-free flag class exposing `set`, `is_set` and `wait` (`wait` polls with `time.sleep`). The same lock-heavy loop then survived 993 bursts.
+
+2. **The SIGHUP handler defeats `nohup`.** The install loop overwrites an inherited ignore. I reproduced it: with SIGHUP ignored on entry, a SIGHUP set `cancel`. Long runs started under nohup or ssh will be cancelled when the session closes. Fix: `if signal.getsignal(number) is signal.SIG_IGN: continue`.
+
+3. **The evidence is weaker than the handoff reads.**
+   - `-W error::ResourceWarning` doesn't fail on the usual leak, a warning raised from a finalizer. A test that leaks a socket under that flag prints "Exception ignored…", reports ok and exits 0 (reproduced). Child processes the tests spawn, like the CLI in `SignalArtifactTests`, don't inherit the flag either.
+   - Make it real by failing `fixed-*` and `suite-*` runs whose log contains `Exception ignored`, `ResourceWarning` or `Traceback`.
+   - You can check now with `grep -lE 'Exception ignored|ResourceWarning' task004/evidence/hardening-20261106-final/*.log`. A hit outside `baseline-*` and `mutation-*` is a leak the suite let through.
+   - Baseline runs only require `failures>0 and errors==0`. That shows some assertion failed, not that it is the defect's assertion. I couldn't open `baseline-A1…A4.log`, because the saved page lists file names only.
+
+**Fix before the Windows / model step, or track**
+
+4. **Some failures skip the artifact or print a traceback.**
+   - `server.stop()` is guarded by `except (ServerError, OSError)`, and `psutil.Error` is neither (checked on psutil 7.2.2). I need `server.py` to know if `stop()` can raise one.
+   - `source_provenance()` raises `KeyError` or `TypeError` on a malformed index (reproduced), and `main()` only catches `OSError` and `ValueError`.
+   - `check_preflight()` and `ManagedMockServer()` run before the `try`.
+   - Fix: `except Exception` in the two cleanup handlers, a last-resort handler in `main` that prints the INTERNAL_ERROR JSON, and a shape check on the provenance index that raises `ValueError`.
+
+5. **Cleanup overrides cancellation in `run_dry_run`.** This is separate from whatever B1 does in `client.py`. A failed `server.stop()` or sampler step overwrites CANCELLED or TIMEOUT with FAIL, and the exit code goes from 130 to 1. That may be right, since an orphaned process matters more. Decide, document and test it, or keep the primary reason and record the cleanup failure separately.
+
+6. **Reason codes can drift from `STATUS_REASONS`.**
+   - `validate_record` rejects any code outside the table, and `main` reports that as INTERNAL_ERROR with no artifact.
+   - The A4 test checks enum == table, not that every code the client or server can raise is in the table.
+   - If A5's guard raises `ClientError("NON_LOOPBACK_ENDPOINT")`, that code isn't in the FAIL set. It's latent, since dry-run is loopback-only.
+   - Add an AST test over the `ClientError("…")` and `ServerError("…")` literals.
+
+7. **Runner portability and labels.**
+   - `baseline` isn't `.resolve()`d but the archive members are, so `is_relative_to` is False whenever the temp dir isn't canonical. I reproduced the mechanism with a symlinked temp dir. That is what macOS `/var` and Windows short names like `RUNNER~1` produce, so I expect it to abort your Windows run.
+   - `verification_scope: 'Linux-verified mock only'` is hardcoded and would label a Windows run as Linux-verified.
+   - `fingerprints()` skips `mock_config.json` and `references/`, which the dry-run reads.
+   - `validation.json` stores `sys.executable` and the absolute `cwd`, which will be your Windows username once it runs on your laptop.
+
+8. **Gaps in `test_hardening_record.py`.**
+   - The failure-injection test hits one point, the manifest open. I injected at the `runs.jsonl` open, both fsyncs and the rename, and all clean up (ran it), so add them as subtests.
+   - The signal tests wait for "mock child exists, then sleep 0.1", not for a phase, so signals land in startup or in flight arbitrarily. Missing cases are a pre-set cancel event, a signal during write, and a signal during cleanup.
+   - `FIXTURE` reads committed evidence (`evidence/dry-run/e1979…`), which makes immutable evidence a test dependency. Build the record in the test instead.
+
+Minor:
+- Handler restore skips a `None` previous value, which leaves the lambda installed.
+- `validate_record` doesn't enforce "PASS requires resources"; only `cli.py` does.
+
+**Checked and fine**
+- `write_artifacts` validates before `mkdir`, stages the files, fsyncs twice, renames once and cleans up on any `BaseException`. No leftovers at any injection point I tried.
+- The A5 evidence design (mutant plus old test) is sound, and the handoff honestly discloses the first FAIL run.
+- The evidence dir has all 19 files the runner emits, plus `review.patch` and the `dry-run/` directory. `SHA256SUMS` sits at `task004/SHA256SUMS`.
+- SYNTHETIC and NOT_RUN labels are consistent in the record, manifest and dry-run output.
+- The manifest persists no env or hostname, and failures report codes only.
+- The disclosed limits (no directory fsync, SIGKILL leaving staging, Windows) match the code.
+
+**What I couldn't verify**
+- I had `cli.py`, `record.py`, `test_hardening_record.py`, `validate_hardening.py`, the handoff and the directory listing. A web search didn't find the repo, so I couldn't pull the rest.
+- A1 (watchdog), A3 (bounds), A4 (schemas), the A5 test itself, B2, B3 and the sampler part of B4 are unreviewed.
+- Send `review.patch` (it covers all source and test changes), `validation.json` and `baseline-A1…A4.log`, and I can turn this into a final verdict.
+- The page shows `07eb03c` as the latest commit. To confirm I read the right revision, compare my files with `source_sha256` in `validation.json`: `cli.py` starts `9670b3c22e51390a`, `record.py` `cda2caadafd6940f`, `test_hardening_record.py` `e1516d2903c34c96`, `validate_hardening.py` `99c8d540b8ceb309`.

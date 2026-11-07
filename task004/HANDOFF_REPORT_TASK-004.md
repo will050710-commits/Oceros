@@ -1,4 +1,4 @@
-# TASK-004 — Handoff review vòng hai
+# TASK-004 — Handoff sau verdict ACCEPT (Linux mock)
 
 Ngày 07/11/2026 (Asia/Bangkok); timestamp artifact dùng UTC. Báo cáo này thay handoff 06/11; các nguồn và evidence đã commit được giữ nguyên.
 
@@ -12,17 +12,23 @@ Codex. Một agent hỗ trợ sửa record/provenance; agent chính hoàn tất 
 
 ## STATUS
 
-**IMPLEMENTED / READY_FOR_REVIEW — Linux-verified trong phạm vi mock.** Đã sửa hoặc xác định chính sách và kiểm thử cả mục 1–8 cùng hai minor. Ba lượt suite release PASS, log gate PASS. Windows UNVERIFIED; model thật NOT_RUN.
+**ACCEPT — launcher/client/mock trên Linux tại commit `47aaeee91739c2f09ea30538e40c66e853653543`, theo verdict reviewer do người dùng chuyển tiếp (REPORTED).** Verdict bao phủ 8 finding chính; reviewer chưa đối chiếu riêng hai minor với review gốc. [Bản lưu verdict](reviews/2026-11-07/ACCEPT_REVIEW.md) và [đối chiếu minor của implementer](reviews/2026-11-07/MINOR_CROSSCHECK.md). Sẵn sàng bàn giao orchestrator, chưa gửi/nhận acknowledgment. Windows UNVERIFIED; model thật NOT_RUN.
 
 ## BASELINE_REVISION
+
+Implementation được chấp nhận: `47aaeee91739c2f09ea30538e40c66e853653543`. Bổ sung sau verdict chỉ là hồ sơ review/bàn giao và checksum; source/tests/schema/config/references/evidence runtime giữ nguyên.
 
 Review dựa trên `07eb03cd0f01d16feef6f090cd5ed74c4c075eeb`; baseline ban đầu cho A1–A5 là `2cb916803cef6c2c52f03107fddeb866c407ae27`. Đã đối chiếu 4/4 prefix SHA reviewer cung cấp cho cli.py, record.py, test_hardening_record.py và validate_hardening.py: khớp revision 07eb03c. Code ở GitHub trước phiên đúng bản được reviewer đọc.
 
 ## FILES_READ
 
+Bổ sung ngày 07/11: verdict ACCEPT trong tin nhắn, review vòng hai gốc và hai minor; đối chiếu code/tests tại commit được chấp nhận.
+
 Đọc toàn bộ review dán, source/tests/runner/schema và evidence của bản 07eb03c; đối chiếu handoff/context. Không tái nghiên cứu model hoặc xác minh lại claims hardware/license trong tài liệu nguồn. References và evidence cũ không sửa.
 
 ## FILES_CHANGED
+
+Bước ghi nhận acceptance: thêm `reviews/2026-11-07/` (verdict, review gốc nguyên byte, đối chiếu minor và log 2 test), `ORCHESTRATOR_HANDOFF.md`; cập nhật README, handoff và SHA256SUMS. Không sửa implementation đã được review. Các thay đổi implementation dưới đây thuộc lịch sử tới 47aaeee.
 
 Thêm cancellation.py, unit fixture builder và tests review CLI/record/runner. Sửa cli.py, record.py, run schema, tests artifact/workflow và runner. Cập nhật README/HANDOFF/SHA256SUMS; thêm evidence review vòng hai, cumulative review.patch, round2.patch và CURRENT_SOURCE.md để reviewer đọc đầy đủ source. Dependency vẫn stdlib + psutil 7.2.2.
 
@@ -39,6 +45,8 @@ Thêm cancellation.py, unit fixture builder và tests review CLI/record/runner. 
 
 ## EVIDENCE
 
+Verdict được lưu tại `reviews/2026-11-07/ACCEPT_REVIEW.md`, chấp nhận scope Linux mock tại 47aaeee. Reviewer báo tái lập 106/106 × 3, 6/6 lượt dưới tải, 14/14 mutation và fuzz hơn 30.000 index: REPORTED, không tính là các lượt implementer chạy mới. Các số 43 fingerprint và 171 checksum reviewer nêu thuộc snapshot 47aaeee, không phải số tệp của commit bổ sung tài liệu.
+
 Evidence release: `evidence/review2-20261107-release/validation.json`; bắt đầu 2026-11-06T17:48:18.633107+00:00, kết thúc 2026-11-06T17:48:59.673773+00:00. Python 3.12.14, psutil 7.2.2. Summary sinh tự động từ subprocess; fingerprint source/tests/schema/config/references được kiểm không đổi trong suốt lượt.
 
 - `review-baseline-test_nested_signal_cannot_deadlock_handler.log`: lỗi deadlock tái hiện trên 07eb03c, timeout được test chuyển thành assertion đúng lỗi. `fixed-review-*.log`: bản sửa PASS.
@@ -51,6 +59,8 @@ Evidence release: `evidence/review2-20261107-release/validation.json`; bắt đ�
 
 ## TESTS_EXECUTED
 
+Sau verdict, chạy lại riêng 2 test minor bằng unittest: `test_unknown_previous_handler_is_never_replaced` và `test_pass_requires_positive_resource_evidence`; log trực tiếp ở `reviews/2026-11-07/minor-check.log`. Không chạy lại toàn bộ suite vì source không đổi. Các lệnh và kết quả full suite dưới đây thuộc implementation 47aaeee.
+
 Từ repo root:
 
 ```bash
@@ -60,6 +70,8 @@ Từ repo root:
 Runner lấy Git archive của hai baseline, chạy selected regressions trên cũ/mới, mutation cũ/mới, rồi `python -W error::ResourceWarning -m unittest discover -s task004/tests -v` ba lần liên tiếp và dry-run. Không sửa working source, không tạo worktree. Lệnh socket/tín hiệu dùng quyền executor cho loopback. Test leak finalizer là fixture cố ý, output được test đưa qua gate thay vì để cảnh báo ẩn.
 
 ## TEST_RESULTS
+
+Kiểm riêng hai minor sau verdict: 2/2 PASS. Reviewer chưa xác nhận đối chiếu bổ sung; không suy diễn thành mở rộng verdict. Full suite implementer đã lưu:
 
 | Lượt | Tests | Failures | Errors | Skipped | Wall seconds |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -79,6 +91,7 @@ Không API model trả phí, model downloads, training, Colab/GPU hay mua dịch
 
 ## KNOWN_LIMITATIONS
 
+- Ghi chú không chặn mới: `validate_record` với `run_elapsed_s=10**400` có thể ném OverflowError khi gọi như thư viện; implementer đã tái hiện. Giữ mã đã được chấp nhận; follow-up chuẩn hóa lỗi nếu được giao riêng. Hai test compatibility vẫn cần evidence lịch sử trong bản sao repo.
 - Windows UNVERIFIED: chưa có Job Object; chưa kiểm socket.shutdown đánh thức recv từ thread khác, Ctrl+C toàn console, SIGBREAK, directory rename, SYSTEMROOT allowlist, GetPerformanceInfo/private bytes hay wheel psutil 7.2.2 CPython 3.14. Test simulating platform label không xác minh Windows runtime.
 - B1 ở client giữ primary cancellation nhưng worker connect bị chặn có thể tồn tại tới socket timeout (cận 3600s). Chưa dùng nonblocking connect. Cleanup thất bại ở cấp run có chính sách FAIL riêng như trên.
 - CancellationFlag là cờ đơn điệu tối thiểu, không phải Event tổng quát; không clear/reset. Test reentrancy tại Python handler không phải bằng chứng cho mọi interpreter/OS.
@@ -92,12 +105,12 @@ Nhầm test PASS với leak-free tuyệt đối, Linux với Windows, mock với
 
 ## RECOMMENDATION
 
-Reviewer đọc CURRENT_SOURCE.md, cumulative review.patch, round2.patch, validation.json và các baseline logs được gửi đầy đủ trong release directory. Không coi review vòng trước giới hạn tập file là review đầy đủ source. Tiếp tục giữ runtime thật khóa tới khi review/điều kiện môi trường riêng được chốt.
+Bàn giao [ORCHESTRATOR_HANDOFF.md](ORCHESTRATOR_HANDOFF.md), verdict đã lưu và commit implementation được chấp nhận. Giữ nguyên phạm vi ACCEPT; không đòi mở lại review 8 finding vì hai ghi chú không chặn. Có thể gửi review gốc và bảng đối chiếu minor để reviewer bổ sung xác nhận riêng.
 
 ## NEXT_ACTION
 
-Gửi commit và release review packet cho reviewer để đưa verdict mới. Nếu chấp nhận, Windows là bước xác minh riêng; không tự mở model thật hoặc CVC. GitHub có source và log để người dùng đọc trực tiếp, không cần tải ZIP.
+Người dùng gửi packet cho orchestrator để ghi nhận kết quả và xác nhận đã nhận. Phiên này chưa gửi qua messaging/tracker hay nhận acknowledgment. Đề xuất bước tiếp là ticket kiểm mock trên Windows với tiêu chí riêng; chưa thực thi Windows/model/CVC.
 
 ## UNVERIFIED_CLAIMS
 
-Windows/model thật/hardware laptop/model flags/license/corpus/gold/tokenizer/DEV/bridge/CVC/freeze, review chấp thuận mới và publish/restore môi trường. Thí nghiệm reviewer báo giữ REPORTED ngoại trừ những lỗi đã tái hiện cụ thể trong log của phiên này.
+Windows/model thật/hardware laptop/model flags/license/corpus/gold/tokenizer/DEV/bridge/CVC/freeze và publish/restore môi trường. Verdict ACCEPT hiện đã được người dùng cung cấp và lưu, nhưng các thí nghiệm độc lập reviewer kể vẫn là REPORTED; chưa có xác nhận riêng hai minor hay acknowledgment từ orchestrator.

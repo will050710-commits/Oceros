@@ -1,0 +1,7 @@
+test_unknown_previous_handler_is_never_replaced (task004.tests.test_review_cli.ReviewCliTests.test_unknown_previous_handler_is_never_replaced) ... ok
+test_pass_requires_positive_resource_evidence (task004.tests.test_review_record.ReviewRecordTests.test_pass_requires_positive_resource_evidence) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.003s
+
+OK
