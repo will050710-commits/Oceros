@@ -3,6 +3,8 @@
 **Trạng thái:** đã nhận verdict **ACCEPT cho Linux launcher/client/mock tại [47aaeee](https://github.com/will050710-commits/Oceros/commit/47aaeee91739c2f09ea30538e40c66e853653543)**, do người dùng chuyển tiếp. Xem [verdict](reviews/2026-11-07/ACCEPT_REVIEW.md), [hai minor đối chiếu riêng](reviews/2026-11-07/MINOR_CROSSCHECK.md) và [bản bàn giao orchestrator](ORCHESTRATOR_HANDOFF.md). Windows/model thật chưa xác minh; orchestrator chưa được gửi/acknowledge trong phiên này. Hồ sơ sau verdict không thay implementation đã được chấp nhận.
 
 
+**Phạm vi đã đổi theo quyết định người dùng:** Linux launcher/mock được chấp nhận; bộ ticket/ledger/costlog của phiếu 24/10 **chưa làm**. Xem [sổ trạng thái](STATUS_LEDGER.md) và [ticket Windows mock](tickets/TASK-004-WIN-MOCK.md). ZIP cũ `Oceros_TASK004_mock_handoff.zip` là bản 2cb9168, không dùng để review mã đã chấp nhận; dùng liên kết snapshot 47aaeee ở trên.
+
 Harness Python chỉ chạy HTTP mock trên `127.0.0.1`, dữ liệu tổng hợp. Người dùng đã chọn phạm vi này theo đề xuất của handoff ngày 05/11/2026. Bản tổng hợp nguồn và các giới hạn ở [CONTEXT.md](CONTEXT.md); kết quả bàn giao ở [HANDOFF_REPORT_TASK-004.md](HANDOFF_REPORT_TASK-004.md).
 
 ## Cài đặt và chạy trên cloud

@@ -10,9 +10,13 @@ Ngày ghi nhận: 07/11/2026 (Asia/Bangkok).
 | Commit implementation được chấp nhận | [`47aaeee91739c2f09ea30538e40c66e853653543`](https://github.com/will050710-commits/Oceros/commit/47aaeee91739c2f09ea30538e40c66e853653543) |
 | Thay đổi sau verdict | Chỉ tài liệu, bản lưu review, log kiểm riêng hai minor và checksum; không đổi code/tests/schema/config/dependency hoặc evidence runtime đã được review |
 | Scope hoàn thành | Launcher, client HTTP loopback, mock, preflight, sampling, record/schema, CLI; stdlib + psutil |
+| Quyết định scope thay phiếu 24/10 | USER-DECIDED; xem [sổ trạng thái](STATUS_LEDGER.md) |
+| Phần phiếu 24/10 | NOT_IMPLEMENTED: ticket/ledger/provenance/costlog/CLI cũ; chờ quyết định tách ticket hoặc bỏ, không tự coi là hoàn thành/hủy |
 | Chưa xác minh/thực thi | Windows UNVERIFIED; model thật/benchmark/CVC NOT_RUN; không freeze dataset |
 
 ## Bằng chứng và nguồn review
+
+**Dùng snapshot 47aaeee hoặc hồ sơ main có ghim SHA đó. Không dùng ZIP cũ `Oceros_TASK004_mock_handoff.zip` (2cb9168).** [Sổ trạng thái](STATUS_LEDGER.md) phân biệt scope đã chấp nhận với phiếu cũ chưa làm. [Kiểm bổ sung](reviews/2026-11-07/ADDITIONAL_SCOPE_AUDIT.md) là nguồn REPORTED riêng, không gộp số mutation/fuzz với reviewer trước.
 
 - [Verdict ACCEPT được lưu từ tin nhắn](reviews/2026-11-07/ACCEPT_REVIEW.md).
 - [Review vòng hai gốc](reviews/2026-11-07/ROUND2_REVIEW_ORIGINAL.txt) và [đối chiếu hai minor](reviews/2026-11-07/MINOR_CROSSCHECK.md).
@@ -33,8 +37,8 @@ Ngày ghi nhận: 07/11/2026 (Asia/Bangkok).
 
 Ghi nhận ACCEPT cho đúng scope Linux launcher/client/mock tại 47aaeee; xác nhận đã nhận packet và quyết định đóng/ghi hoàn thành scope này theo workflow dự án. Không tự nâng thành hoàn thành Windows, chạy model thật, benchmark hoặc CVC.
 
-Bước kỹ thuật tiếp theo được đề xuất là **ticket xác minh mock trên Windows** với máy/interpreter/tài nguyên và tiêu chí riêng. Chưa chạy bước đó, chưa tải model hoặc mở runtime thật chỉ dựa trên ACCEPT này.
+Đã lập [TASK-004-WIN-MOCK](tickets/TASK-004-WIN-MOCK.md) trong repo: READY_FOR_ASSIGNMENT / NOT_RUN, chưa tạo issue ngoài/giao owner. Sau Windows mock và phép đo RAM sạch có nguồn, cần người dùng duyệt trước khi mở ticket bảng preflight theo model + adapter llama.cpp. Hiện chưa có adapter thật, bảng ngưỡng theo model hay hardware_reference khác null; không coi các phần đó hoàn thành.
 
 ## Nội dung ngắn để người dùng gửi orchestrator
 
-> TASK-004 đã nhận verdict ACCEPT cho launcher/client/mock trên Linux tại commit `47aaeee91739c2f09ea30538e40c66e853653543`. Reviewer báo tái lập thành công; evidence implementer có 106/106 test × 3 lượt và dry-run SYNTHETIC. Xin ghi nhận verdict đúng phạm vi và xác nhận đã nhận packet. Windows/model thật chưa xác minh; đề xuất ticket tiếp theo kiểm mock trên Windows. Hai minor có đối chiếu bổ sung riêng, và OverflowError với metric cực lớn được theo dõi như ghi chú không chặn. Packet: https://github.com/will050710-commits/Oceros/blob/main/task004/ORCHESTRATOR_HANDOFF.md
+> TASK-004 đã nhận verdict ACCEPT cho launcher/client/mock trên Linux tại commit `47aaeee91739c2f09ea30538e40c66e853653543`. Reviewer báo tái lập thành công; evidence implementer có 106/106 test × 3 lượt và dry-run SYNTHETIC. Xin ghi nhận: scope launcher/mock Linux ACCEPTED; thay scope phiếu 24/10 USER-DECIDED; ticket/ledger/costlog cũ NOT_IMPLEMENTED, chờ quyết định tách hoặc bỏ. Xác nhận đã nhận packet và phân công ticket TASK-004-WIN-MOCK trong repo. Windows/model thật chưa xác minh; chưa mở adapter thật hoặc bảng RAM theo model. Hai minor có đối chiếu bổ sung riêng, và OverflowError với metric cực lớn được theo dõi như ghi chú không chặn. Packet: https://github.com/will050710-commits/Oceros/blob/main/task004/ORCHESTRATOR_HANDOFF.md

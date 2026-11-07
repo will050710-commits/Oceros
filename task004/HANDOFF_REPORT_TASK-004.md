@@ -14,6 +14,8 @@ Codex. Một agent hỗ trợ sửa record/provenance; agent chính hoàn tất 
 
 **ACCEPT — launcher/client/mock trên Linux tại commit `47aaeee91739c2f09ea30538e40c66e853653543`, theo verdict reviewer do người dùng chuyển tiếp (REPORTED).** Verdict bao phủ 8 finding chính; reviewer chưa đối chiếu riêng hai minor với review gốc. [Bản lưu verdict](reviews/2026-11-07/ACCEPT_REVIEW.md) và [đối chiếu minor của implementer](reviews/2026-11-07/MINOR_CROSSCHECK.md). Sẵn sàng bàn giao orchestrator, chưa gửi/nhận acknowledgment. Windows UNVERIFIED; model thật NOT_RUN.
 
+**Scope replacement: USER-DECIDED. TASK-004 theo phiếu 24/10 (ticket/ledger/provenance/costlog/CLI cũ): NOT_IMPLEMENTED, chưa có quyết định hủy.** [Sổ trạng thái](STATUS_LEDGER.md) và [kiểm bổ sung](reviews/2026-11-07/ADDITIONAL_SCOPE_AUDIT.md) ghi riêng các phạm vi; ACCEPT này không có nghĩa mọi yêu cầu của phiếu cũ/prompt gốc đã hoàn thành.
+
 ## BASELINE_REVISION
 
 Implementation được chấp nhận: `47aaeee91739c2f09ea30538e40c66e853653543`. Bổ sung sau verdict chỉ là hồ sơ review/bàn giao và checksum; source/tests/schema/config/references/evidence runtime giữ nguyên.
@@ -27,6 +29,8 @@ Bổ sung ngày 07/11: verdict ACCEPT trong tin nhắn, review vòng hai gốc v
 Đọc toàn bộ review dán, source/tests/runner/schema và evidence của bản 07eb03c; đối chiếu handoff/context. Không tái nghiên cứu model hoặc xác minh lại claims hardware/license trong tài liệu nguồn. References và evidence cũ không sửa.
 
 ## FILES_CHANGED
+
+Bổ sung ghi sổ phạm vi: STATUS_LEDGER, bản ghi audit bổ sung và ticket Windows mock trong repo; cập nhật hướng dẫn nguồn bàn giao để loại ZIP cũ. Chỉ tài liệu/checksum, không đổi runtime/tests hay evidence đã chấp nhận.
 
 Bước ghi nhận acceptance: thêm `reviews/2026-11-07/` (verdict, review gốc nguyên byte, đối chiếu minor và log 2 test), `ORCHESTRATOR_HANDOFF.md`; cập nhật README, handoff và SHA256SUMS. Không sửa implementation đã được review. Các thay đổi implementation dưới đây thuộc lịch sử tới 47aaeee.
 
@@ -91,6 +95,7 @@ Không API model trả phí, model downloads, training, Colab/GPU hay mua dịch
 
 ## KNOWN_LIMITATIONS
 
+- Chưa có launcher llama-server thật; chưa có bảng/test preflight theo model (bao gồm case 0,98 GiB); hardware_reference vẫn null. Ngưỡng mock 64 MiB không thay các ngưỡng model được thuật lại. Chờ Windows mock, nguồn hardware/RAM sạch và quyết định người dùng trước scope mới.
 - Ghi chú không chặn mới: `validate_record` với `run_elapsed_s=10**400` có thể ném OverflowError khi gọi như thư viện; implementer đã tái hiện. Giữ mã đã được chấp nhận; follow-up chuẩn hóa lỗi nếu được giao riêng. Hai test compatibility vẫn cần evidence lịch sử trong bản sao repo.
 - Windows UNVERIFIED: chưa có Job Object; chưa kiểm socket.shutdown đánh thức recv từ thread khác, Ctrl+C toàn console, SIGBREAK, directory rename, SYSTEMROOT allowlist, GetPerformanceInfo/private bytes hay wheel psutil 7.2.2 CPython 3.14. Test simulating platform label không xác minh Windows runtime.
 - B1 ở client giữ primary cancellation nhưng worker connect bị chặn có thể tồn tại tới socket timeout (cận 3600s). Chưa dùng nonblocking connect. Cleanup thất bại ở cấp run có chính sách FAIL riêng như trên.
@@ -109,7 +114,7 @@ Bàn giao [ORCHESTRATOR_HANDOFF.md](ORCHESTRATOR_HANDOFF.md), verdict đã lưu 
 
 ## NEXT_ACTION
 
-Người dùng gửi packet cho orchestrator để ghi nhận kết quả và xác nhận đã nhận. Phiên này chưa gửi qua messaging/tracker hay nhận acknowledgment. Đề xuất bước tiếp là ticket kiểm mock trên Windows với tiêu chí riêng; chưa thực thi Windows/model/CVC.
+Người dùng gửi packet cho orchestrator để ghi nhận kết quả và xác nhận đã nhận. Phiên này chưa gửi qua messaging/tracker hay nhận acknowledgment. Đã lập ticket trong repo [TASK-004-WIN-MOCK](tickets/TASK-004-WIN-MOCK.md) để phân công, chưa thực thi Windows/model/CVC. Phần legacy giữ NOT_IMPLEMENTED / DISPOSITION_PENDING cho tới khi người dùng chọn tách ticket hoặc bỏ chính thức. Không dùng ZIP 2cb9168 làm artifact của mã đã chấp nhận.
 
 ## UNVERIFIED_CLAIMS
 
