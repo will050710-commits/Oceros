@@ -14,7 +14,7 @@ Codex. Một agent hỗ trợ sửa record/provenance; agent chính hoàn tất 
 
 **ACCEPT — launcher/client/mock trên Linux tại commit `47aaeee91739c2f09ea30538e40c66e853653543`, theo verdict reviewer do người dùng chuyển tiếp (REPORTED).** Verdict bao phủ 8 finding chính; reviewer chưa đối chiếu riêng hai minor với review gốc. [Bản lưu verdict](reviews/2026-11-07/ACCEPT_REVIEW.md) và [đối chiếu minor của implementer](reviews/2026-11-07/MINOR_CROSSCHECK.md). Sẵn sàng bàn giao orchestrator, chưa gửi/nhận acknowledgment. Windows UNVERIFIED; model thật NOT_RUN.
 
-**Scope replacement: USER-DECIDED. TASK-004 theo phiếu 24/10 (ticket/ledger/provenance/costlog/CLI cũ): NOT_IMPLEMENTED, chưa có quyết định hủy.** [Sổ trạng thái](STATUS_LEDGER.md) và [kiểm bổ sung](reviews/2026-11-07/ADDITIONAL_SCOPE_AUDIT.md) ghi riêng các phạm vi; ACCEPT này không có nghĩa mọi yêu cầu của phiếu cũ/prompt gốc đã hoàn thành.
+**Scope replacement: USER-DECIDED. TASK-004 theo phiếu 24/10 (ticket/ledger/provenance/costlog/runner/CLI cũ): đã tách thành [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md), giữ PLANNED / NOT_IMPLEMENTED theo quyết định người dùng.** [Sổ trạng thái](STATUS_LEDGER.md) và [kiểm bổ sung](reviews/2026-11-07/ADDITIONAL_SCOPE_AUDIT.md) ghi riêng các phạm vi; ACCEPT này không có nghĩa mọi yêu cầu của phiếu cũ/prompt gốc đã hoàn thành.
 
 ## BASELINE_REVISION
 
@@ -30,7 +30,7 @@ Bổ sung ngày 07/11: verdict ACCEPT trong tin nhắn, review vòng hai gốc v
 
 ## FILES_CHANGED
 
-Bổ sung ghi sổ phạm vi: STATUS_LEDGER, bản ghi audit bổ sung và ticket Windows mock trong repo; cập nhật hướng dẫn nguồn bàn giao để loại ZIP cũ. Chỉ tài liệu/checksum, không đổi runtime/tests hay evidence đã chấp nhận.
+Bổ sung ghi sổ phạm vi: STATUS_LEDGER, bản ghi audit bổ sung, ticket Windows mock và ticket TASK-004-LEGACY-OPS trong repo; cập nhật quyết định tách phiếu cũ, README và bản bàn giao orchestrator. Hướng dẫn nguồn bàn giao loại ZIP cũ. Chỉ tài liệu/checksum, không đổi runtime/tests hay evidence đã chấp nhận.
 
 Bước ghi nhận acceptance: thêm `reviews/2026-11-07/` (verdict, review gốc nguyên byte, đối chiếu minor và log 2 test), `ORCHESTRATOR_HANDOFF.md`; cập nhật README, handoff và SHA256SUMS. Không sửa implementation đã được review. Các thay đổi implementation dưới đây thuộc lịch sử tới 47aaeee.
 
@@ -114,7 +114,7 @@ Bàn giao [ORCHESTRATOR_HANDOFF.md](ORCHESTRATOR_HANDOFF.md), verdict đã lưu 
 
 ## NEXT_ACTION
 
-Người dùng gửi packet cho orchestrator để ghi nhận kết quả và xác nhận đã nhận. Phiên này chưa gửi qua messaging/tracker hay nhận acknowledgment. Đã lập ticket trong repo [TASK-004-WIN-MOCK](tickets/TASK-004-WIN-MOCK.md) để phân công, chưa thực thi Windows/model/CVC. Phần legacy giữ NOT_IMPLEMENTED / DISPOSITION_PENDING cho tới khi người dùng chọn tách ticket hoặc bỏ chính thức. Không dùng ZIP 2cb9168 làm artifact của mã đã chấp nhận.
+Người dùng gửi packet cho orchestrator để ghi nhận kết quả và xác nhận đã nhận. Phiên này chưa gửi qua messaging/tracker hay nhận acknowledgment. Đã lập ticket trong repo [TASK-004-WIN-MOCK](tickets/TASK-004-WIN-MOCK.md) để phân công, chưa thực thi Windows/model/CVC. Phần legacy đã tách thành [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) theo quyết định người dùng, giữ PLANNED / NOT_IMPLEMENTED; đối chiếu phiếu gốc và chốt AC khi giao triển khai riêng. Không dùng ZIP 2cb9168 làm artifact của mã đã chấp nhận.
 
 ## UNVERIFIED_CLAIMS
 

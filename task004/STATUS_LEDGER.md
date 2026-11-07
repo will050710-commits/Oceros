@@ -8,13 +8,17 @@ Ngày cập nhật: 07/11/2026 (Asia/Bangkok). Đây là hồ sơ quản lý ph�
 | --- | --- | --- |
 | Launcher/client/mock trên Linux | ACCEPTED tại `47aaeee91739c2f09ea30538e40c66e853653543` | [Verdict do người dùng chuyển tiếp](reviews/2026-11-07/ACCEPT_REVIEW.md); evidence implementer 106/106 × 3. Chỉ scope mock. |
 | Thay phạm vi triển khai của đợt này | USER-DECIDED | Người dùng chọn “launcher/client/mock theo khuyến nghị handoff” trong chat, sau khi được hỏi lựa chọn giữa hai phạm vi. Không tự gộp hai bộ AC. |
-| TASK-004 theo phiếu gốc 24/10: ticket/ledger/provenance/costlog/runner/CLI | NOT_IMPLEMENTED; DISPOSITION_PENDING | Chưa có implementation tương ứng. Chọn launcher/mock không đồng nghĩa tự động hủy nghĩa vụ của phiếu cũ. Đang chờ người dùng chọn tách ticket riêng hoặc chính thức bỏ. |
+| TASK-004 theo phiếu gốc 24/10: ticket/ledger/provenance/costlog/runner/CLI | NOT_IMPLEMENTED; SEPARATE_TICKET / USER-DECIDED | Người dùng đã chọn tách thành [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md), giữ chưa triển khai. Ticket trong repo, chưa phân công/chưa tạo issue ngoài. |
 | Kiểm mock trên Windows | READY_FOR_ASSIGNMENT / NOT_RUN | [TASK-004-WIN-MOCK](tickets/TASK-004-WIN-MOCK.md), phiếu trong repo; chưa giao người thực hiện, chưa chạy trên Windows. |
 | Adapter llama-server thật | NOT_IMPLEMENTED / NOT_AUTHORIZED_TO_RUN | `real_model_adapter` chủ động chặn; config chỉ nhận mock. |
 | Bảng preflight theo model | NOT_IMPLEMENTED / GATED_FOLLOWUP | Hiện chỉ có guard tài nguyên mock, không có test “0,98 GiB từ chối cả bốn model”. |
 | Hardware reference trong manifest | NULL / NO_VERIFIED_REFERENCE | Chưa có JSON phần cứng gốc được xác minh để gắn nguồn. Không dùng RAM cloud thay cho laptop. |
 | Model inference / benchmark / CVC / freeze | NOT_RUN / NOT_FROZEN | ACCEPT Linux mock không mở những scope này. |
 | Chuyển cho orchestrator | PACKET_READY; NO_ACK_RECORDED | Có [bản bàn giao](ORCHESTRATOR_HANDOFF.md), chưa gửi qua messaging/tracker hoặc ghi nhận acknowledgment trong phiên này. |
+
+## Quyết định tách phiếu cũ — 07/11/2026
+
+Người dùng trả lời trong chat: “Tách thành ticket riêng, giữ trạng thái chưa triển khai (đề xuất)”. Đã lập [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) ở trạng thái PLANNED / NOT_IMPLEMENTED. Quyết định về cách xử lý phạm vi đã chốt; phần triển khai vẫn chưa bắt đầu. Cần đối chiếu phiếu gốc trước khi chốt AC chi tiết và giao triển khai; không dùng ACCEPT Linux mock để đóng ticket này.
 
 ## Cách hiểu ba khoảng trống so với prompt được nhắc lại
 
@@ -24,7 +28,7 @@ Các mức 1,21 / 1,90 / 2,01–2,67 / 3,45 GiB trong bản kiểm bổ sung là
 
 ## Cổng cho bước tiếp theo
 
-1. Ghi nhận quyết định về phiếu cũ: tách ticket hoặc chính thức bỏ; chưa có câu trả lời thì giữ NOT_IMPLEMENTED / DISPOSITION_PENDING.
+1. Bàn giao [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) cho orchestrator ghi backlog riêng theo quyết định người dùng; giữ NOT_IMPLEMENTED. Đối chiếu phiếu gốc và chốt AC khi giao triển khai ticket đó.
 2. Thực hiện ticket Windows mock trên máy Windows thật và lưu bằng chứng của máy đó.
 3. Đo lại RAM khả dụng khi máy sạch, đĩa và commit; cung cấp nguồn hardware có kiểm toàn vẹn. Snapshot không tự trở thành model benchmark.
 4. Sau khi người dùng duyệt phần cứng/phạm vi, mới mở ticket bảng preflight theo model + adapter llama.cpp. Không mở/chạy model trước cổng này.

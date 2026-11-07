@@ -11,7 +11,7 @@ Ngày ghi nhận: 07/11/2026 (Asia/Bangkok).
 | Thay đổi sau verdict | Chỉ tài liệu, bản lưu review, log kiểm riêng hai minor và checksum; không đổi code/tests/schema/config/dependency hoặc evidence runtime đã được review |
 | Scope hoàn thành | Launcher, client HTTP loopback, mock, preflight, sampling, record/schema, CLI; stdlib + psutil |
 | Quyết định scope thay phiếu 24/10 | USER-DECIDED; xem [sổ trạng thái](STATUS_LEDGER.md) |
-| Phần phiếu 24/10 | NOT_IMPLEMENTED: ticket/ledger/provenance/costlog/CLI cũ; chờ quyết định tách ticket hoặc bỏ, không tự coi là hoàn thành/hủy |
+| Phần phiếu 24/10 | NOT_IMPLEMENTED; người dùng đã chọn tách [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) thành ticket riêng, giữ chưa triển khai |
 | Chưa xác minh/thực thi | Windows UNVERIFIED; model thật/benchmark/CVC NOT_RUN; không freeze dataset |
 
 ## Bằng chứng và nguồn review
@@ -37,8 +37,10 @@ Ngày ghi nhận: 07/11/2026 (Asia/Bangkok).
 
 Ghi nhận ACCEPT cho đúng scope Linux launcher/client/mock tại 47aaeee; xác nhận đã nhận packet và quyết định đóng/ghi hoàn thành scope này theo workflow dự án. Không tự nâng thành hoàn thành Windows, chạy model thật, benchmark hoặc CVC.
 
+Ghi backlog riêng [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md), PLANNED / NOT_IMPLEMENTED, theo quyết định người dùng “Tách thành ticket riêng, giữ trạng thái chưa triển khai (đề xuất)”. Đây là ticket trong repo, chưa tạo issue ngoài/chưa phân công. Phiếu 24/10 cần được đối chiếu nguyên bản trước khi chốt AC chi tiết cho lượt triển khai riêng.
+
 Đã lập [TASK-004-WIN-MOCK](tickets/TASK-004-WIN-MOCK.md) trong repo: READY_FOR_ASSIGNMENT / NOT_RUN, chưa tạo issue ngoài/giao owner. Sau Windows mock và phép đo RAM sạch có nguồn, cần người dùng duyệt trước khi mở ticket bảng preflight theo model + adapter llama.cpp. Hiện chưa có adapter thật, bảng ngưỡng theo model hay hardware_reference khác null; không coi các phần đó hoàn thành.
 
 ## Nội dung ngắn để người dùng gửi orchestrator
 
-> TASK-004 đã nhận verdict ACCEPT cho launcher/client/mock trên Linux tại commit `47aaeee91739c2f09ea30538e40c66e853653543`. Reviewer báo tái lập thành công; evidence implementer có 106/106 test × 3 lượt và dry-run SYNTHETIC. Xin ghi nhận: scope launcher/mock Linux ACCEPTED; thay scope phiếu 24/10 USER-DECIDED; ticket/ledger/costlog cũ NOT_IMPLEMENTED, chờ quyết định tách hoặc bỏ. Xác nhận đã nhận packet và phân công ticket TASK-004-WIN-MOCK trong repo. Windows/model thật chưa xác minh; chưa mở adapter thật hoặc bảng RAM theo model. Hai minor có đối chiếu bổ sung riêng, và OverflowError với metric cực lớn được theo dõi như ghi chú không chặn. Packet: https://github.com/will050710-commits/Oceros/blob/main/task004/ORCHESTRATOR_HANDOFF.md
+> TASK-004 đã nhận verdict ACCEPT cho launcher/client/mock trên Linux tại commit `47aaeee91739c2f09ea30538e40c66e853653543`. Reviewer báo tái lập thành công; evidence implementer có 106/106 test × 3 lượt và dry-run SYNTHETIC. Xin ghi nhận: scope launcher/mock Linux ACCEPTED; thay scope phiếu 24/10 USER-DECIDED; ticket/ledger/costlog cũ đã tách thành TASK-004-LEGACY-OPS trong repo, giữ PLANNED / NOT_IMPLEMENTED theo quyết định người dùng. Xác nhận đã nhận packet, ghi backlog riêng cho ticket legacy và phân công ticket TASK-004-WIN-MOCK trong repo. Windows/model thật chưa xác minh; chưa mở adapter thật hoặc bảng RAM theo model. Hai minor có đối chiếu bổ sung riêng, và OverflowError với metric cực lớn được theo dõi như ghi chú không chặn. Packet: https://github.com/will050710-commits/Oceros/blob/main/task004/ORCHESTRATOR_HANDOFF.md
