@@ -1,0 +1,17 @@
+test_burst_signals_do_not_interrupt_cleanup_or_artifacts (task004.tests.test_hardening_record.SignalArtifactTests.test_burst_signals_do_not_interrupt_cleanup_or_artifacts) ... 
+  test_burst_signals_do_not_interrupt_cleanup_or_artifacts (task004.tests.test_hardening_record.SignalArtifactTests.test_burst_signals_do_not_interrupt_cleanup_or_artifacts) (signal=<Signals.SIGTERM: 15>, gap=0.003) ... FAIL
+
+======================================================================
+FAIL: test_burst_signals_do_not_interrupt_cleanup_or_artifacts (task004.tests.test_hardening_record.SignalArtifactTests.test_burst_signals_do_not_interrupt_cleanup_or_artifacts) (signal=<Signals.SIGTERM: 15>, gap=0.003)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>/task004/tests/test_hardening_record.py", line 245, in test_burst_signals_do_not_interrupt_cleanup_or_artifacts
+    self.run_signal_case(sig, gap)
+  File "<checkout>/task004/tests/test_hardening_record.py", line 219, in run_signal_case
+    self.assertEqual(process.returncode, 130, stderr)
+AssertionError: -15 != 130 : 
+
+----------------------------------------------------------------------
+Ran 1 test in 0.688s
+
+FAILED (failures=1)

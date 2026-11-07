@@ -1,0 +1,377 @@
+{
+  "reviewed_at_utc": "2026-11-07T17:29:52.382717+00:00",
+  "archive_sha256": "0bf2e4cdfbc2e3ad49bf61e8969307875727b515a75cedfb6ef2ddab9745ec5d",
+  "archive_bytes": 56659,
+  "baseline_implementation": "47aaeee91739c2f09ea30538e40c66e853653543",
+  "baseline_docs": "60d9b11e2a85aea633cd8e6719bd23d8b18c76b4",
+  "source_fingerprints_matched": 43,
+  "checksum_entries_verified_against_overlay": 209,
+  "supplied_evidence_hashes_matched": 15,
+  "patch_reproduces_candidate_files": true,
+  "submitted_files": [
+    {
+      "original_path": "task004/SHA256SUMS",
+      "stored_path": "submission/PACKET_SHA256SUMS.txt",
+      "sha256": "419aeb1db3850189562ee02984984cf3ac05e1c3ec688ae1d307e5b7f1e68e3d"
+    },
+    {
+      "original_path": "task004/client.py",
+      "stored_path": "submission/task004/client.py",
+      "sha256": "7e0ab19d5abe28ecf6fa04246bb6809b69ad998108ea3144bdb890ed196cbeca"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/HANDOFF_REPORT.md",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/HANDOFF_REPORT.md",
+      "sha256": "fca72921bd86680e116e92b2e02bf504d165dd6af1cd20ed722fd5fbdc5eca6c"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/baseline-expanded-client-edges.log",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/baseline-expanded-client-edges.log",
+      "sha256": "f2750df86498ee5bf3970dcc28a7903782f6e88441e02cf659ed99df3c00eb95"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/baseline-test_client_edges.log",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/baseline-test_client_edges.log",
+      "sha256": "efa66fb9b80e495049a9fff543603088b2ce4f36fdd20fda71e7b481ff534db9"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/client-cancel.patch",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/client-cancel.patch",
+      "sha256": "c8aa422ebf87220871a68444f126669f585e1d4fba4c0e87a47d2d27da0566d9"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/dry-run/b39bdaf23f4f46358ab24dd96eabd875/manifest.json",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/dry-run/b39bdaf23f4f46358ab24dd96eabd875/manifest.json",
+      "sha256": "74b20d7500ed6923f5dc3a7b04b448373d2ee0a145aa97ea7acee302fc2fc706"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/dry-run/b39bdaf23f4f46358ab24dd96eabd875/runs.jsonl",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/dry-run/b39bdaf23f4f46358ab24dd96eabd875/runs.jsonl",
+      "sha256": "9f2162a0b09fa7af136fa43edc1d36f54b31b35202973cb52cd4dea3c6013a88"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/dry-run.stderr.log",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/dry-run.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/dry-run.stdout.log",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/dry-run.stdout.log",
+      "sha256": "159859c77e1c894d9981e79b9b5ada7dafc96d5bd5ba3992410d3de88d175c55"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/fixed-client-1.log",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/fixed-client-1.log",
+      "sha256": "98a79de38341057f8d4afcdc4925c7ee8d8922b13eab45048d1c0d87393f2cd1"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/fixed-client-2.log",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/fixed-client-2.log",
+      "sha256": "4fd07462b45d9b512e9286172effb61d62a6f3747eb52308132adfa28dc2f557"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/fixed-client-3.log",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/fixed-client-3.log",
+      "sha256": "4b7e6c8a50a8260cc52a1334124d446648d3cc3c62e19d7851225be91b187239"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/mutation-short-socket-timeout.log",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/mutation-short-socket-timeout.log",
+      "sha256": "549b57a12f00452b72c35a22a63bc8390c499b2c1c15021c299d662c0b1f97bc"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/suite-1.log",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/suite-1.log",
+      "sha256": "9029207574e9879823de50634facdf544078a36ab3191fcd824ac1b677b49b42"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/suite-2.log",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/suite-2.log",
+      "sha256": "58956c4e843cfd2becf0f5af585e488dbb105416aebb4d50e41a9b6216e8434e"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/suite-3.log",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/suite-3.log",
+      "sha256": "ff06da916ff88b43cecfc59d7651f1de299124fb69991308c35352318597e345"
+    },
+    {
+      "original_path": "task004/evidence/windows-client-cancel-20261107/validation.json",
+      "stored_path": "submission/task004/evidence/windows-client-cancel-20261107/validation.json",
+      "sha256": "d52858a74cd253693d78460a64c07d96112aa8058ff7fd4d0ab0709012cae81b"
+    },
+    {
+      "original_path": "task004/tests/test_client_edges.py",
+      "stored_path": "submission/task004/tests/test_client_edges.py",
+      "sha256": "5bcb64e2e9db43114437ccb17ea0b7883d3f0c6b01818f91ce0eb7e842ccb239"
+    }
+  ],
+  "submitted_log_checks": [
+    {
+      "label": "baseline-test_client_edges",
+      "tests": 3,
+      "counts": {
+        "expected_failures_from_footer": 1
+      },
+      "log_hash_matches": true,
+      "execution_scope": "SUBMITTED_WINDOWS_LOG_NOT_RERUN_ON_WINDOWS"
+    },
+    {
+      "label": "baseline-expanded-client-edges",
+      "tests": 7,
+      "counts": {
+        "expected_failures_from_footer": 5
+      },
+      "log_hash_matches": true,
+      "execution_scope": "SUBMITTED_WINDOWS_LOG_NOT_RERUN_ON_WINDOWS"
+    },
+    {
+      "label": "mutation-short-socket-timeout",
+      "tests": 7,
+      "counts": {
+        "expected_failures_from_footer": 2
+      },
+      "log_hash_matches": true,
+      "execution_scope": "SUBMITTED_WINDOWS_LOG_NOT_RERUN_ON_WINDOWS"
+    },
+    {
+      "label": "fixed-client-1",
+      "tests": 11,
+      "counts": {
+        "ok": 10,
+        "skipped": 1
+      },
+      "log_hash_matches": true,
+      "execution_scope": "SUBMITTED_WINDOWS_LOG_NOT_RERUN_ON_WINDOWS"
+    },
+    {
+      "label": "fixed-client-2",
+      "tests": 11,
+      "counts": {
+        "ok": 10,
+        "skipped": 1
+      },
+      "log_hash_matches": true,
+      "execution_scope": "SUBMITTED_WINDOWS_LOG_NOT_RERUN_ON_WINDOWS"
+    },
+    {
+      "label": "fixed-client-3",
+      "tests": 11,
+      "counts": {
+        "ok": 10,
+        "skipped": 1
+      },
+      "log_hash_matches": true,
+      "execution_scope": "SUBMITTED_WINDOWS_LOG_NOT_RERUN_ON_WINDOWS"
+    },
+    {
+      "label": "suite-1",
+      "tests": 110,
+      "counts": {
+        "ok": 97,
+        "skipped": 13
+      },
+      "log_hash_matches": true,
+      "execution_scope": "SUBMITTED_WINDOWS_LOG_NOT_RERUN_ON_WINDOWS"
+    },
+    {
+      "label": "suite-2",
+      "tests": 110,
+      "counts": {
+        "ok": 97,
+        "skipped": 13
+      },
+      "log_hash_matches": true,
+      "execution_scope": "SUBMITTED_WINDOWS_LOG_NOT_RERUN_ON_WINDOWS"
+    },
+    {
+      "label": "suite-3",
+      "tests": 110,
+      "counts": {
+        "ok": 97,
+        "skipped": 13
+      },
+      "log_hash_matches": true,
+      "execution_scope": "SUBMITTED_WINDOWS_LOG_NOT_RERUN_ON_WINDOWS"
+    }
+  ],
+  "submitted_smoke_schema_and_hashes": "PASS",
+  "linux_suite_runs": [
+    {
+      "label": "suite-1",
+      "returncode": 0,
+      "tests": 110,
+      "duration_s": 11.710727288998896,
+      "markers": [],
+      "footer": "OK"
+    },
+    {
+      "label": "suite-2",
+      "returncode": 0,
+      "tests": 110,
+      "duration_s": 11.646933119998721,
+      "markers": [],
+      "footer": "OK"
+    },
+    {
+      "label": "suite-3",
+      "returncode": 1,
+      "tests": 110,
+      "duration_s": 11.712559075000172,
+      "markers": [
+        "Traceback"
+      ],
+      "footer": "FAILED (failures=1)"
+    }
+  ],
+  "signal_comparison": [
+    {
+      "label": "baseline",
+      "iteration": 1,
+      "returncode": 0,
+      "log": "signal-baseline-1.log"
+    },
+    {
+      "label": "candidate",
+      "iteration": 1,
+      "returncode": 0,
+      "log": "signal-candidate-1.log"
+    },
+    {
+      "label": "baseline",
+      "iteration": 2,
+      "returncode": 0,
+      "log": "signal-baseline-2.log"
+    },
+    {
+      "label": "candidate",
+      "iteration": 2,
+      "returncode": 0,
+      "log": "signal-candidate-2.log"
+    },
+    {
+      "label": "baseline",
+      "iteration": 3,
+      "returncode": 0,
+      "log": "signal-baseline-3.log"
+    },
+    {
+      "label": "candidate",
+      "iteration": 3,
+      "returncode": 0,
+      "log": "signal-candidate-3.log"
+    },
+    {
+      "label": "baseline",
+      "iteration": 4,
+      "returncode": 0,
+      "log": "signal-baseline-4.log"
+    },
+    {
+      "label": "candidate",
+      "iteration": 4,
+      "returncode": 1,
+      "log": "signal-candidate-4.log"
+    },
+    {
+      "label": "baseline",
+      "iteration": 5,
+      "returncode": 0,
+      "log": "signal-baseline-5.log"
+    },
+    {
+      "label": "candidate",
+      "iteration": 5,
+      "returncode": 0,
+      "log": "signal-candidate-5.log"
+    },
+    {
+      "label": "baseline",
+      "iteration": 6,
+      "returncode": 0,
+      "log": "signal-baseline-6.log"
+    },
+    {
+      "label": "candidate",
+      "iteration": 6,
+      "returncode": 0,
+      "log": "signal-candidate-6.log"
+    },
+    {
+      "label": "baseline",
+      "iteration": 7,
+      "returncode": 0,
+      "log": "signal-baseline-7.log"
+    },
+    {
+      "label": "candidate",
+      "iteration": 7,
+      "returncode": 0,
+      "log": "signal-candidate-7.log"
+    },
+    {
+      "label": "baseline",
+      "iteration": 8,
+      "returncode": 0,
+      "log": "signal-baseline-8.log"
+    },
+    {
+      "label": "candidate",
+      "iteration": 8,
+      "returncode": 0,
+      "log": "signal-candidate-8.log"
+    },
+    {
+      "label": "baseline",
+      "iteration": 9,
+      "returncode": 0,
+      "log": "signal-baseline-9.log"
+    },
+    {
+      "label": "candidate",
+      "iteration": 9,
+      "returncode": 0,
+      "log": "signal-candidate-9.log"
+    },
+    {
+      "label": "baseline",
+      "iteration": 10,
+      "returncode": 0,
+      "log": "signal-baseline-10.log"
+    },
+    {
+      "label": "candidate",
+      "iteration": 10,
+      "returncode": 0,
+      "log": "signal-candidate-10.log"
+    }
+  ],
+  "high_fd_regression": {
+    "platform": "Linux",
+    "python_version": "3.12.14",
+    "scope": "LINUX_VERIFIED_NOT_WINDOWS",
+    "script_sha256": "184ff328a98f31d05ff1044b08a2e29de95b1f42c6eb4facf35e46ac79f2febb",
+    "runs": [
+      {
+        "target": "baseline47",
+        "client_sha256": "c6a84a93bf95dc336bbc27b2d021e4943e2d192ba1b78de4d91eb7a9062567bc",
+        "exit_code": 0,
+        "log": "high-fd-baseline47.log"
+      },
+      {
+        "target": "candidate",
+        "client_sha256": "7e0ab19d5abe28ecf6fa04246bb6809b69ad998108ea3144bdb890ed196cbeca",
+        "exit_code": 1,
+        "log": "high-fd-candidate.log"
+      }
+    ]
+  },
+  "omitted_from_publication": [
+    {
+      "file": "TASK-004-WIN-MOCK_doi_chieu_60d9b11.md",
+      "sha256": "7f4edb1d681cee01928e6eae4863579b92870c19ff49286028f2e73840d986bb",
+      "reason": "Local paths in external audit; original kept with user attachment"
+    }
+  ],
+  "verdict": "REQUEST_CHANGES / CANDIDATE_NOT_MERGED",
+  "overall_windows": "NOT_VERIFIED"
+}

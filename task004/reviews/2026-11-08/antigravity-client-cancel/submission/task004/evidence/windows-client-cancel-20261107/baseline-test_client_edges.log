@@ -1,0 +1,20 @@
+test_cancel_during_http10_body_read (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_http10_body_read) ... FAIL
+test_response_size_is_bounded (task004.tests.test_client_edges.ClientEdgeTests.test_response_size_is_bounded) ... ok
+test_timeout_during_http10_body_read (task004.tests.test_client_edges.ClientEdgeTests.test_timeout_during_http10_body_read) ... ok
+
+======================================================================
+FAIL: test_cancel_during_http10_body_read (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_http10_body_read)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline-orig>\task004\tests\test_client_edges.py", line 77, in test_cancel_during_http10_body_read
+    self.assert_worker_stopped()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<baseline-orig>\task004\tests\test_client_edges.py", line 53, in assert_worker_stopped
+    self.assertFalse(any(t.name == "task004-http" for t in threading.enumerate()))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.109s
+
+FAILED (failures=1)

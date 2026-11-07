@@ -1,6 +1,6 @@
 # TASK-004 — sổ trạng thái phạm vi
 
-Ngày cập nhật: 07/11/2026 (Asia/Bangkok). Đây là hồ sơ quản lý phạm vi dự án; không phải implementation module ledger/tickets của phiếu 24/10.
+Ngày cập nhật: 08/11/2026 (Asia/Bangkok). Đây là hồ sơ quản lý phạm vi dự án; không phải implementation module ledger/tickets của phiếu 24/10.
 
 > TASK-004 launcher/client/mock Linux tại `47aaeee`: **ACCEPTED**. Phạm vi thay phiếu 24/10: **USER-DECIDED**. Phần ticket/ledger/costlog: **chưa làm**.
 
@@ -10,7 +10,7 @@ Ngày cập nhật: 07/11/2026 (Asia/Bangkok). Đây là hồ sơ quản lý ph�
 | Thay phạm vi triển khai của đợt này | USER-DECIDED | Người dùng chọn “launcher/client/mock theo khuyến nghị handoff” trong chat, sau khi được hỏi lựa chọn giữa hai phạm vi. Không tự gộp hai bộ AC. |
 | TASK-004 theo phiếu gốc 24/10: ticket/ledger/provenance/costlog/runner/CLI | NOT_IMPLEMENTED; SEPARATE_TICKET / USER-DECIDED | Người dùng đã chọn tách thành [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md), giữ chưa triển khai. Ticket trong repo, chưa phân công/chưa tạo issue ngoài. |
 | Kiểm mock trên Windows | SURVEY_LOG_CONFIRMED / NOT_VERIFIED | [Intake](evidence/windows-intake-20261107/README.md): bốn artifact khớp hash/validator; smoke PASS được báo. Log đã xác nhận survey 106 = 92 pass + 1 fail + 13 skip; [ticket cha](tickets/TASK-004-WIN-MOCK.md) còn các đường Windows bắt buộc. |
-| Sửa hủy HTTP trên Windows | READY_FOR_IMPLEMENTATION / NOT_IMPLEMENTED | [TASK-004-WIN-CLIENT-CANCEL](tickets/TASK-004-WIN-CLIENT-CANCEL.md): log xác nhận worker còn sống sau cancel; cần commit/test riêng, chưa sửa source. |
+| Sửa hủy HTTP trên Windows | REVIEW_CHANGES_REQUESTED / NOT_MERGED | [Candidate Antigravity](reviews/2026-11-08/antigravity-client-cancel/README.md) có log Windows 97 ok + 13 skip × 3; kiểm Linux phát hiện hồi quy select/fd cao và lỗi test burst signal chưa chốt nguyên nhân. Source đang dùng vẫn là 47aaeee. |
 | Adapter llama-server thật | NOT_IMPLEMENTED / NOT_AUTHORIZED_TO_RUN | `real_model_adapter` chủ động chặn; config chỉ nhận mock. |
 | Bảng preflight theo model | NOT_IMPLEMENTED / GATED_FOLLOWUP | Hiện chỉ có guard tài nguyên mock, không có test “0,98 GiB từ chối cả bốn model”. |
 | Hardware reference trong manifest | NULL / NO_FULL_TASK001_REFERENCE | Đã nhận snapshot RAM/đĩa/commit của intake, hash khớp; JSON/probe TASK-001 gốc và điều kiện RAM sạch vẫn thiếu. Không sửa tay manifest để gắn nguồn. |
@@ -36,6 +36,8 @@ Adapter thật, bảng ngưỡng theo model và hardware reference vẫn chưa c
 Các mức 1,21 / 1,90 / 2,01–2,67 / 3,45 GiB trong bản kiểm bổ sung là thông số được người dùng thuật lại từ prompt, chưa phải policy đã được triển khai. Cần nguồn, ánh xạ model/config, đơn vị và biên an toàn được duyệt trước khi đưa vào code. Không tự suy ra mapping.
 
 ## Cổng cho bước tiếp theo
+
+Ngày 08/11/2026: trả [review REQUEST_CHANGES](reviews/2026-11-08/antigravity-client-cancel/README.md) cho candidate Antigravity; sửa AG-1 và xử lý/giải thích AG-2 bằng bằng chứng trước khi tích hợp. Packet và log kiểm Linux được lưu riêng; verdict Linux tại 47aaeee không chuyển sang candidate.
 
 1. Giữ [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) trong backlog riêng, NOT_IMPLEMENTED, như ACK đã ghi nhận. Nhận phiếu gốc nguyên byte để lưu references, đối chiếu và chốt AC khi giao triển khai ticket đó.
 2. Bằng chứng survey/chẩn đoán đã được tiếp nhận; triển khai [bản vá client riêng](tickets/TASK-004-WIN-CLIENT-CANCEL.md), kiểm hồi quy Linux và Windows đúng commit. Hoàn tất các phép kiểm Windows còn thiếu theo ticket cha trước verdict.

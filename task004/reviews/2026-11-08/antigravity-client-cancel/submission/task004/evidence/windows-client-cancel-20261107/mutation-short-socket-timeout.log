@@ -1,0 +1,51 @@
+test_cancel_during_header_and_trickle_reads (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_header_and_trickle_reads) ... ok
+test_cancel_during_http10_body_read (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_http10_body_read) ... ok
+test_cancel_stops_worker_when_shutdown_does_not_wake_read (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_stops_worker_when_shutdown_does_not_wake_read)
+Cross-platform simulation: socket.shutdown is a no-op during stalled body read. ... ok
+test_delayed_and_partial_valid_response_succeeds (task004.tests.test_client_edges.ClientEdgeTests.test_delayed_and_partial_valid_response_succeeds) ... 
+  test_delayed_and_partial_valid_response_succeeds (task004.tests.test_client_edges.ClientEdgeTests.test_delayed_and_partial_valid_response_succeeds) (mode='delayed_valid') ... FAIL
+  test_delayed_and_partial_valid_response_succeeds (task004.tests.test_client_edges.ClientEdgeTests.test_delayed_and_partial_valid_response_succeeds) (mode='chunked_writes') ... FAIL
+test_response_size_is_bounded (task004.tests.test_client_edges.ClientEdgeTests.test_response_size_is_bounded) ... ok
+test_timeout_during_header_stall_and_partial_headers (task004.tests.test_client_edges.ClientEdgeTests.test_timeout_during_header_stall_and_partial_headers) ... ok
+test_timeout_during_http10_body_read (task004.tests.test_client_edges.ClientEdgeTests.test_timeout_during_http10_body_read) ... ok
+
+======================================================================
+FAIL: test_delayed_and_partial_valid_response_succeeds (task004.tests.test_client_edges.ClientEdgeTests.test_delayed_and_partial_valid_response_succeeds) (mode='delayed_valid')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<mutant-short-timeout>\task004\tests\test_client_edges.py", line 188, in test_delayed_and_partial_valid_response_succeeds
+    metrics = request_synthetic(url, Config(n_ctx=1, timeout_s=2.0))
+  File "<mutant-short-timeout>\task004\client.py", line 92, in request_synthetic
+    raise error
+task004.client.ClientError: TIMEOUT
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<mutant-short-timeout>\task004\tests\test_client_edges.py", line 190, in test_delayed_and_partial_valid_response_succeeds
+    self.fail(f"valid delayed response raised ClientError({exc.code!r})")
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: valid delayed response raised ClientError('TIMEOUT')
+
+======================================================================
+FAIL: test_delayed_and_partial_valid_response_succeeds (task004.tests.test_client_edges.ClientEdgeTests.test_delayed_and_partial_valid_response_succeeds) (mode='chunked_writes')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<mutant-short-timeout>\task004\tests\test_client_edges.py", line 188, in test_delayed_and_partial_valid_response_succeeds
+    metrics = request_synthetic(url, Config(n_ctx=1, timeout_s=2.0))
+  File "<mutant-short-timeout>\task004\client.py", line 92, in request_synthetic
+    raise error
+task004.client.ClientError: TIMEOUT
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<mutant-short-timeout>\task004\tests\test_client_edges.py", line 190, in test_delayed_and_partial_valid_response_succeeds
+    self.fail(f"valid delayed response raised ClientError({exc.code!r})")
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: valid delayed response raised ClientError('TIMEOUT')
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.231s
+
+FAILED (failures=2)

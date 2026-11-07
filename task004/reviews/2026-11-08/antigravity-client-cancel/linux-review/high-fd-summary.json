@@ -1,0 +1,20 @@
+{
+  "platform": "Linux",
+  "python_version": "3.12.14",
+  "scope": "LINUX_VERIFIED_NOT_WINDOWS",
+  "script_sha256": "184ff328a98f31d05ff1044b08a2e29de95b1f42c6eb4facf35e46ac79f2febb",
+  "runs": [
+    {
+      "target": "baseline47",
+      "client_sha256": "c6a84a93bf95dc336bbc27b2d021e4943e2d192ba1b78de4d91eb7a9062567bc",
+      "exit_code": 0,
+      "log": "high-fd-baseline47.log"
+    },
+    {
+      "target": "candidate",
+      "client_sha256": "7e0ab19d5abe28ecf6fa04246bb6809b69ad998108ea3144bdb890ed196cbeca",
+      "exit_code": 1,
+      "log": "high-fd-candidate.log"
+    }
+  ]
+}

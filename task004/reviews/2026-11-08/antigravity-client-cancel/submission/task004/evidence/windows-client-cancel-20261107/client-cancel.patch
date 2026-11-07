@@ -1,0 +1,407 @@
+--- a/task004/client.py
++++ b/task004/client.py
+@@ -1,17 +1,73 @@
+ """Bounded synthetic request, with total deadline and cancellation."""
+ import http.client
++import io
+ import json
+ import queue
++import select
+ import socket
+ import threading
+ import time
+ from urllib.parse import urlsplit
++
++POLL_INTERVAL_S = 0.05
+ 
+ 
+ class ClientError(RuntimeError):
+     def __init__(self, code):
+         self.code = code
+         super().__init__(code)
++
++
++class _CancellableSocketIO(io.RawIOBase):
++    def __init__(self, sock, socket_lock, closing, cancel_event, deadline):
++        super().__init__()
++        self._sock = sock
++        self._socket_lock = socket_lock
++        self._closing = closing
++        self._cancel_event = cancel_event
++        self._deadline = deadline
++
++    def readable(self):
++        return True
++
++    def fileno(self):
++        return self._sock.fileno()
++
++    def readinto(self, b):
++        if self.closed:
++            raise ValueError("I/O operation on closed file.")
++        while True:
++            if self._closing.is_set() or (self._cancel_event is not None and self._cancel_event.is_set()):
++                raise ClientError("CANCELLED")
++            remaining = self._deadline - time.monotonic()
++            if remaining <= 0:
++                raise TimeoutError("timed out")
++            readable, _, _ = select.select([self._sock], [], [], min(POLL_INTERVAL_S, remaining))
++            if self._closing.is_set() or (self._cancel_event is not None and self._cancel_event.is_set()):
++                raise ClientError("CANCELLED")
++            if self._deadline - time.monotonic() <= 0:
++                raise TimeoutError("timed out")
++            if readable:
++                try:
++                    return self._sock.recv_into(b)
++                except (BlockingIOError, InterruptedError):
++                    continue
++
++    def close(self):
++        try:
++            if self._sock is not None:
++                with self._socket_lock:
++                    self._sock.close()
++        finally:
++            super().close()
++
++
++class _BufferedSocketProxy:
++    def __init__(self, raw_stream):
++        self._raw_stream = raw_stream
++
++    def makefile(self, mode):
++        return io.BufferedReader(self._raw_stream)
+ 
+ 
+ def request_synthetic(url, config, cancel_event=None):
+@@ -27,20 +83,30 @@
+         raise ClientError("NON_LOOPBACK_ENDPOINT")
+     if cancel_event is not None and cancel_event.is_set():
+         raise ClientError("CANCELLED")
++    start = time.monotonic()
++    deadline = start + config.timeout_s
+     conn = http.client.HTTPConnection("127.0.0.1", port, timeout=config.timeout_s)
+     results = queue.Queue(maxsize=1)
+     closing = threading.Event()
++    socket_lock = threading.Lock()
+     connected_socket = [None]
+     body = json.dumps({"prompt": "SYNTHETIC_INPUT", "max_tokens": config.max_new_tokens,
+                        "temperature": 0, "seed": 1729, "n": 1, "thinking": False}).encode()
++
++    def open_response(raw_sock, *args, **kwargs):
++        conn.sock = None
++        raw_sock.setblocking(False)
++        stream = _CancellableSocketIO(raw_sock, socket_lock, closing, cancel_event, deadline)
++        return http.client.HTTPResponse(_BufferedSocketProxy(stream), *args, **kwargs)
+ 
+     def perform():
+         response = None
+         try:
+             conn.connect()
+             connected_socket[0] = conn.sock
+-            if closing.is_set():
++            if closing.is_set() or (cancel_event is not None and cancel_event.is_set()):
+                 raise ClientError("CANCELLED")
++            conn.response_class = open_response
+             conn.request("POST", "/v1/completions", body, {"Content-Type": "application/json"})
+             response = conn.getresponse()
+             if response.status != 200:
+@@ -70,9 +136,11 @@
+         finally:
+             if response is not None:
+                 response.close()
++            if connected_socket[0] is not None:
++                with socket_lock:
++                    connected_socket[0].close()
+             conn.close()
+ 
+-    start = time.monotonic()
+     worker = threading.Thread(target=perform, daemon=True, name="task004-http")
+     worker.start()
+     primary = None
+@@ -80,7 +148,7 @@
+         while True:
+             if cancel_event is not None and cancel_event.is_set():
+                 raise ClientError("CANCELLED")
+-            remaining = config.timeout_s - (time.monotonic() - start)
++            remaining = deadline - time.monotonic()
+             if remaining <= 0:
+                 raise ClientError("TIMEOUT")
+             try:
+@@ -95,12 +163,13 @@
+         raise
+     finally:
+         closing.set()
+-        sock = connected_socket[0]
+-        if sock is not None:
+-            try:
+-                sock.shutdown(socket.SHUT_RDWR)
+-            except OSError:
+-                pass
++        with socket_lock:
++            sock = connected_socket[0]
++            if sock is not None:
++                try:
++                    sock.shutdown(socket.SHUT_RDWR)
++                except OSError:
++                    pass
+         worker.join(timeout=.5)
+         if worker.is_alive() and primary is None:
+             raise ClientError("CLIENT_CLEANUP_FAILED")
+--- a/task004/tests/test_client_edges.py
++++ b/task004/tests/test_client_edges.py
+@@ -1,18 +1,27 @@
+ from contextlib import contextmanager
+-from dataclasses import replace
+ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
++import json
++import socket
+ import threading
+ import time
+ import unittest
++from unittest.mock import patch
+ 
+ from task004.client import ClientError, request_synthetic
+ from task004.config import Config
+ 
++SYNTHETIC_OK_BYTES = json.dumps({
++    "id": "synthetic",
++    "choices": [{"text": "SYNTHETIC_OK"}],
++    "usage": {"prompt_tokens": 1, "completion_tokens": 1, "total_tokens": 2},
++    "evidence_label": "SYNTHETIC",
++}).encode()
++
+ 
+ @contextmanager
+-def body_fixture(mode):
++def body_fixture(mode, stall_s=3.0, delay_s=0.15, step_s=0.07):
+     stop = threading.Event()
+-    headers_sent = threading.Event()
++    phase_ready = threading.Event()
+ 
+     class Handler(BaseHTTPRequestHandler):
+         def log_message(self, *args):
+@@ -20,11 +29,60 @@
+ 
+         def do_POST(self):
+             self.rfile.read(int(self.headers["Content-Length"]))
+-            self.send_response(200)
+-            self.send_header("Content-Length", "100000" if mode == "oversize" else "1000")
+-            self.end_headers()
+-            headers_sent.set()
+-            try:
++            try:
++                if mode == "header_stall":
++                    phase_ready.set()
++                    stop.wait(stall_s)
++                    return
++                if mode == "partial_header_stall":
++                    self.wfile.write(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n")
++                    self.wfile.flush()
++                    phase_ready.set()
++                    stop.wait(stall_s)
++                    return
++                if mode == "delayed_valid":
++                    phase_ready.set()
++                    if stop.wait(delay_s):
++                        return
++                    self.send_response(200)
++                    self.send_header("Content-Type", "application/json")
++                    self.send_header("Content-Length", str(len(SYNTHETIC_OK_BYTES)))
++                    self.end_headers()
++                    if stop.wait(delay_s):
++                        return
++                    self.wfile.write(SYNTHETIC_OK_BYTES)
++                    self.wfile.flush()
++                    return
++                if mode == "chunked_writes":
++                    phase_ready.set()
++                    header_block = (
++                        f"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n"
++                        f"Content-Length: {len(SYNTHETIC_OK_BYTES)}\r\n\r\n"
++                    ).encode("ascii")
++                    mid_header = len(header_block) // 2
++                    for part in (
++                        header_block[:10],
++                        header_block[10:mid_header],
++                        header_block[mid_header:],
++                        SYNTHETIC_OK_BYTES[:15],
++                        SYNTHETIC_OK_BYTES[15:45],
++                        SYNTHETIC_OK_BYTES[45:],
++                    ):
++                        if stop.wait(step_s):
++                            return
++                        self.wfile.write(part)
++                        self.wfile.flush()
++                    return
++                self.send_response(200)
++                self.send_header("Content-Length", "100000" if mode == "oversize" else "1000")
++                self.end_headers()
++                if mode == "partial_body_stall":
++                    self.wfile.write(b'{"id":"syn')
++                    self.wfile.flush()
++                    phase_ready.set()
++                    stop.wait(stall_s)
++                    return
++                phase_ready.set()
+                 if mode == "oversize":
+                     self.wfile.write(b"x" * 100000)
+                 elif mode == "trickle":
+@@ -32,35 +90,43 @@
+                         self.wfile.write(b"x")
+                         self.wfile.flush()
+                 else:
+-                    stop.wait(3)
+-            except (BrokenPipeError, ConnectionResetError):
++                    stop.wait(stall_s)
++            except (BrokenPipeError, ConnectionResetError, OSError):
+                 pass
+ 
+     server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+     thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.01), daemon=True)
+     thread.start()
+     try:
+-        yield f"http://127.0.0.1:{server.server_port}", headers_sent
++        yield f"http://127.0.0.1:{server.server_port}", phase_ready
+     finally:
+         stop.set()
+         server.shutdown()
+         server.server_close()
+-        thread.join(timeout=1)
++        thread.join(timeout=2)
+ 
+ 
+ class ClientEdgeTests(unittest.TestCase):
+     def assert_worker_stopped(self):
+         self.assertFalse(any(t.name == "task004-http" for t in threading.enumerate()))
+ 
++    def wait_for_workers_cleanup(self):
++        deadline = time.monotonic() + 2
++        while any(t.name == "task004-http" for t in threading.enumerate()) and time.monotonic() < deadline:
++            time.sleep(.01)
++
+     def test_timeout_during_http10_body_read(self):
+         for mode in ("stall", "trickle"):
+             with self.subTest(mode=mode), body_fixture(mode) as (url, _):
+-                start = time.monotonic()
+-                with self.assertRaises(ClientError) as caught:
+-                    request_synthetic(url, Config(n_ctx=1, timeout_s=.15))
+-                self.assertEqual(caught.exception.code, "TIMEOUT")
+-                self.assertLess(time.monotonic() - start, 1)
+-                self.assert_worker_stopped()
++                try:
++                    start = time.monotonic()
++                    with self.assertRaises(ClientError) as caught:
++                        request_synthetic(url, Config(n_ctx=1, timeout_s=.15))
++                    self.assertEqual(caught.exception.code, "TIMEOUT")
++                    self.assertLess(time.monotonic() - start, 1)
++                    self.assert_worker_stopped()
++                finally:
++                    self.wait_for_workers_cleanup()
+ 
+     def test_cancel_during_http10_body_read(self):
+         with body_fixture("stall") as (url, headers_sent):
+@@ -70,15 +136,94 @@
+                 cancel.set()
+             trigger = threading.Thread(target=cancel_after_headers)
+             trigger.start()
+-            with self.assertRaises(ClientError) as caught:
+-                request_synthetic(url, Config(n_ctx=1), cancel)
+-            trigger.join(timeout=1)
+-            self.assertEqual(caught.exception.code, "CANCELLED")
+-            self.assert_worker_stopped()
++            try:
++                with self.assertRaises(ClientError) as caught:
++                    request_synthetic(url, Config(n_ctx=1), cancel)
++                trigger.join(timeout=1)
++                self.assertEqual(caught.exception.code, "CANCELLED")
++                self.assert_worker_stopped()
++            finally:
++                trigger.join(timeout=1)
++                self.wait_for_workers_cleanup()
++
++    def test_cancel_during_header_and_trickle_reads(self):
++        for mode in ("header_stall", "partial_header_stall", "partial_body_stall", "trickle"):
++            with self.subTest(mode=mode), body_fixture(mode) as (url, phase_ready):
++                cancel = threading.Event()
++                def trigger_cancel():
++                    phase_ready.wait(timeout=1)
++                    time.sleep(.02)
++                    cancel.set()
++                trigger = threading.Thread(target=trigger_cancel)
++                trigger.start()
++                try:
++                    start = time.monotonic()
++                    with self.assertRaises(ClientError) as caught:
++                        request_synthetic(url, Config(n_ctx=1, timeout_s=5), cancel)
++                    self.assertEqual(caught.exception.code, "CANCELLED")
++                    self.assertLess(time.monotonic() - start, 1)
++                    self.assert_worker_stopped()
++                finally:
++                    trigger.join(timeout=1)
++                    self.wait_for_workers_cleanup()
++
++    def test_timeout_during_header_stall_and_partial_headers(self):
++        for mode in ("header_stall", "partial_header_stall", "partial_body_stall"):
++            with self.subTest(mode=mode), body_fixture(mode) as (url, _):
++                try:
++                    start = time.monotonic()
++                    with self.assertRaises(ClientError) as caught:
++                        request_synthetic(url, Config(n_ctx=1, timeout_s=.15))
++                    self.assertEqual(caught.exception.code, "TIMEOUT")
++                    self.assertLess(time.monotonic() - start, 1)
++                    self.assert_worker_stopped()
++                finally:
++                    self.wait_for_workers_cleanup()
++
++    def test_delayed_and_partial_valid_response_succeeds(self):
++        for mode in ("delayed_valid", "chunked_writes"):
++            with self.subTest(mode=mode), body_fixture(mode, delay_s=.15, step_s=.07) as (url, _):
++                try:
++                    try:
++                        metrics = request_synthetic(url, Config(n_ctx=1, timeout_s=2.0))
++                    except ClientError as exc:
++                        self.fail(f"valid delayed response raised ClientError({exc.code!r})")
++                    self.assertEqual(metrics["synthetic_output_tokens"], 1)
++                    self.assertGreaterEqual(metrics["request_latency_s"], .25)
++                    self.assert_worker_stopped()
++                finally:
++                    self.wait_for_workers_cleanup()
++
++    def test_cancel_stops_worker_when_shutdown_does_not_wake_read(self):
++        """Cross-platform simulation: socket.shutdown is a no-op during stalled body read."""
++        shutdown_calls = []
++        with body_fixture("stall") as (url, headers_sent):
++            cancel = threading.Event()
++            def cancel_after_headers():
++                headers_sent.wait(timeout=1)
++                time.sleep(.02)
++                cancel.set()
++            trigger = threading.Thread(target=cancel_after_headers)
++            trigger.start()
++            try:
++                with patch.object(socket.socket, "shutdown", lambda sock, how: shutdown_calls.append(how)):
++                    start = time.monotonic()
++                    with self.assertRaises(ClientError) as caught:
++                        request_synthetic(url, Config(n_ctx=1, timeout_s=5), cancel)
++                self.assertEqual(caught.exception.code, "CANCELLED")
++                self.assertLess(time.monotonic() - start, 1)
++                self.assertTrue(shutdown_calls)
++                self.assert_worker_stopped()
++            finally:
++                trigger.join(timeout=1)
++                self.wait_for_workers_cleanup()
+ 
+     def test_response_size_is_bounded(self):
+         with body_fixture("oversize") as (url, _):
+-            with self.assertRaises(ClientError) as caught:
+-                request_synthetic(url, Config(n_ctx=1))
+-            self.assertEqual(caught.exception.code, "RESPONSE_TOO_LARGE")
+-            self.assert_worker_stopped()
++            try:
++                with self.assertRaises(ClientError) as caught:
++                    request_synthetic(url, Config(n_ctx=1))
++                self.assertEqual(caught.exception.code, "RESPONSE_TOO_LARGE")
++                self.assert_worker_stopped()
++            finally:
++                self.wait_for_workers_cleanup()

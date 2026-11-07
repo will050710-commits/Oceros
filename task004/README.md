@@ -5,6 +5,8 @@
 
 **Windows intake:** đã nhận [smoke artifact và báo cáo khảo sát](evidence/windows-intake-20261107/README.md). 4/4 artifact khớp hash; manifest/run hợp lệ. Survey 92 pass / 1 fail / 13 skip đã đối chiếu từ [log bổ sung và PDF](evidence/windows-intake-20261107/SUPPLEMENT_REVIEW.md); implementer chưa chạy lại Windows. Windows **NOT_VERIFIED**, cần [bản vá hủy HTTP](tickets/TASK-004-WIN-CLIENT-CANCEL.md) và test Windows còn thiếu.
 
+**Candidate Antigravity, review 08/11:** [REQUEST_CHANGES / NOT_MERGED](reviews/2026-11-08/antigravity-client-cancel/README.md). Hash/log Windows khớp, nhưng kiểm Linux phát hiện hồi quy descriptor cao và burst-signal test chưa ổn định. Candidate lưu riêng; mã được dùng vẫn là 47aaeee.
+
 **Phạm vi đã đổi theo quyết định người dùng:** Linux launcher/mock được chấp nhận; bộ ticket/ledger/costlog của phiếu 24/10 được tách thành [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md), giữ **PLANNED / NOT_IMPLEMENTED**. Xem [sổ trạng thái](STATUS_LEDGER.md) và [ticket Windows mock](tickets/TASK-004-WIN-MOCK.md). ZIP cũ `Oceros_TASK004_mock_handoff.zip` là bản 2cb9168, không dùng để review mã đã chấp nhận; dùng liên kết snapshot 47aaeee ở trên.
 
 Harness Python chỉ chạy HTTP mock trên `127.0.0.1`, dữ liệu tổng hợp. Người dùng đã chọn phạm vi này theo đề xuất của handoff ngày 05/11/2026. Bản tổng hợp nguồn và các giới hạn ở [CONTEXT.md](CONTEXT.md); kết quả bàn giao ở [HANDOFF_REPORT_TASK-004.md](HANDOFF_REPORT_TASK-004.md).

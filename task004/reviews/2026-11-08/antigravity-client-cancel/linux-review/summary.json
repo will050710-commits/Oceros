@@ -1,0 +1,28 @@
+[
+  {
+    "label": "suite-1",
+    "returncode": 0,
+    "tests": 110,
+    "duration_s": 11.710727288998896,
+    "markers": [],
+    "footer": "OK"
+  },
+  {
+    "label": "suite-2",
+    "returncode": 0,
+    "tests": 110,
+    "duration_s": 11.646933119998721,
+    "markers": [],
+    "footer": "OK"
+  },
+  {
+    "label": "suite-3",
+    "returncode": 1,
+    "tests": 110,
+    "duration_s": 11.712559075000172,
+    "markers": [
+      "Traceback"
+    ],
+    "footer": "FAILED (failures=1)"
+  }
+]

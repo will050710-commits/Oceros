@@ -1,0 +1,403 @@
+{
+  "ticket_id": "TASK-004-WIN-CLIENT-CANCEL",
+  "parent_ticket_id": "TASK-004-WIN-MOCK",
+  "implementation_baseline_revision": "47aaeee91739c2f09ea30538e40c66e853653543",
+  "intake_documentation_revision": "60d9b11e2a85aea633cd8e6719bd23d8b18c76b4",
+  "generated_at_utc": "2026-11-07T17:00:31.939063+00:00",
+  "os": "Windows",
+  "os_version": "10.0.26200",
+  "architecture": "AMD64",
+  "python": "3.14.4",
+  "psutil": "7.2.2",
+  "verification_scope": "Windows-executed TASK-004-WIN-CLIENT-CANCEL regression and full discovery survey; overall Windows mock readiness still requires remaining TASK-004-WIN-MOCK integration tests",
+  "overall_windows_status": "NOT_VERIFIED / BLOCKED_ON_REMAINING_WINDOWS_INTEGRATION_TEST_GAPS",
+  "client_cancel_defect_status": "RESOLVED_AND_VERIFIED_ON_WINDOWS_314",
+  "model": "NOT_RUN",
+  "log_policy": "Known local path prefixes normalized (<checkout>, <python-env>, <python-base>, <home>, <temp>, <scratch>); diagnostic text preserved. Successful runs reject Exception ignored, ResourceWarning and Traceback.",
+  "source_sha256": {
+    "task004/__init__.py": "8bf7aeb48749ed799265f3f26bdd6d7092e959400abb889e3a7701c1253d4b3b",
+    "task004/cancellation.py": "9889fc4670100c0b33014e6e770925b501b2e37e2f75edaecdf9d87668f7ebc6",
+    "task004/cli.py": "7abb66960e5265369202acae7985d8258217fe099256a67c2dd15d797d29539c",
+    "task004/client.py": "7e0ab19d5abe28ecf6fa04246bb6809b69ad998108ea3144bdb890ed196cbeca",
+    "task004/config.py": "431ae1d477dda327481f6b725afb9732c8c784bceaf449005269667bd83ee595",
+    "task004/interfaces.py": "dcb15b6d9e1fb1975a80aed9b9543ab1a79e38909c580c75c4963179ca42d5a4",
+    "task004/mock_config.json": "25faa5076f25920b761e2b1de5206a9ceeb6aa8589cc3f1e2a9cec47c0f42b24",
+    "task004/mock_server.py": "aeae9bfde6a87319ea0151e281c073c3b2798c99f657e801622ba85545d0744c",
+    "task004/preflight.py": "c4c8ae7eda54785d3e74804ca9478d76746d9c132f3e9c579ea3c6f45f9439c0",
+    "task004/record.py": "d855732e0c87c62bee74cc37f7f2ef095eabe854745432a0c90150ade4bc22cd",
+    "task004/references/BENCHMARK_SPEC_v0.md": "a02e3e391b49e3ede390fa4904ccbc550c748ab0652da90483788454b7ed614b",
+    "task004/references/ERRATA_TASK003_v0.3.1.md": "1eb9315960ee8386075f8b1581e70e0f14a2bf97ef073a84b5a6eab815a38086",
+    "task004/references/GB0_INTERNAL_NOTICE_v1.txt": "39510d0f581c3db835465afd95e3a0d0a799cb657d2189c7fd3ff1ca4013eb9e",
+    "task004/references/HANDOFF_REPORT_TASK-003-DESIGN.md": "defdf7bca0761e7a98671e5e22f80edde2d57a0282f6cba6ad0555c9b3280147",
+    "task004/references/HANDOFF_REPORT_TASK-004.md": "126e4b9860ae04fee0b59a2b95c5e0b6c6caf910a0e1e2e86521b319f257e486",
+    "task004/references/provenance.json": "9615b2c6d5328edb261e39012666b9cb9c2c8031844123ca8b0d5e9c06457c90",
+    "task004/references/RESPONSE_TO_CLAUDE_REVIEW_v03.md": "3a2c600e098d09825e21a98628464af27aab17a3df4932903ac831e48db525a1",
+    "task004/references/TASK-002_v2.3_MODEL_MATRIX_RUNTIME_ResearchCard.md": "0e61286612322912ec2a3611f650985b3edfd05a3d5349f487e52fdeb8bdf343",
+    "task004/references/TASK-003-CVC-001.md": "6a89687992dd3f79405dbce7c2c6de94e04a3c5b234d527f70ecbde5bdb7bac2",
+    "task004/references/TASK003_NUMERICAL_AUDIT_v03.json": "6fc5a8db73e0afb85624fb4f91a783e65b70288a2a78e730c85369fc73c92417",
+    "task004/references/TASK003_NUMERICAL_AUDIT_v031.json": "ec3e91e03ccddf1a5c567dd37f4c20c554e2667eec0e3e34c7980c9526716503",
+    "task004/references/TASK003_v032_Q1-Q5_Closure.md": "6bdd6b189e2b7bce7a82db3198ebb9b02b1fda5c8ed0194ff19afb57e36c3b66",
+    "task004/requirements.txt": "ce972e5602f1badf47b56ce597ebf4a3cbc516ca6c8979c95ee75c067d275840",
+    "task004/sampler.py": "d381b082c355fd3dc8124b9a01293e95eff234a35b34bdb9344c9b8250beeaff",
+    "task004/schema.py": "e2ac7a601981169ee8aac26fc0118a1a3e2d2148e461408f08ef4112e66f8d2f",
+    "task004/schemas/manifest.schema.json": "b7bd24d34858c6d9c67fc30146f528bdff1a677ae5a9ff0dbf47b029f8955cc7",
+    "task004/schemas/run.schema.json": "424b6dc32dc7a87d47e445acffb5e1d281346c7a27e3926c197b66893b0cb700",
+    "task004/server.py": "237cdc8a3276434b86d74c3da4b5de178610e5a5f22e69506750b29b8e41bbf9",
+    "task004/setup.sh": "859222d55edf9015d130518c2bfa7a2080825941f532c1cb175939b8090043fd",
+    "task004/tests/__init__.py": "0f47a9863abe5b1695c35105b210435f83247a14a1f5031a29b1f416f39d3f7b",
+    "task004/tests/fixtures.py": "316d5684935de6c0f3cd18e13810efccaf599b1cda8bcaeb12574e9539b103ee",
+    "task004/tests/test_client_edges.py": "5bcb64e2e9db43114437ccb17ea0b7883d3f0c6b01818f91ce0eb7e842ccb239",
+    "task004/tests/test_config_preflight.py": "d53a571b7abbe5af70976be00471fdb7bd845151f09cc6579bf0d42c75fbfcd9",
+    "task004/tests/test_hardening_client.py": "ee885e408c56f331cd93f03afd8fb200b852f72e47bdc9857ce768dc8a6c2553",
+    "task004/tests/test_hardening_record.py": "6207bbf7ac189f31e12c247e4d7ec4afa57aab8d896c1fe3a2925d0ffc54e46d",
+    "task004/tests/test_hardening_schema.py": "d1a9653a9e535485941e2077cd38a474cb7265ddeac1d3323a7dd58c0e82853b",
+    "task004/tests/test_hardening_server.py": "89c3ac9bf1cffda818da7420766d302a5a41d2ad486f236e70b306a4d8bb3a9e",
+    "task004/tests/test_review_cli.py": "d791cb63c72a2f4d4c0abd27d8fd26d6669d4492b13c05ac212d8f3f0a7dd913",
+    "task004/tests/test_review_record.py": "3b93cf29fecd3963e84b370bb0b76dfd9de2e7b9ac0ece68725005f08c30b4b3",
+    "task004/tests/test_review_runner.py": "689e1fba47eb1accab63d0461b23aaea11d6a395baa561e89a42da96f16117e8",
+    "task004/tests/test_server.py": "a1b11cef6ef9a262e0c1e9c439ab4d2c4053dd05139d2eec915d6ec292ee4228",
+    "task004/tests/test_workflow.py": "a5c66432ed8747b5445ab48be508896f2f37d68f0d7daffeea3bac2d8f4a899e",
+    "task004/tools/validate_hardening.py": "c92c72742be2d22b4653fa5f2370e33d9f3d93b431de9d23d43eaf6aa168cec6"
+  },
+  "runs": [
+    {
+      "label": "baseline-test_client_edges",
+      "command": [
+        "<python>",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "task004.tests.test_client_edges"
+      ],
+      "cwd": "<baseline-orig>",
+      "returncode": 1,
+      "elapsed_s": 1.109,
+      "tests_run": 3,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "expected_failure": true,
+      "diagnostic_markers": [],
+      "expectation_met": true,
+      "log": "baseline-test_client_edges.log",
+      "log_sha256": "efa66fb9b80e495049a9fff543603088b2ce4f36fdd20fda71e7b481ff534db9"
+    },
+    {
+      "label": "baseline-expanded-client-edges",
+      "command": [
+        "<python>",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "task004.tests.test_client_edges"
+      ],
+      "cwd": "<baseline-expanded>",
+      "returncode": 1,
+      "elapsed_s": 15.011,
+      "tests_run": 7,
+      "failures": 5,
+      "errors": 0,
+      "skipped": 0,
+      "expected_failure": true,
+      "diagnostic_markers": [],
+      "expectation_met": true,
+      "log": "baseline-expanded-client-edges.log",
+      "log_sha256": "f2750df86498ee5bf3970dcc28a7903782f6e88441e02cf659ed99df3c00eb95"
+    },
+    {
+      "label": "mutation-short-socket-timeout",
+      "command": [
+        "<python>",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "task004.tests.test_client_edges"
+      ],
+      "cwd": "<mutant-short-timeout>",
+      "returncode": 1,
+      "elapsed_s": 1.231,
+      "tests_run": 7,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0,
+      "expected_failure": true,
+      "diagnostic_markers": [],
+      "expectation_met": true,
+      "log": "mutation-short-socket-timeout.log",
+      "log_sha256": "549b57a12f00452b72c35a22a63bc8390c499b2c1c15021c299d662c0b1f97bc"
+    },
+    {
+      "label": "fixed-client-1",
+      "command": [
+        "<python>",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "task004.tests.test_client_edges",
+        "task004.tests.test_hardening_client"
+      ],
+      "cwd": "<checkout>",
+      "returncode": 0,
+      "elapsed_s": 3.387,
+      "tests_run": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "expected_failure": false,
+      "diagnostic_markers": [],
+      "expectation_met": true,
+      "log": "fixed-client-1.log",
+      "log_sha256": "98a79de38341057f8d4afcdc4925c7ee8d8922b13eab45048d1c0d87393f2cd1"
+    },
+    {
+      "label": "fixed-client-2",
+      "command": [
+        "<python>",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "task004.tests.test_client_edges",
+        "task004.tests.test_hardening_client"
+      ],
+      "cwd": "<checkout>",
+      "returncode": 0,
+      "elapsed_s": 3.432,
+      "tests_run": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "expected_failure": false,
+      "diagnostic_markers": [],
+      "expectation_met": true,
+      "log": "fixed-client-2.log",
+      "log_sha256": "4fd07462b45d9b512e9286172effb61d62a6f3747eb52308132adfa28dc2f557"
+    },
+    {
+      "label": "fixed-client-3",
+      "command": [
+        "<python>",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "task004.tests.test_client_edges",
+        "task004.tests.test_hardening_client"
+      ],
+      "cwd": "<checkout>",
+      "returncode": 0,
+      "elapsed_s": 3.214,
+      "tests_run": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "expected_failure": false,
+      "diagnostic_markers": [],
+      "expectation_met": true,
+      "log": "fixed-client-3.log",
+      "log_sha256": "4b7e6c8a50a8260cc52a1334124d446648d3cc3c62e19d7851225be91b187239"
+    },
+    {
+      "label": "suite-1",
+      "command": [
+        "<python>",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "task004/tests",
+        "-v"
+      ],
+      "cwd": "<checkout>",
+      "returncode": 0,
+      "elapsed_s": 42.742,
+      "tests_run": 110,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 13,
+      "expected_failure": false,
+      "diagnostic_markers": [],
+      "expectation_met": true,
+      "log": "suite-1.log",
+      "log_sha256": "9029207574e9879823de50634facdf544078a36ab3191fcd824ac1b677b49b42"
+    },
+    {
+      "label": "suite-2",
+      "command": [
+        "<python>",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "task004/tests",
+        "-v"
+      ],
+      "cwd": "<checkout>",
+      "returncode": 0,
+      "elapsed_s": 43.494,
+      "tests_run": 110,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 13,
+      "expected_failure": false,
+      "diagnostic_markers": [],
+      "expectation_met": true,
+      "log": "suite-2.log",
+      "log_sha256": "58956c4e843cfd2becf0f5af585e488dbb105416aebb4d50e41a9b6216e8434e"
+    },
+    {
+      "label": "suite-3",
+      "command": [
+        "<python>",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "task004/tests",
+        "-v"
+      ],
+      "cwd": "<checkout>",
+      "returncode": 0,
+      "elapsed_s": 42.008,
+      "tests_run": 110,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 13,
+      "expected_failure": false,
+      "diagnostic_markers": [],
+      "expectation_met": true,
+      "log": "suite-3.log",
+      "log_sha256": "ff06da916ff88b43cecfc59d7651f1de299124fb69991308c35352318597e345"
+    }
+  ],
+  "suite_summary": {
+    "tests_run": 110,
+    "passed": 97,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 13,
+    "skipped_tests": [
+      {
+        "id": "task004.tests.test_hardening_client.ClientHardeningTests.test_cancel_keeps_primary_for_real_blocked_connect",
+        "status": "skipped",
+        "reason": "Linux backlog behavior only"
+      },
+      {
+        "id": "task004.tests.test_hardening_record.AtomicArtifactTests.test_signals_during_cleanup_and_write_finish_committed_result",
+        "status": "skipped",
+        "reason": "POSIX phase signals; Windows UNVERIFIED"
+      },
+      {
+        "id": "task004.tests.test_hardening_record.SignalArtifactTests.test_burst_signals_do_not_interrupt_cleanup_or_artifacts",
+        "status": "skipped",
+        "reason": "POSIX signal integration; Windows UNVERIFIED"
+      },
+      {
+        "id": "task004.tests.test_hardening_record.SignalArtifactTests.test_single_signals_produce_complete_cancelled_artifacts",
+        "status": "skipped",
+        "reason": "POSIX signal integration; Windows UNVERIFIED"
+      },
+      {
+        "id": "task004.tests.test_hardening_server.ServerHardeningTests.test_a1_killed_cli_leaves_no_mock_or_owned_scratch",
+        "status": "skipped",
+        "reason": "POSIX SIGKILL integration; Windows unverified"
+      },
+      {
+        "id": "task004.tests.test_hardening_server.ServerHardeningTests.test_b2_empty_owned_group_is_not_signalled",
+        "status": "skipped",
+        "reason": "POSIX owned groups; Windows unverified"
+      },
+      {
+        "id": "task004.tests.test_hardening_server.ServerHardeningTests.test_b3_mock_does_not_inherit_harness_secret",
+        "status": "skipped",
+        "reason": "child environ read verified on Linux only"
+      },
+      {
+        "id": "task004.tests.test_review_cli.ReviewCliTests.test_inherited_ignore_is_preserved",
+        "status": "skipped",
+        "reason": "SIGHUP unavailable"
+      },
+      {
+        "id": "task004.tests.test_review_cli.ReviewCliTests.test_nested_signal_cannot_deadlock_handler",
+        "status": "skipped",
+        "reason": "POSIX signal test only"
+      },
+      {
+        "id": "task004.tests.test_review_runner.ReviewRunnerTests.test_archive_extraction_accepts_canonicalized_symlink_root",
+        "status": "skipped",
+        "reason": "symlink creation unavailable"
+      },
+      {
+        "id": "task004.tests.test_server.ServerTests.test_exited_parent_term_resistant_child_is_force_killed",
+        "status": "skipped",
+        "reason": "POSIX group SIGKILL escalation only"
+      },
+      {
+        "id": "task004.tests.test_server.ServerTests.test_exited_session_parent_descendant_cleanup_and_unrelated_survival",
+        "status": "skipped",
+        "reason": "POSIX session isolation; Windows live-tree fallback"
+      },
+      {
+        "id": "task004.tests.test_server.ServerTests.test_group_cleanup_requires_matching_owner",
+        "status": "skipped",
+        "reason": "POSIX process groups only"
+      }
+    ]
+  },
+  "dry_run": {
+    "command": [
+      "<python>",
+      "-m",
+      "task004.cli",
+      "dry-run",
+      "--output-dir",
+      "<checkout>/task004/evidence/windows-client-cancel-20261107/dry-run"
+    ],
+    "returncode": 0,
+    "result": {
+      "run_id": "b39bdaf23f4f46358ab24dd96eabd875",
+      "status": "PASS",
+      "reason_code": "OK",
+      "evidence_label": "SYNTHETIC"
+    },
+    "diagnostic_markers": [],
+    "manifest_path": "task004/evidence/windows-client-cancel-20261107/dry-run/b39bdaf23f4f46358ab24dd96eabd875/manifest.json",
+    "manifest_sha256": "74b20d7500ed6923f5dc3a7b04b448373d2ee0a145aa97ea7acee302fc2fc706",
+    "runs_path": "task004/evidence/windows-client-cancel-20261107/dry-run/b39bdaf23f4f46358ab24dd96eabd875/runs.jsonl",
+    "runs_sha256": "9f2162a0b09fa7af136fa43edc1d36f54b31b35202973cb52cd4dea3c6013a88"
+  },
+  "evidence_sha256": {
+    "task004/evidence/windows-client-cancel-20261107/baseline-expanded-client-edges.log": "f2750df86498ee5bf3970dcc28a7903782f6e88441e02cf659ed99df3c00eb95",
+    "task004/evidence/windows-client-cancel-20261107/baseline-test_client_edges.log": "efa66fb9b80e495049a9fff543603088b2ce4f36fdd20fda71e7b481ff534db9",
+    "task004/evidence/windows-client-cancel-20261107/client-cancel.patch": "c8aa422ebf87220871a68444f126669f585e1d4fba4c0e87a47d2d27da0566d9",
+    "task004/evidence/windows-client-cancel-20261107/dry-run/b39bdaf23f4f46358ab24dd96eabd875/manifest.json": "74b20d7500ed6923f5dc3a7b04b448373d2ee0a145aa97ea7acee302fc2fc706",
+    "task004/evidence/windows-client-cancel-20261107/dry-run/b39bdaf23f4f46358ab24dd96eabd875/runs.jsonl": "9f2162a0b09fa7af136fa43edc1d36f54b31b35202973cb52cd4dea3c6013a88",
+    "task004/evidence/windows-client-cancel-20261107/dry-run.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "task004/evidence/windows-client-cancel-20261107/dry-run.stdout.log": "159859c77e1c894d9981e79b9b5ada7dafc96d5bd5ba3992410d3de88d175c55",
+    "task004/evidence/windows-client-cancel-20261107/fixed-client-1.log": "98a79de38341057f8d4afcdc4925c7ee8d8922b13eab45048d1c0d87393f2cd1",
+    "task004/evidence/windows-client-cancel-20261107/fixed-client-2.log": "4fd07462b45d9b512e9286172effb61d62a6f3747eb52308132adfa28dc2f557",
+    "task004/evidence/windows-client-cancel-20261107/fixed-client-3.log": "4b7e6c8a50a8260cc52a1334124d446648d3cc3c62e19d7851225be91b187239",
+    "task004/evidence/windows-client-cancel-20261107/HANDOFF_REPORT.md": "fca72921bd86680e116e92b2e02bf504d165dd6af1cd20ed722fd5fbdc5eca6c",
+    "task004/evidence/windows-client-cancel-20261107/mutation-short-socket-timeout.log": "549b57a12f00452b72c35a22a63bc8390c499b2c1c15021c299d662c0b1f97bc",
+    "task004/evidence/windows-client-cancel-20261107/suite-1.log": "9029207574e9879823de50634facdf544078a36ab3191fcd824ac1b677b49b42",
+    "task004/evidence/windows-client-cancel-20261107/suite-2.log": "58956c4e843cfd2becf0f5af585e488dbb105416aebb4d50e41a9b6216e8434e",
+    "task004/evidence/windows-client-cancel-20261107/suite-3.log": "ff06da916ff88b43cecfc59d7651f1de299124fb69991308c35352318597e345"
+  },
+  "status": "PASS"
+}

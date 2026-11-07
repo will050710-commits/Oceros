@@ -1,0 +1,8 @@
+{"platform": "Linux", "python_version": "3.12.14", "target_label": "baseline47"}
+server_socket_fd=1053
+test_valid_response_succeeds_above_fd_setsize (__main__.HighFdRegression.test_valid_response_succeeds_above_fd_setsize) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.016s
+
+OK

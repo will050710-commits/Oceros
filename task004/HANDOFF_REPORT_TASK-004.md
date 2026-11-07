@@ -12,6 +12,8 @@ Codex. Một agent hỗ trợ sửa record/provenance; agent chính hoàn tất 
 
 ## STATUS
 
+Cập nhật ngày 08/11/2026: candidate Antigravity ở trạng thái [REQUEST_CHANGES / NOT_MERGED](reviews/2026-11-08/antigravity-client-cancel/README.md). Bản vá được kiểm trên bản sao Linux, chưa áp dụng vào source. Linux ACCEPT dưới đây vẫn chỉ áp dụng 47aaeee; parent Windows mock vẫn NOT_VERIFIED.
+
 **ACCEPT — launcher/client/mock trên Linux tại commit `47aaeee91739c2f09ea30538e40c66e853653543`, theo verdict reviewer do người dùng chuyển tiếp (REPORTED).** Verdict bao phủ 8 finding chính; reviewer chưa đối chiếu riêng hai minor với review gốc. [Bản lưu verdict](reviews/2026-11-07/ACCEPT_REVIEW.md) và [đối chiếu minor của implementer](reviews/2026-11-07/MINOR_CROSSCHECK.md). Đã ghi nhận [ACK orchestrator cho packet 879dcfa](reviews/2026-11-07/ORCHESTRATOR_ACK.md), do người dùng chuyển tiếp (ACK_REPORTED / PACKET_RECEIVED). Windows UNVERIFIED; model thật NOT_RUN.
 
 **Scope replacement: USER-DECIDED. TASK-004 theo phiếu 24/10 (ticket/ledger/provenance/costlog/runner/CLI cũ): đã tách thành [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md), giữ PLANNED / NOT_IMPLEMENTED theo quyết định người dùng.** [Sổ trạng thái](STATUS_LEDGER.md) và [kiểm bổ sung](reviews/2026-11-07/ADDITIONAL_SCOPE_AUDIT.md) ghi riêng các phạm vi; ACCEPT này không có nghĩa mọi yêu cầu của phiếu cũ/prompt gốc đã hoàn thành.
@@ -31,6 +33,8 @@ Bổ sung ngày 07/11: verdict ACCEPT trong tin nhắn, review vòng hai gốc v
 Đọc toàn bộ review dán, source/tests/runner/schema và evidence của bản 07eb03c; đối chiếu handoff/context. Không tái nghiên cứu model hoặc xác minh lại claims hardware/license trong tài liệu nguồn. References và evidence cũ không sửa.
 
 ## FILES_CHANGED
+
+Bổ sung review Antigravity: lưu candidate và evidence được gửi dưới `reviews/2026-11-08/antigravity-client-cancel/submission/`, log/reproducer Linux dưới `linux-review/`, kết quả kiểm hash và yêu cầu sửa AG-1/AG-2. Thay đổi hồ sơ/checksum, không thay `task004/client.py`, tests đang dùng hoặc evidence lịch sử.
 
 Lần bổ sung tiếp theo lưu log survey nguyên byte, kết quả phân tích tự động và đối chiếu PDF có số trang/hash. PDF gốc giữ ở tệp đính kèm vì có đường dẫn hồ sơ cá nhân và URL hội thoại; không đưa các thông tin đó vào repo. Cập nhật các trạng thái thiếu log/chẩn đoán; không sửa code hoặc dữ liệu intake lần trước.
 
@@ -72,6 +76,8 @@ Evidence release: `evidence/review2-20261107-release/validation.json`; bắt đ�
 - Lượt `review2-20261107` có suite PASS nhưng summary FAIL vì matcher A4 ban đầu chỉ nhận schema assertion, chưa nhận config assertion cùng kiểm biên. Lượt `review2-20261107-final` PASS trước khi thêm gate stderr trong test giữ output của CLI. Release đã chạy lại đầy đủ sau thay đổi cuối. Giữ nguyên các evidence đó, không chỉnh tay số liệu.
 
 ## TESTS_EXECUTED
+
+Candidate Antigravity được chạy trên bản sao Linux/Python 3.12.14/psutil 7.2.2: full suite 110 test ba lượt (hai PASS, lượt ba FAIL burst SIGINT 3 ms); kiểm riêng burst xen kẽ baseline/candidate 10 lượt mỗi bên (baseline 10/10, candidate 9/10). Test high-fd cùng assertion cho baseline PASS/candidate FAIL. Các log, script và hash nằm trong review mới; đây là evidence của candidate, không thay số test của implementation accepted bên dưới. Windows chỉ đối chiếu log được gửi, không tái chạy ở môi trường này.
 
 Đã phân tích tệp log bổ sung: 106 ID duy nhất, khớp source và bảng 13 skip; kiểm footer, hash và marker. Đối chiếu phần User prompt trong PDF trang 9–11 với output thí nghiệm; không chạy lệnh trong PDF và không tái chạy Windows.
 
@@ -127,6 +133,8 @@ Nhầm test PASS với leak-free tuyệt đối, Linux với Windows, mock với
 Theo dõi [ORCHESTRATOR_HANDOFF.md](ORCHESTRATOR_HANDOFF.md) cùng ACK đã lưu và commit implementation được chấp nhận. Giữ nguyên phạm vi ACCEPT; không đòi mở lại review 8 finding vì hai ghi chú không chặn. Có thể gửi review gốc và bảng đối chiếu minor để reviewer bổ sung xác nhận riêng.
 
 ## NEXT_ACTION
+
+Ưu tiên gửi [review Antigravity](reviews/2026-11-08/antigravity-client-cancel/README.md) để sửa hồi quy fd cao và xác định lỗi tín hiệu; giữ log FAIL, cung cấp exact revision và chạy lại hồi quy phù hợp trước khi tích hợp. Không áp dụng candidate hiện tại vào source đang dùng.
 
 Đã nhận ACK packet 879dcfa và Windows intake qua người dùng; chưa có thao tác gửi/đóng issue qua connector. Log survey và PDF chẩn đoán đã nhận; triển khai [TASK-004-WIN-CLIENT-CANCEL](tickets/TASK-004-WIN-CLIENT-CANCEL.md) thành commit riêng và hoàn tất các test Windows còn thiếu theo [ticket cha](tickets/TASK-004-WIN-MOCK.md). Snapshot RAM/đĩa/commit đã nhận; JSON/probe TASK-001 gốc và điều kiện RAM sạch còn thiếu. Model/CVC chưa chạy. [LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md) giữ NOT_IMPLEMENTED; nhận phiếu 24/10 nguyên byte để chốt AC khi giao riêng. Không dùng ZIP 2cb9168 thay mã đã chấp nhận.
 

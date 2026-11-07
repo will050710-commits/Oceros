@@ -4,7 +4,7 @@ Ngày lập: 07/11/2026 (Asia/Bangkok). Ticket theo sau [Windows intake](../evid
 
 | Trường | Giá trị |
 | --- | --- |
-| Trạng thái | READY_FOR_IMPLEMENTATION / NOT_IMPLEMENTED |
+| Trạng thái | REVIEW_CHANGES_REQUESTED / NOT_MERGED |
 | Owner | Chưa phân công; agent sửa code và người có máy Windows phối hợp kiểm đúng revision |
 | Ticket cha | [TASK-004-WIN-MOCK](TASK-004-WIN-MOCK.md) |
 | Implementation baseline | `47aaeee91739c2f09ea30538e40c66e853653543`; các commit hồ sơ sau đó không thay client/tests |
@@ -13,6 +13,8 @@ Ngày lập: 07/11/2026 (Asia/Bangkok). Ticket theo sau [Windows intake](../evid
 | Ranh giới | Launcher/client/mock; stdlib + psutil; không model thật, API model, CVC, ticket/ledger/costlog |
 
 ## Vấn đề và đầu vào
+
+Bổ sung ngày 08/11/2026: đã nhận candidate Antigravity, có bản vá và log Windows. [Review độc lập](../reviews/2026-11-08/antigravity-client-cancel/README.md) yêu cầu sửa AG-1 (`select.select` fail khi socket fd cao trên Linux) và xử lý AG-2 (burst-signal test fail trên candidate; nguyên nhân chưa chốt). Hai lượt Linux full suite đầu đạt, lượt ba fail; không gọi là ba lượt ổn định. Candidate được lưu để review, chưa áp dụng vào source đang dùng. Nhiệm vụ hiện tại là chỉnh candidate theo review, giữ chứng cứ FAIL và tái kiểm đúng revision.
 
 Trong fixture HTTP/1.0 body stall, báo cáo cho biết `socket.shutdown(SHUT_RDWR)` từ thread khác không đánh thức worker kịp `join(.5)` trên Windows. Request chính giữ đúng CANCELLED nhưng worker còn sống. Đây là finding cần sửa; mã/output chẩn đoán đã có trong [PDF được đối chiếu](../evidence/windows-intake-20261107/SUPPLEMENT_REVIEW.md). Probe cho thấy worker còn sống sau một giây, chưa quan sát trực tiếp Winsock/select.
 

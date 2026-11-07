@@ -37,6 +37,8 @@ Ngày ghi nhận: 07/11/2026 (Asia/Bangkok).
 
 ## Trạng thái đã được xác nhận và bước tiếp theo
 
+Ngày 08/11/2026: [candidate Antigravity được review REQUEST_CHANGES](reviews/2026-11-08/antigravity-client-cancel/README.md), chưa tích hợp. Log Windows ba lượt 110 test = 97 ok + 13 skip đã được đối chiếu; Linux full suite hai lượt PASS, lượt ba fail test burst signal. Hồi quy select/fd cao được xác nhận bằng baseline PASS/candidate FAIL; lỗi tín hiệu còn cần chốt nguyên nhân. Sửa candidate theo review trước khi quyết định nhận bản vá. Linux ACCEPT và ACK cũ chỉ áp dụng các snapshot đã ghim.
+
 ACK đã ghi nhận ACCEPT cho đúng scope Linux launcher/client/mock tại 47aaeee và tiếp nhận packet 879dcfa. Không suy từ ACK rằng một issue ngoài đã được đóng hoặc Windows/model thật/benchmark/CVC đã hoàn thành.
 
 ACK ghi nhận [TASK-004-LEGACY-OPS](tickets/TASK-004-LEGACY-OPS.md), PLANNED / NOT_IMPLEMENTED, theo quyết định người dùng “Tách thành ticket riêng, giữ trạng thái chưa triển khai (đề xuất)”. Đây là ticket trong repo, chưa tạo issue ngoài/chưa phân công. Phiếu 24/10 nguyên byte vẫn cần được cung cấp để lưu references và đối chiếu AC chi tiết cho lượt triển khai riêng.

@@ -1,0 +1,122 @@
+[
+  {
+    "label": "baseline",
+    "iteration": 1,
+    "returncode": 0,
+    "log": "signal-baseline-1.log"
+  },
+  {
+    "label": "candidate",
+    "iteration": 1,
+    "returncode": 0,
+    "log": "signal-candidate-1.log"
+  },
+  {
+    "label": "baseline",
+    "iteration": 2,
+    "returncode": 0,
+    "log": "signal-baseline-2.log"
+  },
+  {
+    "label": "candidate",
+    "iteration": 2,
+    "returncode": 0,
+    "log": "signal-candidate-2.log"
+  },
+  {
+    "label": "baseline",
+    "iteration": 3,
+    "returncode": 0,
+    "log": "signal-baseline-3.log"
+  },
+  {
+    "label": "candidate",
+    "iteration": 3,
+    "returncode": 0,
+    "log": "signal-candidate-3.log"
+  },
+  {
+    "label": "baseline",
+    "iteration": 4,
+    "returncode": 0,
+    "log": "signal-baseline-4.log"
+  },
+  {
+    "label": "candidate",
+    "iteration": 4,
+    "returncode": 1,
+    "log": "signal-candidate-4.log"
+  },
+  {
+    "label": "baseline",
+    "iteration": 5,
+    "returncode": 0,
+    "log": "signal-baseline-5.log"
+  },
+  {
+    "label": "candidate",
+    "iteration": 5,
+    "returncode": 0,
+    "log": "signal-candidate-5.log"
+  },
+  {
+    "label": "baseline",
+    "iteration": 6,
+    "returncode": 0,
+    "log": "signal-baseline-6.log"
+  },
+  {
+    "label": "candidate",
+    "iteration": 6,
+    "returncode": 0,
+    "log": "signal-candidate-6.log"
+  },
+  {
+    "label": "baseline",
+    "iteration": 7,
+    "returncode": 0,
+    "log": "signal-baseline-7.log"
+  },
+  {
+    "label": "candidate",
+    "iteration": 7,
+    "returncode": 0,
+    "log": "signal-candidate-7.log"
+  },
+  {
+    "label": "baseline",
+    "iteration": 8,
+    "returncode": 0,
+    "log": "signal-baseline-8.log"
+  },
+  {
+    "label": "candidate",
+    "iteration": 8,
+    "returncode": 0,
+    "log": "signal-candidate-8.log"
+  },
+  {
+    "label": "baseline",
+    "iteration": 9,
+    "returncode": 0,
+    "log": "signal-baseline-9.log"
+  },
+  {
+    "label": "candidate",
+    "iteration": 9,
+    "returncode": 0,
+    "log": "signal-candidate-9.log"
+  },
+  {
+    "label": "baseline",
+    "iteration": 10,
+    "returncode": 0,
+    "log": "signal-baseline-10.log"
+  },
+  {
+    "label": "candidate",
+    "iteration": 10,
+    "returncode": 0,
+    "log": "signal-candidate-10.log"
+  }
+]

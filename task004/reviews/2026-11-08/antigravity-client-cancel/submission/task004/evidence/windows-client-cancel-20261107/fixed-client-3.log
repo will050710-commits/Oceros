@@ -1,0 +1,17 @@
+test_cancel_during_header_and_trickle_reads (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_header_and_trickle_reads) ... ok
+test_cancel_during_http10_body_read (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_http10_body_read) ... ok
+test_cancel_stops_worker_when_shutdown_does_not_wake_read (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_stops_worker_when_shutdown_does_not_wake_read)
+Cross-platform simulation: socket.shutdown is a no-op during stalled body read. ... ok
+test_delayed_and_partial_valid_response_succeeds (task004.tests.test_client_edges.ClientEdgeTests.test_delayed_and_partial_valid_response_succeeds) ... ok
+test_response_size_is_bounded (task004.tests.test_client_edges.ClientEdgeTests.test_response_size_is_bounded) ... ok
+test_timeout_during_header_stall_and_partial_headers (task004.tests.test_client_edges.ClientEdgeTests.test_timeout_during_header_stall_and_partial_headers) ... ok
+test_timeout_during_http10_body_read (task004.tests.test_client_edges.ClientEdgeTests.test_timeout_during_http10_body_read) ... ok
+test_cancel_keeps_primary_for_real_blocked_connect (task004.tests.test_hardening_client.ClientHardeningTests.test_cancel_keeps_primary_for_real_blocked_connect) ... skipped 'Linux backlog behavior only'
+test_cancel_keeps_primary_when_connect_cleanup_stalls (task004.tests.test_hardening_client.ClientHardeningTests.test_cancel_keeps_primary_when_connect_cleanup_stalls) ... ok
+test_keyboard_interrupt_keeps_primary_when_cleanup_stalls (task004.tests.test_hardening_client.ClientHardeningTests.test_keyboard_interrupt_keeps_primary_when_cleanup_stalls) ... ok
+test_no_valid_samples_is_distinct_from_unsupported_platform (task004.tests.test_hardening_client.ClientHardeningTests.test_no_valid_samples_is_distinct_from_unsupported_platform) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 3.214s
+
+OK (skipped=1)

@@ -1,0 +1,77 @@
+test_cancel_during_header_and_trickle_reads (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_header_and_trickle_reads) ... 
+  test_cancel_during_header_and_trickle_reads (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_header_and_trickle_reads) (mode='header_stall') ... FAIL
+  test_cancel_during_header_and_trickle_reads (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_header_and_trickle_reads) (mode='partial_header_stall') ... FAIL
+  test_cancel_during_header_and_trickle_reads (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_header_and_trickle_reads) (mode='partial_body_stall') ... FAIL
+test_cancel_during_http10_body_read (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_http10_body_read) ... FAIL
+test_cancel_stops_worker_when_shutdown_does_not_wake_read (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_stops_worker_when_shutdown_does_not_wake_read)
+Cross-platform simulation: socket.shutdown is a no-op during stalled body read. ... FAIL
+test_delayed_and_partial_valid_response_succeeds (task004.tests.test_client_edges.ClientEdgeTests.test_delayed_and_partial_valid_response_succeeds) ... ok
+test_response_size_is_bounded (task004.tests.test_client_edges.ClientEdgeTests.test_response_size_is_bounded) ... ok
+test_timeout_during_header_stall_and_partial_headers (task004.tests.test_client_edges.ClientEdgeTests.test_timeout_during_header_stall_and_partial_headers) ... ok
+test_timeout_during_http10_body_read (task004.tests.test_client_edges.ClientEdgeTests.test_timeout_during_http10_body_read) ... ok
+
+======================================================================
+FAIL: test_cancel_during_header_and_trickle_reads (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_header_and_trickle_reads) (mode='header_stall')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline-expanded>\task004\tests\test_client_edges.py", line 165, in test_cancel_during_header_and_trickle_reads
+    self.assert_worker_stopped()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<baseline-expanded>\task004\tests\test_client_edges.py", line 111, in assert_worker_stopped
+    self.assertFalse(any(t.name == "task004-http" for t in threading.enumerate()))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_cancel_during_header_and_trickle_reads (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_header_and_trickle_reads) (mode='partial_header_stall')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline-expanded>\task004\tests\test_client_edges.py", line 165, in test_cancel_during_header_and_trickle_reads
+    self.assert_worker_stopped()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<baseline-expanded>\task004\tests\test_client_edges.py", line 111, in assert_worker_stopped
+    self.assertFalse(any(t.name == "task004-http" for t in threading.enumerate()))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_cancel_during_header_and_trickle_reads (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_header_and_trickle_reads) (mode='partial_body_stall')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline-expanded>\task004\tests\test_client_edges.py", line 165, in test_cancel_during_header_and_trickle_reads
+    self.assert_worker_stopped()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<baseline-expanded>\task004\tests\test_client_edges.py", line 111, in assert_worker_stopped
+    self.assertFalse(any(t.name == "task004-http" for t in threading.enumerate()))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_cancel_during_http10_body_read (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_during_http10_body_read)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline-expanded>\task004\tests\test_client_edges.py", line 144, in test_cancel_during_http10_body_read
+    self.assert_worker_stopped()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<baseline-expanded>\task004\tests\test_client_edges.py", line 111, in assert_worker_stopped
+    self.assertFalse(any(t.name == "task004-http" for t in threading.enumerate()))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_cancel_stops_worker_when_shutdown_does_not_wake_read (task004.tests.test_client_edges.ClientEdgeTests.test_cancel_stops_worker_when_shutdown_does_not_wake_read)
+Cross-platform simulation: socket.shutdown is a no-op during stalled body read.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<baseline-expanded>\task004\tests\test_client_edges.py", line 216, in test_cancel_stops_worker_when_shutdown_does_not_wake_read
+    self.assert_worker_stopped()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<baseline-expanded>\task004\tests\test_client_edges.py", line 111, in assert_worker_stopped
+    self.assertFalse(any(t.name == "task004-http" for t in threading.enumerate()))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 7 tests in 15.011s
+
+FAILED (failures=5)

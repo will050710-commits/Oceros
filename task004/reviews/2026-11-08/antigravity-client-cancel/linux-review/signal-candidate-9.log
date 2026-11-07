@@ -1,0 +1,6 @@
+test_burst_signals_do_not_interrupt_cleanup_or_artifacts (task004.tests.test_hardening_record.SignalArtifactTests.test_burst_signals_do_not_interrupt_cleanup_or_artifacts) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.701s
+
+OK

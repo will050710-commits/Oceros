@@ -1,0 +1,26 @@
+{"platform": "Linux", "python_version": "3.12.14", "target_label": "candidate"}
+server_socket_fd=1053
+test_valid_response_succeeds_above_fd_setsize (__main__.HighFdRegression.test_valid_response_succeeds_above_fd_setsize) ... FAIL
+
+======================================================================
+FAIL: test_valid_response_succeeds_above_fd_setsize (__main__.HighFdRegression.test_valid_response_succeeds_above_fd_setsize)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<REVIEW_OUTPUT>/high-fd-regression.py", line 68, in test_valid_response_succeeds_above_fd_setsize
+    result = client.request_synthetic(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<CANDIDATE>/task004/client.py", line 159, in request_synthetic
+    raise error
+review_client.ClientError: CLIENT_ERROR
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<REVIEW_OUTPUT>/high-fd-regression.py", line 72, in test_valid_response_succeeds_above_fd_setsize
+    self.fail("VALID_HIGH_FD_RESPONSE_FAILED code=" + exc.code)
+AssertionError: VALID_HIGH_FD_RESPONSE_FAILED code=CLIENT_ERROR
+
+----------------------------------------------------------------------
+Ran 1 test in 0.016s
+
+FAILED (failures=1)
